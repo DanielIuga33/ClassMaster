@@ -1,0 +1,15 @@
+[
+    {
+        "id_entity": "24de95d4-ecc6-4155-8234-a3cd1374ebe9",
+        "group_name": "Studentesti",
+        "student_ids": [
+            "3642211a-4cb4-4bed-86ac-ae024b40091f",
+            "f3b3902b-0c03-4977-8996-52f01241281c",
+            "03818ef4-95b1-4f25-bb9e-6d0b208c5e06",
+            "10ea42c0-2565-43b0-84a1-45c9aa1285e5"
+        ],
+        "day": "",
+        "time_interval": "",
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    }
+]

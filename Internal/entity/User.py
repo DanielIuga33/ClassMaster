@@ -2,9 +2,11 @@ from Internal.entity.Entity import Entity
 
 
 class User(Entity):
-    def __init__(self,username: str, first_name: str, last_name: str, email: str, password: str, data_path: str,
-                 street_address: str, city: str, state: str, birthday: str):
+    def __init__(self, username: str, first_name: str, last_name: str, email: str, password: str, data_path: str,
+                 street_address: str, city: str, state: str, birthday: str, **kwargs):
         super().__init__()
+        if 'id_entity' in kwargs:
+            self._Entity__id_entity = kwargs['id_entity']
         self.__username = username
         self.__first_name = first_name
         self.__last_name = last_name

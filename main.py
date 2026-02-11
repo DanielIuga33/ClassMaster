@@ -1,7 +1,11 @@
 import tkinter as tk
+
+from Internal.repository.RepositoryGroup import RepositoryGroup
 from Internal.repository.RepositoryUser import RepositoryUser
 from Internal.repository.RepositoryStudent import RepositoryStudent
+from Internal.service.StudentService import StudentService
 from Internal.service.UserService import UserService
+from Internal.service.GroupService import GroupService
 from Internal.service.SettingsService import SettingsService
 from Internal.ui.LoginUi import LoginUi
 from Internal.ui.UserUi import UserUi
@@ -15,6 +19,8 @@ class MainController:
         self.settings_service = SettingsService()
         self.current_theme = self.settings_service.get_theme()
         self.user_service = UserService(RepositoryUser(""))
+        self.student_service = StudentService(RepositoryStudent(""))
+        self.group_service = GroupService(RepositoryGroup(""))
         self.show_start_screen()
 
     def clear_screen(self):
@@ -30,6 +36,8 @@ class MainController:
         LoginUi(
             self.root,
             self.user_service,
+            self.student_service,
+            self.group_service,
             self.login_success,
             self.settings_service,
             self.show_start_screen
@@ -43,7 +51,8 @@ class MainController:
         self.clear_screen()
         # Deschide interfața principală cu elevii
         # UserUi(self.root, user)
-        print(f"Logat cu succes ca {user.get_first_name()}")
+        UserUi(self.root, user, self.user_service, self.show_start_screen, self.settings_service,
+               self.student_service, self.group_service)
 
     def run(self):
         self.root.mainloop()

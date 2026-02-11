@@ -4,10 +4,21 @@ import json
 
 class RepositoryStudent:
     def __init__(self, user_data_path: str):
-        self.__filename = os.path.join(user_data_path, "Students.json")
-        # Ne asigurăm că folderul există
-        os.makedirs(user_data_path, exist_ok=True)
-        self.__student_list = self.__read()
+        # 1. Inițializăm ÎNTOTDEAUNA variabilele cu valori sigure la început
+        self.__student_list = []
+        self.__filename = None  # Folosim None pentru a indica lipsa unei căi
+
+        if user_data_path:
+            os.makedirs(user_data_path, exist_ok=True)
+            self.__filename = os.path.join(user_data_path, "Students.json")
+
+            # 2. Verificăm dacă fișierul NU există și îl creăm gol
+            if not os.path.exists(self.__filename):
+                with open(self.__filename, "w") as f:
+                    json.dump([], f)
+
+                # 3. Abia acum citim datele
+            self.__student_list = self.__read()
 
     def add_student(self, student):
         if not self.__exist(student):
@@ -35,6 +46,11 @@ class RepositoryStudent:
     def __exist(self, student):
         return student in self.__student_list
 
+    def get_stud_by_id(self, id_stud):
+        for student in self.__student_list:
+            if student.get_id_entity() == id_stud:
+                return student
+
     def __save(self):
         with open(self.__filename, "w") as f:
             # Folosim o metodă mai sigură de a serializa
@@ -42,10 +58,12 @@ class RepositoryStudent:
             temp = []
             for s in self.__student_list:
                 data = {
-                    "first_name": s.first_name,
-                    "last_name": s.last_name,
-                    "grade": s.grade,
-                    "price": s.price
+                    "id_entity": s.get_id_entity(),
+                    "first_name": s.get_first_name(),
+                    "last_name": s.get_last_name(),
+                    "grade": s.get_grade(),
+                    "price": s.get_price(),
+                    "teacher_id": s.get_teacher_id(),
                 }
                 temp.append(data)
             json.dump(temp, f, indent=4)
@@ -64,3 +82,15 @@ class RepositoryStudent:
 
     def get_all(self):
         return self.__student_list
+
+    def set_new_path(self, new_data_path: str):
+        """Schimbă locația fișierului la înregistrare."""
+        if new_data_path:
+            os.makedirs(new_data_path, exist_ok=True)
+            self.__filename = os.path.join(new_data_path, "Students.json")
+            # Dacă fișierul nu există în noua locație, îl creăm
+            if not os.path.exists(self.__filename):
+                with open(self.__filename, "w") as f:
+                    json.dump([], f)
+            # Reîncărcăm lista din noua locație
+            self.__student_list = self.__read()

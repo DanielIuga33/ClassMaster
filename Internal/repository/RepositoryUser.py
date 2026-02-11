@@ -83,6 +83,7 @@ class RepositoryUser:
             temp = []
             for u in self.__user_list:
                 temp.append({
+                    "id_entity": u.get_id_entity(),
                     "username": u.get_username(),
                     "first_name": u.get_first_name(),
                     "last_name": u.get_last_name(),

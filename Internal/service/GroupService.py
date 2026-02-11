@@ -1,0 +1,33 @@
+from Internal.entity.Group import Group
+from Internal.repository.RepositoryGroup import RepositoryGroup
+
+
+class GroupService:
+    def __init__(self, repository: RepositoryGroup):
+        self.__repository = repository
+
+    def set_repository_path(self, path):
+        self.__repository.set_new_path(path)
+
+    def add_group(self, name, ids, teacher_id):
+        if not name:
+            return 400, "Numele și materia sunt obligatorii!"
+        self.__repository.add_group(name, ids, teacher_id)
+        return 201, "Grupă creată cu succes!"
+
+    def get_group_by_id(self, id_group):
+        return self.__repository.find_by_id(id_group)
+
+    def delete_group(self, group_id: str):
+        self.__repository.delete_group(group_id)
+
+    def get_groups_for_teacher(self, teacher_id):
+        result = []
+        for group in self.__repository.get_all():
+            if group.get_teacher_id() == teacher_id:
+                result.append(group)
+        return result
+
+
+
+
