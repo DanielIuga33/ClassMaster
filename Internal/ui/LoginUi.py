@@ -1,14 +1,21 @@
 import tkinter as tk
 from tkinter import messagebox, filedialog
 
+from Internal.service.GroupService import GroupService
+from Internal.service.PresetService import PresetService
+from Internal.service.StudentService import StudentService
+from Internal.service.UserService import UserService
+
 
 class LoginUi:
-    def __init__(self, root, user_service, student_service, group_service,
+    def __init__(self, root, user_service: UserService, student_service: StudentService,
+                 group_service: GroupService, preset_service: PresetService,
                  on_success, settings_service, on_back):
         self.root = root
         self.user_service = user_service
         self.student_service = student_service
         self.group_service = group_service
+        self.preset_service = preset_service
         self.on_success = on_success
         self.settings_service = settings_service
         self.on_back = on_back
@@ -99,6 +106,7 @@ class LoginUi:
         self.user_service.set_repository_path(data_path)
         self.group_service.set_repository_path(data_path)
         self.student_service.set_repository_path(data_path)
+        self.preset_service.set_repository_path(data_path)
 
         user = self.user_service.authenticate(identifier, password)
         if user:

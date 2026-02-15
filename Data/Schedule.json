@@ -1,8 +1,41 @@
 {
-    "total_rows": 3,
-    "Luni_1_raw": {
+    "77fb0ad2-d3e4-43f1-86e6-71694f587de0_2026-02-09_R1_raw": {
+        "group_name": "Gasca",
+        "time": "21:21-03:21",
+        "group_id": "3014b53a-585c-4563-b58f-3e00d3e4a76d",
+        "teacher_id": "77fb0ad2-d3e4-43f1-86e6-71694f587de0"
+    },
+    "77fb0ad2-d3e4-43f1-86e6-71694f587de0_2026-02-10_R2_raw": {
+        "group_name": "Gasca",
+        "time": "21:21-03:12",
+        "group_id": "3014b53a-585c-4563-b58f-3e00d3e4a76d",
+        "teacher_id": "77fb0ad2-d3e4-43f1-86e6-71694f587de0"
+    },
+    "77fb0ad2-d3e4-43f1-86e6-71694f587de0_2026-02-11_R1_raw": {
+        "group_name": "Gasca",
+        "time": "12:21-03:12",
+        "group_id": "3014b53a-585c-4563-b58f-3e00d3e4a76d",
+        "teacher_id": "77fb0ad2-d3e4-43f1-86e6-71694f587de0"
+    },
+    "total_rows": 2,
+    "PRESET_ffda6b15-5d7b-4d43-a7c5-505535371194": {
+        "D0_R1": {
+            "group_name": "Studentesti",
+            "time": "12:32-03:12",
+            "group_id": "24de95d4-ecc6-4155-8234-a3cd1374ebe9",
+            "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+        },
+        "D1_R1": {
+            "group_name": "Studentesti",
+            "time": "21:21-03:21",
+            "group_id": "24de95d4-ecc6-4155-8234-a3cd1374ebe9",
+            "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+        }
+    },
+    "ffda6b15-5d7b-4d43-a7c5-505535371194_2026-02-09_R1_raw": {
         "group_name": "Studentesti",
-        "time": "12:32-21:32",
-        "group_id": "24de95d4-ecc6-4155-8234-a3cd1374ebe9"
+        "time": "12:21-03:21",
+        "group_id": "24de95d4-ecc6-4155-8234-a3cd1374ebe9",
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
     }
 }

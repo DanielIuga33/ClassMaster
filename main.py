@@ -3,6 +3,8 @@ import tkinter as tk
 from Internal.repository.RepositoryGroup import RepositoryGroup
 from Internal.repository.RepositoryUser import RepositoryUser
 from Internal.repository.RepositoryStudent import RepositoryStudent
+from Internal.repository.RepositoryPreset import RepositoryPreset
+from Internal.service.PresetService import PresetService
 from Internal.service.StudentService import StudentService
 from Internal.service.UserService import UserService
 from Internal.service.GroupService import GroupService
@@ -21,6 +23,7 @@ class MainController:
         self.user_service = UserService(RepositoryUser(""))
         self.student_service = StudentService(RepositoryStudent(""))
         self.group_service = GroupService(RepositoryGroup(""))
+        self.preset_service = PresetService(RepositoryPreset(""))
         self.show_start_screen()
 
     def clear_screen(self):
@@ -38,6 +41,7 @@ class MainController:
             self.user_service,
             self.student_service,
             self.group_service,
+            self.preset_service,
             self.login_success,
             self.settings_service,
             self.show_start_screen
@@ -45,14 +49,27 @@ class MainController:
 
     def show_register(self):
         self.clear_screen()
-        RegisterUi(self.root, self.user_service, self.show_start_screen, self.settings_service)
+        RegisterUi(
+            self.root,
+            self.user_service,
+            self.show_start_screen,
+            self.settings_service
+        )
 
     def login_success(self, user):
         self.clear_screen()
         # Deschide interfața principală cu elevii
         # UserUi(self.root, user)
-        UserUi(self.root, user, self.user_service, self.show_start_screen, self.settings_service,
-               self.student_service, self.group_service)
+        UserUi(
+            self.root,
+            user,
+            self.show_start_screen,
+            self.settings_service,
+            self.user_service,
+            self.student_service,
+            self.group_service,
+            self.preset_service
+        )
 
     def run(self):
         self.root.mainloop()

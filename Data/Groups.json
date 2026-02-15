@@ -11,5 +11,15 @@
         "day": "",
         "time_interval": "",
         "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "3014b53a-585c-4563-b58f-3e00d3e4a76d",
+        "group_name": "Gasca",
+        "student_ids": [
+            "f7b3d6d9-62b7-4090-8630-1dfb2711adc2"
+        ],
+        "day": "",
+        "time_interval": "",
+        "teacher_id": "77fb0ad2-d3e4-43f1-86e6-71694f587de0"
     }
 ]

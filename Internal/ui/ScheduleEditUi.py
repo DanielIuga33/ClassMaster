@@ -132,7 +132,8 @@ class ScheduleEditUi(tk.Toplevel):
         data = {
             "group_name": selected_group_name,
             "time": time_formatted,
-            "group_id": selected_group.get_id_entity() if selected_group else ""
+            "group_id": selected_group.get_id_entity() if selected_group else "",
+            "teacher_id": self.user_id
         }
 
         self.on_save(self.cell_id, data)
