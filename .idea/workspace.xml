@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="3a0b11a4-86ce-4cf2-b25f-d61d7b2840be" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Internal/entity/Student.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/entity/Student.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Internal/service/GroupService.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/service/GroupService.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Internal/service/SettingsService.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/service/SettingsService.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Internal/service/StudentService.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/service/StudentService.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Internal/service/UserService.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/service/UserService.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Internal/ui/GroupAddUi.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/GroupAddUi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Internal/ui/LoginUi.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/LoginUi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Internal/ui/RegisterUi.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/RegisterUi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Internal/ui/ScheduleEditUi.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/ScheduleEditUi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Internal/ui/StartUi.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/StartUi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Internal/ui/StudentAddUi.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/StudentAddUi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Internal/ui/UserUi.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/UserUi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Internal/ui/components/DashboardView.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/components/DashboardView.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Internal/ui/components/GroupsView.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/components/GroupsView.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Internal/ui/components/ScheduleView.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/components/ScheduleView.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Internal/ui/components/SettingsView.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/components/SettingsView.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Internal/ui/components/StudentsView.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/components/StudentsView.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="39UbZLgFSlPuGH0BsQnRdpT8lS0" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\Programare\GitHub Projects\ClassMaster\Internal\Entity" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="ClassMaster" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.main" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-PY-242.23726.102" />
+        <option value="bundled-python-sdk-5e1850174b45-399fe30bd8c1-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-242.23726.102" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3a0b11a4-86ce-4cf2-b25f-d61d7b2840be" name="Changes" comment="" />
+      <created>1770753655629</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1770753655629</updated>
+      <workItem from="1770753657798" duration="12030000" />
+      <workItem from="1770799475386" duration="18940000" />
+      <workItem from="1771111850023" duration="3538000" />
+      <workItem from="1771161317777" duration="8050000" />
+      <workItem from="1771183458697" duration="21860000" />
+      <workItem from="1771205814406" duration="117000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/ClassMaster$main.coverage" NAME="main Coverage Results" MODIFIED="1771205420829" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+</project>

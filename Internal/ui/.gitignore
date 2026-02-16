@@ -1,0 +1,11 @@
+# --- Regulile tale noi pentru ClassMaster ---
+Data/
+__pycache__/
+*.py[cod]
+
+# --- Regulile vechi din .idea (păstrează-le) ---
+.idea/shelf/
+.idea/workspace.xml
+.idea/httpRequests/
+.idea/dataSources/
+.idea/dataSources.local.xml

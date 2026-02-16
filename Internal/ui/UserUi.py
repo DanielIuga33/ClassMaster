@@ -6,6 +6,7 @@ import os
 from tkcalendar import DateEntry
 
 from Internal.service.GroupService import GroupService
+from Internal.service.LanguageService import LanguageService
 from Internal.service.PresetService import PresetService
 from Internal.service.SettingsService import SettingsService
 from Internal.service.StudentService import StudentService
@@ -13,11 +14,18 @@ from Internal.service.UserService import UserService
 from Internal.ui.ScheduleEditUi import ScheduleEditUi
 from Internal.ui.StudentAddUi import StudentAddUi
 from Internal.ui.GroupAddUi import GroupAddUi
+from Internal.ui.PresetSaveUi import PresetSaveUi
+from Internal.ui.components.ScheduleView import ScheduleView
+from Internal.ui.components.StudentsView import StudentsView
+from Internal.ui.components.GroupsView import GroupsView
+from Internal.ui.components.DashboardView import DashboardView
+from Internal.ui.components.SettingsView import SettingsView
 
 
 class UserUi:
     def __init__(self, root, user, on_logout, settings_service: SettingsService, user_service: UserService,
-                 student_service: StudentService, group_service: GroupService, preset_service: PresetService):
+                 student_service: StudentService, group_service: GroupService, preset_service: PresetService,
+                 language_service: LanguageService):
         self.root = root
         self.user = user
         self.on_logout = on_logout
@@ -26,25 +34,52 @@ class UserUi:
         self.student_service = student_service
         self.group_service = group_service
         self.preset_service = preset_service
+        self.language_service = language_service
+        self.colors = self.settings_service.get_colors(user.get_id_entity())
 
-        # Dată referință pentru calendar
+        # 1. Date de referință și configurări
         self.current_date = datetime.now()
-
         self.schedule_file = os.path.join("Data", "Schedule.json")
         self.schedule_data = self.load_schedule_data()
 
-        # Culori centralizate din SettingsService
-        self.colors = self.settings_service.get_colors()
-
+        # 2. Configurare fereastră principală
         self.root.title(f"ClassMaster - Panou Control: {user.get_first_name()}")
         self.setup_window(1725, 800)
         self.root.configure(bg=self.colors["bg"])
 
+
+        # 3. Crearea structurii de layout (Containerele)
         # --- Sidebar ---
         self.sidebar = tk.Frame(self.root, bg=self.colors["sidebar_bg"], width=260)
         self.sidebar.pack(side="left", fill="y")
         self.sidebar.pack_propagate(False)
 
+        # --- Zona de Conținut Principală (Aici se vor randa componentele) ---
+        self.main_content = tk.Frame(self.root, bg=self.colors["bg"], padx=40, pady=40)
+        self.main_content.pack(side="right", expand=True, fill="both")
+
+        # 4. Inițializarea Componentelor (Acum main_content EXISTĂ în self)
+        self.dashboard_component = DashboardView(self.main_content, self)
+        self.schedule_component = ScheduleView(self.main_content, self)
+        self.students_component = StudentsView(self.main_content, self)
+        self.groups_component = GroupsView(self.main_content, self)
+        self.settings_component = SettingsView(self.main_content, self)
+
+        # 5. Popularea Sidebar-ului (Meniu și Profil)
+        self.setup_sidebar_content(user)
+
+        # 6. Afișarea paginii de start
+        self.show_dashboard()
+
+    def setup_window(self, w, h):
+        ws = self.root.winfo_screenwidth()
+        hs = self.root.winfo_screenheight()
+        x = (ws / 2) - (w / 2)
+        y = (hs / 2) - (h / 2) - 20
+        self.root.geometry(f'{int(w)}x{int(h)}+{int(x)}+{int(y)}')
+
+    def setup_sidebar_content(self, user):
+        """Configurează elementele vizuale din sidebar."""
         current_rows = self.schedule_data.get("total_rows", 5)
         self.rows_var = tk.IntVar(value=max(2, current_rows))
 
@@ -64,22 +99,9 @@ class UserUi:
         self.create_menu_button("🏫 Gestiune Grupe", self.show_groups)
         self.create_menu_button("⚙️ Setări Profil", self.show_settings)
 
-        tk.Button(self.sidebar, text="🚪 Deconectare", command=on_logout,
+        tk.Button(self.sidebar, text="🚪 Deconectare", command=self.on_logout,
                   font=("Segoe UI", 11), bg="#E74C3C", fg="white", relief="flat",
                   cursor="hand2", pady=10).pack(side="bottom", fill="x", padx=20, pady=20)
-
-        # Zona de Conținut
-        self.main_content = tk.Frame(self.root, bg=self.colors["bg"], padx=40, pady=40)
-        self.main_content.pack(side="right", expand=True, fill="both")
-
-        self.show_dashboard()
-
-    def setup_window(self, w, h):
-        ws = self.root.winfo_screenwidth()
-        hs = self.root.winfo_screenheight()
-        x = (ws / 2) - (w / 2)
-        y = (hs / 2) - (h / 2) - 20
-        self.root.geometry(f'{int(w)}x{int(h)}+{int(x)}+{int(y)}')
 
     def create_menu_button(self, text, command):
         btn = tk.Button(self.sidebar, text=text, command=command, font=("Segoe UI", 11),
@@ -105,7 +127,7 @@ class UserUi:
         os.makedirs("Data", exist_ok=True)
         with open(self.schedule_file, "w") as f: json.dump(self.schedule_data, f, indent=4)
 
-    # --- Persistență Orar ---
+    # --- Persistență Orar (Apelate din ScheduleView sau Modale) ---
     def process_schedule_save(self, cell_id, data):
         unique_key = f"{self.user.get_id_entity()}_{cell_id}"
         self.schedule_data[f"{unique_key}_raw"] = data
@@ -120,126 +142,19 @@ class UserUi:
             self.save_schedule_data()
             self.show_schedule()
 
-    # --- Secțiunea ORAR (REPARATĂ) ---
+    # --- Secțiunea ORAR (Folosește noua componentă) ---
     def show_schedule(self):
         self.clear_content()
-        self.colors = self.settings_service.get_colors()
+        self.schedule_component.render()
 
-        header_frame = tk.Frame(self.main_content, bg=self.colors["bg"])
-        header_frame.pack(fill="x", pady=(0, 20))
-
-        # --- Navigare, Calendar și Preseturi ---
-        nav_frame = tk.Frame(header_frame, bg=self.colors["bg"])
-        nav_frame.pack(side="left")
-
-        # Navigare înapoi
-        tk.Button(nav_frame, text="◀", command=self.prev_week, bg=self.colors["accent"], fg="white",
-                  relief="flat").pack(side="left", padx=5)
-
-        # Selector Calendar
-        self.cal_select = DateEntry(nav_frame, width=20, background=self.colors["accent"],
-                                    foreground='white', borderwidth=2, font=("Segoe UI", 12, "bold"),
-                                    date_pattern='dd/mm/yyyy', locale='ro_RO')
-        self.cal_select.set_date(self.current_date)
-        self.cal_select.pack(side="left", padx=10)
-        self.cal_select.bind("<<DateEntrySelected>>", self.on_date_selected)
-
-        # Navigare înainte
-        tk.Button(nav_frame, text="▶", command=self.next_week, bg=self.colors["accent"], fg="white",
-                  relief="flat").pack(side="left", padx=5)
-
-        # BUTOANE PRESET (Noile funcționalități)
-        tk.Button(nav_frame, text="💾 Salvează Preset", command=self.save_as_preset,
-                  bg="#27AE60", fg="white", relief="flat", font=("Segoe UI", 9, "bold"),
-                  padx=10).pack(side="left", padx=(25, 5))
-
-        # Caută această linie în show_schedule și modific-o:
-        tk.Button(nav_frame, text="📋 Aplică Preset", command=self.open_presets_manager,
-                  bg="#8E44AD", fg="white", relief="flat", font=("Segoe UI", 9, "bold"),
-                  padx=10).pack(side="left", padx=5)
-
-        # --- Control Rânduri ---
-        rows_control = tk.Frame(header_frame, bg=self.colors["bg"])
-        rows_control.pack(side="right")
-        tk.Spinbox(rows_control, from_=2, to=20, textvariable=self.rows_var, width=5,
-                   command=self.update_rows_count, bg=self.colors["input_bg"], fg=self.colors["fg"]).pack(side="right",
-                                                                                                          padx=10)
-
-        # --- Container Tabel ---
-        canvas_container = tk.Frame(self.main_content, bg=self.colors["bg"])
-        canvas_container.pack(fill="both", expand=True)
-
-        self.canvas = tk.Canvas(canvas_container, bg=self.colors["bg"], highlightthickness=0)
-        scrollbar = tk.Scrollbar(canvas_container, orient="vertical", command=self.canvas.yview)
-
-        self.table_container = tk.Frame(self.canvas, bg=self.colors["bg"])
-
-        self.canvas.create_window((0, 0), window=self.table_container, anchor="nw")
-        self.canvas.configure(yscrollcommand=scrollbar.set)
-        scrollbar.pack(side="right", fill="y")
-        self.canvas.pack(side="left", fill="both", expand=True)
-
-        self.table_container.bind("<Configure>", lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all")))
-        self.canvas.bind_all("<MouseWheel>", lambda e: self.canvas.yview_scroll(int(-1 * (e.delta / 120)), "units"))
-
-        # Desenează grid-ul după ce table_container a fost definit
-        self.draw_schedule_grid()
-
-    def open_presets_manager(self):
-        """Deschide o fereastră pentru a alege, aplica sau șterge preseturi."""
-        teacher_id = self.user.get_id_entity()
-        presets = self.preset_service.get_all_presets_for_teacher(teacher_id)
-
-        # Mesaj de eroare dacă nu există preseturi salvate
-        if not presets:
-            messagebox.showwarning("Atenție",
-                                   "Nu ai niciun preset salvat! Salvează mai "
-                                   "întâi o săptămână folosind butonul 'Salvează Preset'.")
-            return
-
-        manager = tk.Toplevel(self.root)
-        manager.title("Gestionare Preseturi")
-        manager.geometry("450x550")
-        manager.configure(bg=self.colors["bg"], padx=25, pady=25)
-        manager.grab_set()  # Face fereastra modală
-
-        tk.Label(manager, text="Preseturile tale salvate", font=("Segoe UI", 14, "bold"),
-                 bg=self.colors["bg"], fg=self.colors["fg"]).pack(pady=(0, 20))
-
-        # Container cu scroll pentru listă (dacă sunt multe preseturi)
-        list_container = tk.Frame(manager, bg=self.colors["bg"])
-        list_container.pack(fill="both", expand=True)
-
-        for p in presets:
-            row = tk.Frame(list_container, bg=self.colors["card_bg"], pady=10, padx=15,
-                           highlightthickness=1, highlightbackground=self.colors["grid_line"])
-            row.pack(fill="x", pady=5)
-
-            tk.Label(row, text=p.get_name(), bg=self.colors["card_bg"],
-                     fg=self.colors["fg"], font=("Segoe UI", 11, "bold")).pack(side="left")
-
-            # Buton Ștergere
-            tk.Button(row, text=" 🗑️ ", bg="#E74C3C", fg="white", relief="flat",
-                      command=lambda obj=p: self.handle_delete_preset(obj, manager)).pack(side="right", padx=5)
-
-            # Buton Aplicare
-            tk.Button(row, text=" 📋 Aplică ", bg="#8E44AD", fg="white", relief="flat",
-                      font=("Segoe UI", 9, "bold"),
-                      command=lambda obj=p: [self.apply_preset_logic(obj), manager.destroy()]).pack(side="right",
-                                                                                                    padx=5)
-
-    def handle_delete_preset(self, preset_obj, manager_window):
-        """Confirmă și șterge un preset, apoi reîmprospătează fereastra."""
-        if messagebox.askyesno("Confirmare", f"Sigur vrei să ștergi presetul '{preset_obj.get_name()}'?"):
-            self.preset_service.delete_preset(preset_obj)
-            manager_window.destroy()
-            self.open_presets_manager()  # Redeschide pentru refresh
-
+    # --- Logică Preseturi (Rămân aici ca funcții suport pentru moment) ---
     def save_as_preset(self):
-        from tkinter import simpledialog
-        name = simpledialog.askstring("Preset Nou", "Introdu numele presetului:")
-        if not name: return
+        """Deschide fereastra modernă de salvare preset."""
+        # Creăm instanța noii ferestre și îi transmitem funcția de procesare
+        PresetSaveUi(self.root, self.colors, self.process_preset_creation)
 
+    def process_preset_creation(self, name):
+        """Logica de scriere a datelor în JSON după ce userul a ales numele."""
         start_of_week = self.current_date - timedelta(days=self.current_date.weekday())
         teacher_id = self.user.get_id_entity()
         data_to_save = {}
@@ -254,9 +169,10 @@ class UserUi:
         if data_to_save:
             status = self.preset_service.create_preset(teacher_id, name, data_to_save)
             if status[0] == 201:
-                messagebox.showinfo("Succes", f"Presetul '{name}' a fost salvat!")
+                # ÎNLOCUIT: messagebox.showinfo -> show_toast
+                self.show_toast(f"✅ Presetul '{name}' a fost salvat!")
             else:
-                messagebox.showerror("Eroare", "Numele de preset există deja.")
+                self.show_toast("❌ Numele de preset există deja.", "#E74C3C")
 
     def open_presets_manager(self):
         teacher_id = self.user.get_id_entity()
@@ -268,77 +184,77 @@ class UserUi:
 
         manager = tk.Toplevel(self.root)
         manager.title("Gestionare Preseturi")
-        manager.geometry("450x550")
+
+        # --- CENTRARE FEREASTRĂ ---
+        w, h = 450, 550
+        ws = manager.winfo_screenwidth()
+        hs = manager.winfo_screenheight()
+        x = (ws / 2) - (w / 2)
+        y = (hs / 2) - (h / 2)
+        manager.geometry(f'{w}x{h}+{int(x)}+{int(y)}')
+
         manager.configure(bg=self.colors["bg"], padx=25, pady=25)
+        manager.grab_set()
+
+        # Titlu modern
+        tk.Label(manager, text="📋 Preseturi Salvate", font=("Segoe UI", 14, "bold"),
+                 bg=self.colors["bg"], fg=self.colors["accent"]).pack(pady=(0, 20))
+
+        # Container scrollabil pentru listă (dacă ai multe preseturi)
+        container = tk.Frame(manager, bg=self.colors["bg"])
+        container.pack(fill="both", expand=True)
 
         for p in presets:
-            row = tk.Frame(manager, bg=self.colors["card_bg"], pady=10, padx=15)
+            row = tk.Frame(container, bg=self.colors["card_bg"], pady=12, padx=15,
+                           highlightthickness=1, highlightbackground=self.colors["grid_line"])
             row.pack(fill="x", pady=5)
 
             tk.Label(row, text=p.get_name(), bg=self.colors["card_bg"],
-                     fg=self.colors["fg"], font=("Segoe UI", 11, "bold")).pack(side="left")
+                     fg=self.colors.get("schedule_text", "#FFFFFF"),
+                     font=("Segoe UI", 11, "bold")).pack(side="left")
 
             # Buton Ștergere
             tk.Button(row, text="🗑️", bg="#E74C3C", fg="white", relief="flat",
-                      command=lambda preset_obj=p: [self.preset_service.delete_preset(preset_obj), manager.destroy(),
-                                                    self.open_presets_manager()]).pack(side="right", padx=5)
+                      command=lambda preset_obj=p: [
+                          self.preset_service.delete_preset(preset_obj),
+                          manager.destroy(),
+                          self.show_toast("🗑️ Preset șters cu succes!", "#34495E"),  # Notificare discretă
+                          self.open_presets_manager()
+                      ]).pack(side="right", padx=5)
 
-            # Buton Aplicare
-            tk.Button(row, text="📋 Aplică", bg="#8E44AD", fg="white", relief="flat",
-                      command=lambda preset_obj=p: [self.apply_preset_logic(preset_obj), manager.destroy()]).pack(
-                side="right", padx=5)
+            # Buton Aplică
+            tk.Button(row, text="📋 Aplică", bg="#8E44AD", fg="white", relief="flat", font=("Segoe UI", 9, "bold"),
+                      cursor="hand2", padx=10,
+                      command=lambda preset_obj=p: [self.apply_preset_logic(preset_obj),
+                                                    manager.destroy()]).pack(side="right", padx=5)
 
     def apply_preset_logic(self, preset_obj):
-        """Aplică datele din obiectul Preset pe săptămâna curentă."""
+        """Aplică presetul asigurându-se că absențele sunt resetate pentru noua săptămână."""
         start_of_week = self.current_date - timedelta(days=self.current_date.weekday())
         teacher_id = self.user.get_id_entity()
 
         for key, data in preset_obj.get_data().items():
-            parts = key.split('_')
-            day_idx, row_num = int(parts[0][1:]), parts[1][1:]
-            target_date = (start_of_week + timedelta(days=day_idx)).strftime('%Y-%m-%d')
-            self.schedule_data[f"{teacher_id}_{target_date}_R{row_num}_raw"] = data.copy()
-
-        self.save_schedule_data()
-        self.show_schedule()
-
-    def apply_preset(self):
-        """Încarcă presetul salvat pe săptămâna curentă."""
-        teacher_id = self.user.get_id_entity()
-        preset_key = f"PRESET_{teacher_id}"
-
-        if preset_key not in self.schedule_data:
-            messagebox.showwarning("Eroare", "Nu ai salvat niciun preset încă.")
-            return
-
-        if not messagebox.askyesno("Confirmare", "Aplici presetul peste săptămâna curentă?"):
-            return
-
-        start_of_week = self.current_date - timedelta(days=self.current_date.weekday())
-        preset_entries = self.schedule_data[preset_key]
-
-        for key, data in preset_entries.items():
-            # key format: D0_R1
+            # key este de forma "D0_R1" (Day 0, Row 1)
             parts = key.split('_')
             day_idx = int(parts[0][1:])
             row_num = parts[1][1:]
 
             target_date = (start_of_week + timedelta(days=day_idx)).strftime('%Y-%m-%d')
-            new_cell_key = f"{teacher_id}_{target_date}_R{row_num}_raw"
-            self.schedule_data[new_cell_key] = data.copy()
+
+            # REPARAȚIA: Facem o copie a datelor, dar RESETĂM lista de absenți
+            new_data = data.copy()
+            new_data['absentees'] = []  # Această săptămână începe de la zero cu prezența
+
+            # Salvăm sub cheia unică a datei calendaristice specifice
+            self.schedule_data[f"{teacher_id}_{target_date}_R{row_num}_raw"] = new_data
 
         self.save_schedule_data()
         self.show_schedule()
 
+    # --- Navigare Dată ---
     def on_date_selected(self, event):
-        """Metodă apelată când utilizatorul alege o dată din calendar."""
-        # Preluăm data înainte ca widget-ul să fie distrus
-        # Preluăm data înainte ca widget-ul să fie distrus
-        selected_date = self.cal_select.get_date()
+        selected_date = self.schedule_component.cal_select.get_date()
         self.current_date = datetime.combine(selected_date, datetime.min.time())
-
-        # REPARARE: Folosim after(100, ...) pentru a permite calendarului să se închidă
-        # înainte ca show_schedule() să distrugă widget-urile
         self.root.after(100, self.show_schedule)
 
     def prev_week(self):
@@ -353,66 +269,35 @@ class UserUi:
         new_count = self.rows_var.get()
         self.schedule_data["total_rows"] = new_count
         self.save_schedule_data()
-        self.draw_schedule_grid()
+        self.show_schedule()
 
-    def draw_schedule_grid(self):
-        """Redesenează tabelul orarului filtrat pentru profesorul curent."""
-        for widget in self.table_container.winfo_children():
-            widget.destroy()
+    # --- Studenți & Grupe (Urmează să fie mutate în componente) ---
+    def show_students(self, sort_by="grade"):
+        self.students_component.render(sort_by)
 
-        start_of_week = self.current_date - timedelta(days=self.current_date.weekday())
-        zile_nume = ["Luni", "Marți", "Miercuri", "Joi", "Vineri", "Sâmbătă"]
-        num_rows = self.rows_var.get()
+    def show_groups(self):
+        self.groups_component.render()
 
-        for i, nume in enumerate(zile_nume):
-            data_zi = start_of_week + timedelta(days=i)
-            text_header = f"{nume}\n{data_zi.strftime('%d.%m')}"
-            self.table_container.grid_columnconfigure(i, weight=1, minsize=180)
-            tk.Label(self.table_container, text=text_header, font=("Segoe UI", 10, "bold"),
-                     bg="#4A90E2", fg="white", pady=10).grid(row=0, column=i, sticky="nsew", padx=1, pady=1)
+    def go_to_today(self):
+        """Resetează calendarul la data curentă a sistemului."""
+        self.current_date = datetime.now()
+        # Afișăm o notificare discretă pentru confirmare
+        self.show_toast("🏠 Revenit la săptămâna curentă")
+        self.show_schedule()
 
-        for row in range(1, num_rows + 1):
-            self.table_container.grid_rowconfigure(row, weight=0, minsize=120)
-            for col in range(len(zile_nume)):
-                data_zi = start_of_week + timedelta(days=col)
-                cell_id = f"{data_zi.strftime('%Y-%m-%d')}_R{row}"
-                self.render_interactive_cell(self.table_container, row, col, cell_id)
-
-    def render_interactive_cell(self, parent, row, col, cell_id):
+    def open_group_assignment_modal(self, cell_id):
         unique_key = f"{self.user.get_id_entity()}_{cell_id}"
-        raw_data = self.schedule_data.get(f"{unique_key}_raw", {})
+        current_data = self.schedule_data.get(f"{unique_key}_raw", None)
 
-        group_name = raw_data.get('group_name', "")
-        time_val = raw_data.get('time', "")
+        # Ne asigurăm că trimitem culorile proaspete ale utilizatorului
+        uid = self.user.get_id_entity()
+        user_colors = self.settings_service.get_colors(uid)
 
-        if group_name:
-            bg_color = "#1B2631" if self.settings_service.get_theme() == "dark" else "#EBF5FB"
-        else:
-            bg_color = self.colors["card_bg"]
-
-        cell_frame = tk.Frame(parent, bg=bg_color, highlightthickness=1,
-                              highlightbackground=self.colors["grid_line"])
-        cell_frame.grid(row=row, column=col, sticky="nsew", padx=1, pady=1)
-
-        time_lbl = tk.Label(cell_frame, text=time_val, font=("Segoe UI", 9, "bold"),
-                            bg=bg_color, fg=self.colors["fg"], width=10, anchor="center")
-        time_lbl.pack(side="left", fill="y", padx=(5, 0))
-
-        if group_name:
-            tk.Frame(cell_frame, width=1, bg=self.colors["grid_line"]).pack(side="left", fill="y", padx=5)
-            details_frame = tk.Frame(cell_frame, bg=bg_color)
-            details_frame.pack(side="left", fill="both", expand=True, padx=5, pady=10)
-
-            tk.Label(details_frame, text=group_name, font=("Segoe UI", 11, "bold"),
-                     bg=bg_color, fg=self.colors["fg"], anchor="nw").pack(fill="x")
-
-            students_text = self.get_formatted_students(raw_data)
-            tk.Label(details_frame, text=students_text, font=("Segoe UI", 9),
-                     bg=bg_color, fg=self.colors["fg"], justify="left",
-                     anchor="nw", wraplength=150).pack(fill="both", expand=True)
-
-        for widget in [cell_frame, time_lbl]:
-            widget.bind("<Button-1>", lambda e, cid=cell_id: self.open_group_assignment_modal(cid))
+        # Deschidem modalul cu tema completă
+        ScheduleEditUi(parent=self.root, theme=user_colors, cell_id=cell_id,
+                       day=cell_id.split('_')[0], current_data=current_data,
+                       on_save=self.process_schedule_save, on_delete=self.process_schedule_delete,
+                       group_service=self.group_service, user_id=uid)
 
     def get_formatted_students(self, data):
         group_id = data.get('group_id')
@@ -429,111 +314,10 @@ class UserUi:
                 student_list_text += f"... și încă {len(ids) - 4}"
         return student_list_text
 
-    def open_group_assignment_modal(self, cell_id):
-        unique_key = f"{self.user.get_id_entity()}_{cell_id}"
-        current_data = self.schedule_data.get(f"{unique_key}_raw", None)
-        ScheduleEditUi(parent=self.root, theme=self.colors, cell_id=cell_id,
-                       day=cell_id.split('_')[0], current_data=current_data,
-                       on_save=self.process_schedule_save, on_delete=self.process_schedule_delete,
-                       group_service=self.group_service, user_id=self.user.get_id_entity())
-
-    def show_students(self, sort_by="grade"):
-        self.clear_content()
-        header_frame = tk.Frame(self.main_content, bg=self.colors["bg"])
-        header_frame.pack(fill="x", pady=(0, 10))
-        tk.Label(header_frame, text="👥 Gestiune Studenți", font=("Segoe UI", 24, "bold"),
-                 bg=self.colors["bg"], fg=self.colors["fg"]).pack(side="left")
-
-        tk.Button(header_frame, text="+ Student Nou", command=self.open_add_student_modal,
-                  bg="#2ECC71", fg="white", font=("Segoe UI", 11, "bold"),
-                  relief="flat", padx=20, pady=10, cursor="hand2").pack(side="right")
-
-        table_frame = tk.Frame(self.main_content, bg=self.colors["card_bg"],
-                               highlightthickness=1, highlightbackground=self.colors["grid_line"])
-        table_frame.pack(fill="x")
-
-        headers = ["Nume și Prenume", "Clasă", "Preț / h", "Acțiuni"]
-        for i, h in enumerate(headers):
-            table_frame.grid_columnconfigure(i, weight=1)
-            tk.Label(table_frame, text=h, font=("Segoe UI", 11, "bold"),
-                     bg=self.colors["input_bg"], fg=self.colors["fg"], pady=15).grid(row=0, column=i, sticky="nsew")
-
-        students = self.student_service.get_sorted_students(self.user.get_id_entity(), sort_by)
-        for idx, s in enumerate(students):
-            row_idx = idx + 2
-            bg_color = self.colors["card_bg"] if idx % 2 == 0 else (
-                "#1B1B1B" if self.settings_service.get_theme() == "dark" else "#F1F2F6")
-            tk.Label(table_frame, text=f"{s.get_last_name()} {s.get_first_name()}", font=("Segoe UI", 11),
-                     bg=bg_color, fg=self.colors["fg"], pady=15, padx=15, anchor="w").grid(row=row_idx, column=0,
-                                                                                           sticky="nsew")
-            tk.Label(table_frame, text=s.get_grade(), font=("Segoe UI", 11), bg=bg_color, fg=self.colors["fg"]).grid(
-                row=row_idx, column=1, sticky="nsew")
-            tk.Label(table_frame, text=f"{s.get_price()} RON", font=("Segoe UI", 11, "bold"), bg=bg_color,
-                     fg="#27AE60").grid(row=row_idx, column=2, sticky="nsew")
-
-            act_f = tk.Frame(table_frame, bg=bg_color)
-            act_f.grid(row=row_idx, column=3, sticky="nsew")
-            btns = tk.Frame(act_f, bg=bg_color)
-            btns.place(relx=0.5, rely=0.5, anchor="center")
-            tk.Button(btns, text=" ✏️ ", bg="#F1C40F", relief="flat",
-                      command=lambda st=s: self.open_edit_student_modal(st)).pack(side="left", padx=2)
-            tk.Button(btns, text=" 🗑️ ", bg="#E74C3C", relief="flat",
-                      command=lambda st=s: self.handle_delete_student(st)).pack(side="left", padx=2)
-
-    def show_groups(self):
-        self.clear_content()
-        header_frame = tk.Frame(self.main_content, bg=self.colors["bg"])
-        header_frame.pack(fill="x", pady=(0, 20))
-        tk.Label(header_frame, text="🏫 Gestiune Grupe", font=("Segoe UI", 24, "bold"),
-                 bg=self.colors["bg"], fg=self.colors["fg"]).pack(side="left")
-
-        tk.Button(header_frame, text="+ Grupă Nouă", command=self.open_add_group_modal,
-                  bg="#9B59B6", fg="white", font=("Segoe UI", 11, "bold"),
-                  relief="flat", padx=20, pady=10).pack(side="right")
-
-        table_frame = tk.Frame(self.main_content, bg=self.colors["card_bg"],
-                               highlightthickness=1, highlightbackground=self.colors["grid_line"])
-        table_frame.pack(fill="x")
-
-        headers = ["Nume Grupă", "Membri & Tarife", "Total / Ședință", "Acțiuni"]
-        for i, h in enumerate(headers):
-            table_frame.grid_columnconfigure(i, weight=1)
-            tk.Label(table_frame, text=h, font=("Segoe UI", 11, "bold"),
-                     bg=self.colors["input_bg"], fg=self.colors["fg"], pady=15).grid(row=0, column=i, sticky="nsew")
-
-        groups = self.group_service.get_groups_for_teacher(self.user.get_id_entity())
-        for idx, g in enumerate(groups):
-            row_idx = idx + 2
-            bg_color = self.colors["card_bg"] if idx % 2 == 0 else (
-                "#1B1B1B" if self.settings_service.get_theme() == "dark" else "#FBFCFD")
-            tk.Label(table_frame, text=g.get_group_name(), font=("Segoe UI", 11, "bold"),
-                     bg=bg_color, fg=self.colors["fg"], pady=20).grid(row=row_idx, column=0, sticky="nsew")
-
-            members_info = ""
-            total_p = 0
-            for s_id in g.get_student_ids():
-                s = self.student_service.get_student_by_id(s_id)
-                if s:
-                    members_info += f"• {s.get_last_name()} ({s.get_price()} RON)\n"
-                    total_p += s.get_price()
-
-            tk.Label(table_frame, text=members_info.strip(), font=("Segoe UI", 10), bg=bg_color,
-                     fg=self.colors["fg"]).grid(row=row_idx, column=1)
-            tk.Label(table_frame, text=f"{total_p} RON", font=("Segoe UI", 11, "bold"), bg=bg_color, fg="#27AE60").grid(
-                row=row_idx, column=2)
-
-            act_f = tk.Frame(table_frame, bg=bg_color)
-            act_f.grid(row=row_idx, column=3, sticky="nsew")
-            btns = tk.Frame(act_f, bg=bg_color)
-            btns.place(relx=0.5, rely=0.5, anchor="center")
-            tk.Button(btns, text=" ✏️ ", bg="#F1C40F", relief="flat",
-                      command=lambda gr=g: self.open_edit_group_modal(gr)).pack(side="left", padx=2)
-            tk.Button(btns, text=" 🗑️ ", bg="#E74C3C", relief="flat",
-                      command=lambda gr=g: self.handle_delete_group(gr)).pack(side="left", padx=2)
-
     def open_add_student_modal(self):
         StudentAddUi(parent=self.root, theme=self.colors, user_id=self.user.get_id_entity(),
-                     student_service=self.student_service, on_success=self.show_students)
+                     student_service=self.student_service, on_success=self.show_students,
+                     settings_service=self.settings_service)
 
     def open_edit_student_modal(self, student):
         messagebox.showinfo("Editare", f"Vei edita datele lui {student.get_last_name()} {student.get_first_name()}")
@@ -555,82 +339,92 @@ class UserUi:
             self.group_service.delete_group(group.get_id_entity())
             self.show_groups()
 
+    def toggle_absentee(self, cell_id, student_id):
+        """Gestionează prezența elevilor și actualizează veniturile zilnice."""
+        uid = self.user.get_id_entity()
+        unique_key_raw = f"{uid}_{cell_id}_raw"
+
+        if unique_key_raw in self.schedule_data:
+            absentees = self.schedule_data[unique_key_raw].get('absentees', [])
+
+            if student_id in absentees:
+                absentees.remove(student_id)
+            else:
+                absentees.append(student_id)
+
+            self.schedule_data[unique_key_raw]['absentees'] = absentees
+
+            # REPARARE: Folosim metoda internă a clasei în loc de un serviciu inexistent
+            self.save_schedule_data()
+
+            # Reîmprospătăm ecranul
+            self.show_schedule()
+
+    # --- Dashboard & Setări ---
     def show_dashboard(self):
         self.clear_content()
-        tk.Label(self.main_content, text=f"Salutare, {self.user.get_first_name()}!", font=("Segoe UI", 24, "bold"),
-                 bg=self.colors["bg"], fg=self.colors["fg"]).pack(anchor="w")
-        cards_frame = tk.Frame(self.main_content, bg=self.colors["bg"])
-        cards_frame.pack(fill="x", pady=30)
-        self.create_stat_card(cards_frame, "Studenți Activi",
-                              str(len(self.student_service.get_students_for_teacher(self.user.get_id_entity()))),
-                              "#4A90E2", 0)
-
-    def create_stat_card(self, parent, title, value, color, col):
-        card = tk.Frame(parent, bg=self.colors["card_bg"], highlightthickness=1,
-                        highlightbackground=self.colors["grid_line"], padx=20, pady=20)
-        card.grid(row=0, column=col, padx=10, sticky="nsew")
-        tk.Label(card, text=title, font=("Segoe UI", 10), bg=self.colors["card_bg"], fg="#888").pack()
-        tk.Label(card, text=value, font=("Segoe UI", 22, "bold"), bg=self.colors["card_bg"], fg=color).pack()
+        self.dashboard_component.render()
 
     def show_settings(self):
         self.clear_content()
-        # Ne asigurăm că folosim cele mai noi culori
-        self.colors = self.settings_service.get_colors()
-
-        tk.Label(self.main_content, text="⚙️ Setări Aplicație", font=("Segoe UI", 22, "bold"),
-                 bg=self.colors["bg"], fg=self.colors["fg"]).pack(anchor="w", pady=(0, 30))
-
-        # --- Secțiune Aspect ---
-        aspect_frame = tk.LabelFrame(self.main_content, text="Aspect și Temă", font=("Segoe UI", 12, "bold"),
-                                     bg=self.colors["bg"], fg=self.colors["fg"], padx=20, pady=20)
-        aspect_frame.pack(fill="x", pady=10)
-
-        tk.Label(aspect_frame, text="Alege tema vizuală:", bg=self.colors["bg"],
-                 fg=self.colors["fg"]).pack(side="left")
-
-        current_theme = self.settings_service.get_theme()
-        theme_btn_text = "🌙 Mod Întunecat" if current_theme == "light" else "☀️ Mod Luminos"
-
-        tk.Button(aspect_frame, text=theme_btn_text, command=self.toggle_theme_ui,
-                  bg=self.colors["accent"], fg="white", relief="flat", padx=20, cursor="hand2").pack(side="left",
-                                                                                                     padx=20)
-
-        # --- Secțiune Limbă ---
-        lang_frame = tk.LabelFrame(self.main_content, text="Limbă / Language", font=("Segoe UI", 12, "bold"),
-                                   bg=self.colors["bg"], fg=self.colors["fg"], padx=20, pady=20)
-        lang_frame.pack(fill="x", pady=10)
-
-        tk.Label(lang_frame, text="Selectează limba aplicației:", bg=self.colors["bg"],
-                 fg=self.colors["fg"]).pack(side="left")
-
-        from tkinter import ttk
-        self.lang_combo = ttk.Combobox(lang_frame, values=["Română", "English"], state="readonly")
-        # Aici vom citi ulterior din SettingsService limba salvată
-        self.lang_combo.set("Română")
-        self.lang_combo.pack(side="left", padx=20)
-
-        tk.Button(lang_frame, text="Salvează Limba", command=self.save_language_setting,
-                  bg="#27AE60", fg="white", relief="flat", padx=15).pack(side="left")
-
-    def save_language_setting(self):
-        """Va salva limba aleasă (urmează să implementăm LanguageService)."""
-        selected = self.lang_combo.get()
-        messagebox.showinfo("Limbă", f"Limba a fost setată pe: {selected}. (Funcționalitate în curs de implementare)")
+        self.settings_component.render()
 
     def toggle_theme_ui(self):
-        """Comută între Light și Dark mode și actualizează interfața."""
-        current_theme = self.settings_service.get_theme()
-        new_theme = "dark" if current_theme == "light" else "light"
+        """Reîmprospătează culorile și randează din nou interfața."""
+        uid = self.user.get_id_entity()
 
-        # Salvăm noua setare
-        self.settings_service.set_theme(new_theme)
+        # IMPORTANT: Actualizăm variabila locală de culori cu noua temă salvată
+        self.colors = self.settings_service.get_colors(uid)
 
-        # Actualizăm variabilele locale de culori
-        self.colors = self.settings_service.get_colors()
-
-        # Reconfigurăm fundalul rădăcinii și al sidebar-ului
+        # 1. Actualizăm fundalul ferestrei principale și al containerelor
         self.root.configure(bg=self.colors["bg"])
-        self.sidebar.configure(bg=self.colors["sidebar_bg"])
+        self.main_content.configure(bg=self.colors["bg"])
 
-        # Reîmprospătăm pagina de setări pentru a vedea noile culori
+        # 2. Resetăm sidebar-ul (pentru a aplica culorile noi pe butoane și fundal)
+        for widget in self.sidebar.winfo_children():
+            widget.destroy()
+        self.sidebar.configure(bg=self.colors["sidebar_bg"])
+        self.setup_sidebar_content(self.user)
+
+        # 3. Forțăm SettingsView să se deseneze din nou pentru a vedea schimbarea
         self.show_settings()
+
+    def show_toast(self, message, color="#2ECC71"):
+        """Afișează o notificare discretă în partea de jos a ecranului."""
+        toast = tk.Toplevel(self.root)
+        toast.overrideredirect(True)  # Elimină marginile ferestrei de sistem
+        toast.attributes("-topmost", True)
+        toast.attributes("-alpha", 0.0)  # Începe invizibil pentru animație
+
+        # Design-ul notificării
+        label = tk.Label(toast, text=message, bg=color, fg="white",
+                         padx=20, pady=10, font=("Segoe UI", 10, "bold"))
+        label.pack()
+
+        # Poziționare în partea de jos, central
+        self.root.update_idletasks()
+        x = self.root.winfo_x() + (self.root.winfo_width() // 2) - (label.winfo_reqwidth() // 2)
+        y = self.root.winfo_y() + self.root.winfo_height() - 70
+        toast.geometry(f"+{int(x)}+{int(y)}")
+
+        # Animație de Fade In
+        def fade_in():
+            alpha = toast.attributes("-alpha")
+            if alpha < 0.9:
+                toast.attributes("-alpha", alpha + 0.1)
+                self.root.after(30, fade_in)
+            else:
+                # Dispare automat după 3 secunde
+                self.root.after(3000, lambda: self.fade_out(toast))
+
+        fade_in()
+
+    def fade_out(self, window):
+        """Efect de dispariție treptată."""
+        if window.winfo_exists():
+            alpha = window.attributes("-alpha")
+            if alpha > 0.0:
+                window.attributes("-alpha", alpha - 0.1)
+                self.root.after(30, lambda: self.fade_out(window))
+            else:
+                window.destroy()

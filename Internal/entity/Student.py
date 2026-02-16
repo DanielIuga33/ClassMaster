@@ -36,6 +36,9 @@ class Student(Entity):
     def get_price(self):
         return self.__price
 
+    def set_price(self, price):
+        self.__price = price
+
     def get_teacher_id(self):
         return self.__teacher_id
 

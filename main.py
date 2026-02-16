@@ -4,6 +4,7 @@ from Internal.repository.RepositoryGroup import RepositoryGroup
 from Internal.repository.RepositoryUser import RepositoryUser
 from Internal.repository.RepositoryStudent import RepositoryStudent
 from Internal.repository.RepositoryPreset import RepositoryPreset
+from Internal.service.LanguageService import LanguageService
 from Internal.service.PresetService import PresetService
 from Internal.service.StudentService import StudentService
 from Internal.service.UserService import UserService
@@ -19,7 +20,8 @@ class MainController:
     def __init__(self):
         self.root = tk.Tk()
         self.settings_service = SettingsService()
-        self.current_theme = self.settings_service.get_theme()
+        self.language_service = LanguageService(self.settings_service)
+        self.current_theme = self.settings_service.get_theme(user_id="global")
         self.user_service = UserService(RepositoryUser(""))
         self.student_service = StudentService(RepositoryStudent(""))
         self.group_service = GroupService(RepositoryGroup(""))
@@ -68,7 +70,8 @@ class MainController:
             self.user_service,
             self.student_service,
             self.group_service,
-            self.preset_service
+            self.preset_service,
+            self.language_service
         )
 
     def run(self):

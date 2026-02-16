@@ -18,6 +18,9 @@ class GroupService:
     def get_group_by_id(self, id_group):
         return self.__repository.find_by_id(id_group)
 
+    def get_group_students(self, id_group):
+        return self.get_group_by_id(id_group).get_student_ids()
+
     def delete_group(self, group_id: str):
         self.__repository.delete_group(group_id)
 

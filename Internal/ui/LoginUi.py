@@ -1,8 +1,10 @@
 import tkinter as tk
-from tkinter import messagebox, filedialog
+from tkinter import filedialog
+import time
 
 from Internal.service.GroupService import GroupService
 from Internal.service.PresetService import PresetService
+from Internal.service.SettingsService import SettingsService
 from Internal.service.StudentService import StudentService
 from Internal.service.UserService import UserService
 
@@ -10,7 +12,7 @@ from Internal.service.UserService import UserService
 class LoginUi:
     def __init__(self, root, user_service: UserService, student_service: StudentService,
                  group_service: GroupService, preset_service: PresetService,
-                 on_success, settings_service, on_back):
+                 on_success, settings_service: SettingsService, on_back):
         self.root = root
         self.user_service = user_service
         self.student_service = student_service
@@ -20,8 +22,12 @@ class LoginUi:
         self.settings_service = settings_service
         self.on_back = on_back
 
-        # REPARARE: Preluăm culorile centralizate din SettingsService
-        self.colors = self.settings_service.get_colors()
+        global_settings = self.settings_service.get_user_settings("global")
+        self.colors = self.settings_service.get_colors("global")
+
+        if self.colors is None:
+            self.colors = {"bg": "#18191A", "fg": "#E4E6EB", "input_bg": "#3A3B3C", "accent": "#007BFF",
+                           "success": "#059669"}
 
         self.root.title("Autentificare - ClassMaster")
         self.setup_window(400, 600)
@@ -30,12 +36,11 @@ class LoginUi:
         self.container = tk.Frame(self.root, bg=self.colors["bg"])
         self.container.place(relx=0.5, rely=0.5, anchor="center")
 
-        # REPARARE: Folosim input_bg pentru vizibilitate
         lbl_style = {"bg": self.colors["bg"], "fg": self.colors["fg"], "font": ("Segoe UI", 10, "bold")}
         ent_style = {
             "font": ("Segoe UI", 12),
             "relief": "flat",
-            "bg": self.colors["input_bg"],  # Aici este griul deschis care se vede acum
+            "bg": self.colors["input_bg"],
             "fg": self.colors["fg"],
             "insertbackground": self.colors["fg"]
         }
@@ -46,15 +51,12 @@ class LoginUi:
 
         # --- Locație stocare date ---
         tk.Label(self.container, text="Locație stocare date", **lbl_style).pack(anchor="w", pady=(10, 0))
-
         path_frame = tk.Frame(self.container, bg=self.colors["bg"])
         path_frame.pack(fill="x", pady=5)
 
         self.entry_path = tk.Entry(path_frame, **ent_style)
         self.entry_path.pack(side="left", expand=True, fill="x", ipady=5)
-
-        last_path = self.settings_service.settings.get("last_data_path", "")
-        self.entry_path.insert(0, last_path)
+        self.entry_path.insert(0, global_settings.get("last_data_path", ""))
 
         tk.Button(path_frame, text="Răsfoiește", command=self.browse_folder,
                   bg=self.colors["accent"], fg="white", relief="flat", cursor="hand2").pack(side="right", padx=(5, 0))
@@ -64,7 +66,7 @@ class LoginUi:
         self.entry_identifier = tk.Entry(self.container, width=30, **ent_style)
         self.entry_identifier.pack(pady=5, ipady=5)
 
-        last_user = self.settings_service.settings.get("last_user", "")
+        last_user = global_settings.get("last_user", "")
         if last_user:
             self.entry_identifier.insert(0, last_user)
 
@@ -75,32 +77,59 @@ class LoginUi:
 
         # --- Butoane ---
         login_btn = tk.Button(self.container, text="Intră în cont", command=self.handle_login,
-                              font=("Segoe UI", 12, "bold"), bg="#007BFF", fg="white",
+                              font=("Segoe UI", 12, "bold"), bg=self.colors["accent"], fg="white",
                               relief="flat", width=25, cursor="hand2")
         login_btn.pack(pady=10, ipady=5)
-
-        # Efect de hover pentru butonul principal
-        login_btn.bind("<Enter>", lambda e: login_btn.config(bg="#0056b3"))
-        login_btn.bind("<Leave>", lambda e: login_btn.config(bg="#007BFF"))
 
         tk.Button(self.container, text="Înapoi", command=self.on_back,
                   font=("Segoe UI", 10), bg=self.colors["bg"], fg="#888",
                   relief="flat", cursor="hand2").pack()
+
+        self.root.bind('<Return>', lambda event: self.handle_login())
+
+    def show_toast(self, message, is_error=False, duration=2500):
+        """Creează o notificare silențioasă care dispare singură."""
+        toast = tk.Toplevel(self.root)
+        toast.overrideredirect(True)
+
+        # Culori dinamice bazate pe tipul mesajului
+        bg_color = self.colors["bg"]
+        border_color = "#E74C3C" if is_error else self.colors.get("success", "#059669")
+
+        toast.configure(bg=bg_color, highlightthickness=2, highlightbackground=border_color)
+
+        # Poziționare Toast
+        toast.update_idletasks()
+        w, h = 250, 50
+        x = self.root.winfo_x() + (self.root.winfo_width() // 2) - (w // 2)
+        y = self.root.winfo_y() + self.root.winfo_height() - 120
+        toast.geometry(f"{w}x{h}+{x}+{y}")
+
+        tk.Label(toast, text=message, bg=bg_color, fg=border_color,
+                 font=("Segoe UI", 11, "bold")).pack(expand=True, fill="both")
+
+        toast.after(duration, toast.destroy)
 
     def browse_folder(self):
         folder = filedialog.askdirectory()
         if folder:
             self.entry_path.delete(0, tk.END)
             self.entry_path.insert(0, folder)
-            self.settings_service.save_settings({"last_data_path": folder})
+            self.settings_service.save_user_setting("global", "last_data_path", folder)
 
     def handle_login(self):
+        self.root.unbind('<Return>')
+
+        if not self.entry_identifier.winfo_exists():
+            return
+
         identifier = self.entry_identifier.get().strip()
         password = self.entry_password.get().strip()
         data_path = self.entry_path.get().strip()
 
         if not identifier or not password or not data_path:
-            messagebox.showwarning("Atenție", "Te rugăm să completezi toate câmpurile!")
+            self.show_toast("⚠️ Completează toate câmpurile!", is_error=True)
+            self.root.bind('<Return>', lambda event: self.handle_login())  # Reactivăm Enter
             return
 
         self.user_service.set_repository_path(data_path)
@@ -109,12 +138,20 @@ class LoginUi:
         self.preset_service.set_repository_path(data_path)
 
         user = self.user_service.authenticate(identifier, password)
+
         if user:
-            self.settings_service.save_settings({"last_user": identifier})
-            messagebox.showinfo("Succes", f"Bine ai venit!")
-            self.on_success(user)
+            self.settings_service.get_colors(user.get_id_entity())
+            self.settings_service.save_user_setting("global", "last_user", identifier)
+            self.settings_service.save_user_setting("global", "last_data_path", data_path)
+
+            # Notificare silențioasă de succes
+            self.show_toast(f"✅ Bine ai venit, {user.get_username() or user.get_first_name()}!")
+
+            # Așteptăm puțin să se vadă mesajul înainte de tranziție
+            self.root.after(1200, lambda: self.on_success(user))
         else:
-            messagebox.showerror("Eroare", "Date incorecte!")
+            self.show_toast("❌ Date incorecte!", is_error=True)
+            self.root.bind('<Return>', lambda event: self.handle_login())
 
     def setup_window(self, w, h):
         ws = self.root.winfo_screenwidth()

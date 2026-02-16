@@ -1,0 +1,139 @@
+[
+    {
+        "id_entity": "8cd6fc16-5f01-4dab-991a-fb07d9139d08",
+        "teacher_id": "77fb0ad2-d3e4-43f1-86e6-71694f587de0",
+        "name": "PresetGasca",
+        "data": {
+            "D0_R1": {
+                "group_name": "Gasca",
+                "time": "21:21-03:21",
+                "group_id": "3014b53a-585c-4563-b58f-3e00d3e4a76d",
+                "teacher_id": "77fb0ad2-d3e4-43f1-86e6-71694f587de0"
+            },
+            "D2_R1": {
+                "group_name": "Gasca",
+                "time": "12:21-03:12",
+                "group_id": "3014b53a-585c-4563-b58f-3e00d3e4a76d",
+                "teacher_id": "77fb0ad2-d3e4-43f1-86e6-71694f587de0"
+            },
+            "D1_R2": {
+                "group_name": "Gasca",
+                "time": "21:21-03:12",
+                "group_id": "3014b53a-585c-4563-b58f-3e00d3e4a76d",
+                "teacher_id": "77fb0ad2-d3e4-43f1-86e6-71694f587de0"
+            }
+        }
+    },
+    {
+        "id_entity": "65fb0968-af05-4c78-93bb-f62ea014af82",
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194",
+        "name": "S\u0103pt\u0103m\u00e2n\u0103 Normal\u0103",
+        "data": {
+            "D0_R1": {
+                "group_name": "Clasa a VI-a Pro",
+                "time": "15:00-16:30",
+                "group_id": "55a7c099-5fd4-42aa-82d9-901cc886a651",
+                "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194",
+                "absentees": []
+            },
+            "D1_R1": {
+                "group_name": "Clasa a VI-a Weak",
+                "time": "15:00-16:30",
+                "group_id": "6359dbf6-0dcc-4faa-9486-d96ee3416794",
+                "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194",
+                "absentees": []
+            },
+            "D2_R1": {
+                "group_name": "Clasa a VII-a Pro",
+                "time": "15:00-16:30",
+                "group_id": "25de8670-1489-49ba-bc22-38d87313d671",
+                "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194",
+                "absentees": []
+            },
+            "D3_R1": {
+                "group_name": "Clasa a V-a",
+                "time": "15:00-16:30",
+                "group_id": "5fb9c307-867c-4c2b-89eb-43dd03880d85",
+                "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194",
+                "absentees": []
+            },
+            "D4_R1": {
+                "group_name": "Clasa a VII-a Mid2",
+                "time": "15:00-16:30",
+                "group_id": "949fea19-2bf1-42fc-bb03-c0affc84f13c",
+                "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194",
+                "absentees": []
+            },
+            "D5_R1": {
+                "group_name": "Clasa a VIII-a Pro",
+                "time": "10:00-11:30",
+                "group_id": "729b1d69-110e-4a3c-a3e8-d51ce95624dd",
+                "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194",
+                "absentees": []
+            },
+            "D0_R2": {
+                "group_name": "Clasa a VII-a Mid1",
+                "time": "17:00-18:30",
+                "group_id": "a12c1602-d1ac-444e-8a5e-a781035a1bce",
+                "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194",
+                "absentees": []
+            },
+            "D1_R2": {
+                "group_name": "Clasa a VIII-a Mid",
+                "time": "17:00-18:30",
+                "group_id": "2d06d8cc-78fc-47c8-98f7-1aa5620347d1",
+                "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194",
+                "absentees": []
+            },
+            "D2_R2": {
+                "group_name": "Clasa a VII-a Weak",
+                "time": "17:00-18:30",
+                "group_id": "3dee33b1-557d-4b80-afd4-0f8ac1684494",
+                "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194",
+                "absentees": []
+            },
+            "D3_R2": {
+                "group_name": "Clasa a VI-a Mid",
+                "time": "17:00-18:30",
+                "group_id": "20bf730f-3b44-4a7a-8c3f-3c419df75b92",
+                "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194",
+                "absentees": []
+            },
+            "D4_R2": {
+                "group_name": "Clasa a VIII-a Weak",
+                "time": "17:00-18:30",
+                "group_id": "492701e9-6b0b-4c40-ae60-c6836cc1205a",
+                "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194",
+                "absentees": []
+            },
+            "D5_R2": {
+                "group_name": "Antonion IX",
+                "time": "12:00-13:30",
+                "group_id": "8f693a71-5be5-4cb6-8103-21e511a32657",
+                "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194",
+                "absentees": []
+            }
+        }
+    },
+    {
+        "id_entity": "0a4b4fe5-94ce-4e1d-ba7f-0167b7aa5c7a",
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194",
+        "name": "Doar Weekend",
+        "data": {
+            "D5_R1": {
+                "group_name": "Clasa a VIII-a Pro",
+                "time": "10:00-11:30",
+                "group_id": "729b1d69-110e-4a3c-a3e8-d51ce95624dd",
+                "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194",
+                "absentees": []
+            },
+            "D5_R2": {
+                "group_name": "Antonion IX",
+                "time": "12:00-13:30",
+                "group_id": "8f693a71-5be5-4cb6-8103-21e511a32657",
+                "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194",
+                "absentees": []
+            }
+        }
+    }
+]

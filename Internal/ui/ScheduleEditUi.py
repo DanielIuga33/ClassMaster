@@ -12,22 +12,26 @@ class ScheduleEditUi(tk.Toplevel):
         self.group_service = group_service
         self.user_id = user_id
 
+        # Preluăm culoarea de contrast dedicată (Alb pe Dark / Negru pe Light)
+        self.txt_color = theme.get("schedule_text", theme["fg"])
+
         self.title(f"Programare - {day}")
         self.setup_modal(400, 450)
         self.configure(bg=theme["bg"], padx=25, pady=25)
         self.grab_set()
 
-        # Titlu modal
+        # Titlu modal - Folosim culoarea de accent pentru a ieși în evidență
         tk.Label(self, text=f"Alocare Grupă: {day}", font=("Segoe UI", 16, "bold"),
-                 bg=theme["bg"], fg="#4A90E2").pack(pady=(0, 20))
+                 bg=theme["bg"], fg=theme["accent"]).pack(pady=(0, 20))
 
         # --- SELECȚIE GRUPĂ ---
-        tk.Label(self, text="Alege Grupa:", bg=theme["bg"], fg=theme["fg"],
+        tk.Label(self, text="Alege Grupa:", bg=theme["bg"], fg=self.txt_color,
                  font=("Segoe UI", 9, "bold")).pack(anchor="w")
 
         self.available_groups = self.group_service.get_groups_for_teacher(self.user_id)
         group_names = [g.get_group_name() for g in self.available_groups]
 
+        # Combobox-ul necesită un stil pentru a nu rămâne alb pe teme dark
         self.group_combo = ttk.Combobox(self, values=group_names, font=("Segoe UI", 11), state="readonly")
         self.group_combo.pack(fill="x", pady=(5, 15), ipady=5)
 
@@ -35,25 +39,26 @@ class ScheduleEditUi(tk.Toplevel):
             self.group_combo.set(current_data["group_name"])
 
         # --- INTERVAL ORAR REPROIECTAT ---
-        tk.Label(self, text="Interval Orar (HH:MM):", bg=theme["bg"], fg=theme["fg"],
+        tk.Label(self, text="Interval Orar (HH:MM):", bg=theme["bg"], fg=self.txt_color,
                  font=("Segoe UI", 9, "bold")).pack(anchor="w", pady=(10, 0))
 
         time_container = tk.Frame(self, bg=theme["bg"])
         time_container.pack(fill="x", pady=5)
 
-        entry_bg = "#E8F0FE" if theme["bg"] != "#121212" else "#333"
+        # REPARARE FUNDAL INPUT: Folosim input_bg din temă
+        entry_bg = theme["input_bg"]
 
-        # Start Time (HH:MM) - Limităm la 23 și respectiv 59
+        # Start Time (HH:MM)
         self.start_hh = self.create_time_entry(time_container, entry_bg, 23)
-        tk.Label(time_container, text=":", bg=theme["bg"], fg=theme["fg"], font=("bold")).pack(side="left")
+        tk.Label(time_container, text=":", bg=theme["bg"], fg=self.txt_color, font=("bold")).pack(side="left")
         self.start_mm = self.create_time_entry(time_container, entry_bg, 59)
 
-        tk.Label(time_container, text="  până la  ", bg=theme["bg"], fg="#888", font=("Segoe UI", 9, "italic")).pack(
-            side="left", padx=5)
+        tk.Label(time_container, text="  până la  ", bg=theme["bg"], fg=self.txt_color,
+                 font=("Segoe UI", 9, "italic")).pack(side="left", padx=5)
 
         # End Time (HH:MM)
         self.end_hh = self.create_time_entry(time_container, entry_bg, 23)
-        tk.Label(time_container, text=":", bg=theme["bg"], fg=theme["fg"], font=("bold")).pack(side="left")
+        tk.Label(time_container, text=":", bg=theme["bg"], fg=self.txt_color, font=("bold")).pack(side="left")
         self.end_mm = self.create_time_entry(time_container, entry_bg, 59)
 
         # Populăm casetele dacă avem date existente
@@ -61,29 +66,29 @@ class ScheduleEditUi(tk.Toplevel):
             self.parse_and_fill_time(current_data["time"])
 
         # --- BUTOANE ---
-        tk.Button(self, text="Confirmă Programarea", command=self.handle_save, bg="#2ECC71",
+        # Folosim culoarea success din temă pentru butonul de confirmare
+        tk.Button(self, text="Confirmă Programarea", command=self.handle_save,
+                  bg=theme.get("success", "#2ECC71"),
                   fg="white", font=("Segoe UI", 11, "bold"), relief="flat", pady=12, cursor="hand2").pack(fill="x",
                                                                                                           pady=(30, 5))
 
         if current_data:
-            tk.Button(self, text="Elimină din Orar", command=lambda: [self.on_delete(cell_id), self.destroy()],
-                      bg="#E74C3C", fg="white", font=("Segoe UI", 10), relief="flat", pady=8, cursor="hand2").pack(
-                fill="x")
+            tk.Button(self, text="Elimină din Orar", command=lambda: [self.on_delete(self.cell_id), self.destroy()],
+                      bg=theme.get("danger", "#E74C3C"), fg="white", font=("Segoe UI", 10),
+                      relief="flat", pady=8, cursor="hand2").pack(fill="x")
 
     def create_time_entry(self, parent, bg, limit):
-        """Creează o casetă de text cu validare numerică și limită de valoare."""
+        """Creează o casetă de text cu contrast optimizat pentru Dark Mode."""
         vcmd = (self.register(self.validate_time), '%P', limit)
-        ent = tk.Entry(parent, width=3, font=("Segoe UI", 12), justify="center",
-                       relief="flat", bg=bg, fg=self.theme["fg"],
-                       insertbackground=self.theme["fg"], validate='key', validatecommand=vcmd)
+        ent = tk.Entry(parent, width=3, font=("Segoe UI", 12, "bold"), justify="center",
+                       relief="flat", bg=bg, fg=self.txt_color,
+                       insertbackground=self.txt_color, validate='key', validatecommand=vcmd)
         ent.pack(side="left", padx=2, ipady=4)
 
-        # Săritură automată la următoarea casetă
         ent.bind("<KeyRelease>", lambda e: self.auto_focus(e.widget))
         return ent
 
     def validate_time(self, P, limit):
-        """Previne tastarea valorilor care depășesc HH (23) sau MM (59)."""
         if P == "": return True
         if P.isdigit() and len(P) <= 2:
             if int(P) <= int(limit):
@@ -91,12 +96,10 @@ class ScheduleEditUi(tk.Toplevel):
         return False
 
     def auto_focus(self, widget):
-        """Mută cursorul automat când caseta are 2 cifre."""
         if len(widget.get()) == 2:
             widget.tk_focusNext().focus()
 
     def parse_and_fill_time(self, time_str):
-        """Extrage orele și minutele dintr-un format 'HH:MM-HH:MM'."""
         try:
             start, end = time_str.split('-')
             sh, sm = start.split(':')
@@ -124,16 +127,15 @@ class ScheduleEditUi(tk.Toplevel):
             messagebox.showwarning("Atenție", "Te rugăm să alegi grupa și să completezi intervalul orar!")
             return
 
-        # Formatare automată cu zero (ex: 9 devine 09)
         time_formatted = f"{sh.zfill(2)}:{sm.zfill(2)}-{eh.zfill(2)}:{em.zfill(2)}"
-
         selected_group = next((g for g in self.available_groups if g.get_group_name() == selected_group_name), None)
 
         data = {
             "group_name": selected_group_name,
             "time": time_formatted,
             "group_id": selected_group.get_id_entity() if selected_group else "",
-            "teacher_id": self.user_id
+            "teacher_id": self.user_id,
+            "absentees": [] # Inițializăm lista de absenți pentru celula nouă
         }
 
         self.on_save(self.cell_id, data)

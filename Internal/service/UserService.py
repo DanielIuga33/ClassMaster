@@ -40,6 +40,9 @@ class UserService:
                 return user
         return None
 
+    def modify_user(self, user_old, user_new):
+        self.__repository.modify_user(user_old, user_new)
+
     def set_repository_path(self, path):
         self.__repository.set_new_path(path)
 
