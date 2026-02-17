@@ -47,7 +47,6 @@ class UserUi:
         self.setup_window(1725, 800)
         self.root.configure(bg=self.colors["bg"])
 
-
         # 3. Crearea structurii de layout (Containerele)
         # --- Sidebar ---
         self.sidebar = tk.Frame(self.root, bg=self.colors["sidebar_bg"], width=260)
@@ -72,6 +71,7 @@ class UserUi:
         self.show_dashboard()
 
     def setup_window(self, w, h):
+        self.root.state('zoomed')
         ws = self.root.winfo_screenwidth()
         hs = self.root.winfo_screenheight()
         x = (ws / 2) - (w / 2)
@@ -319,9 +319,6 @@ class UserUi:
                      student_service=self.student_service, on_success=self.show_students,
                      settings_service=self.settings_service)
 
-    def open_edit_student_modal(self, student):
-        messagebox.showinfo("Editare", f"Vei edita datele lui {student.get_last_name()} {student.get_first_name()}")
-
     def handle_delete_student(self, student):
         if messagebox.askyesno("Confirmare", f"Ștergi studentul {student.get_last_name()} {student.get_first_name()}?"):
             self.student_service.delete_student(student)
@@ -330,9 +327,6 @@ class UserUi:
     def open_add_group_modal(self):
         GroupAddUi(parent=self.root, theme=self.colors, user_id=self.user.get_id_entity(),
                    group_service=self.group_service, student_service=self.student_service, on_success=self.show_groups)
-
-    def open_edit_group_modal(self, group):
-        messagebox.showinfo("Info", f"Editare grupa: {group.get_group_name()}")
 
     def handle_delete_group(self, group):
         if messagebox.askyesno("Confirmare", f"Ștergi grupa {group.get_group_name()}?"):

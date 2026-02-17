@@ -15,6 +15,10 @@ class GroupService:
         self.__repository.add_group(name, ids, teacher_id)
         return 201, "Grupă creată cu succes!"
 
+    def modify_group(self, group_old, group_new):
+        self.__repository.modify_group(group_old, group_new)
+        return [200, "Modificat cu succes !"]
+
     def get_group_by_id(self, id_group):
         return self.__repository.find_by_id(id_group)
 

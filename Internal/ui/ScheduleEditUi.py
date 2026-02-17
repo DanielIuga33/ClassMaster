@@ -135,7 +135,7 @@ class ScheduleEditUi(tk.Toplevel):
             "time": time_formatted,
             "group_id": selected_group.get_id_entity() if selected_group else "",
             "teacher_id": self.user_id,
-            "absentees": [] # Inițializăm lista de absenți pentru celula nouă
+            "absentees": []  # Inițializăm lista de absenți pentru celula nouă
         }
 
         self.on_save(self.cell_id, data)

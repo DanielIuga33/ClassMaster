@@ -6,8 +6,8 @@ class SettingsService:
     def __init__(self, settings_path="Data/Settings.json"):
         self.__settings_path = settings_path
         self.__default_user_config = {
-            "tema": "classic_light",
-            "language": "Română",
+            "tema": "light",
+            "language": "Romana",
             "rows_count": 5
         }
         self.all_users_settings = self.load_settings()
@@ -31,7 +31,7 @@ class SettingsService:
         """Detectează tema: ID Utilizator -> Global -> Classic Light."""
         target_id = user_id if user_id and user_id != "global" else "global"
         settings = self.get_user_settings(target_id)
-        return settings.get("tema", "classic_light")
+        return settings.get("tema", "light")
 
     def save_user_setting(self, user_id, key, value):
         """Salvează o setare pe disc și reîncarcă memoria locală."""
@@ -59,6 +59,24 @@ class SettingsService:
         if colors is None:
             return self.get_colors_by_name("classic_light")
         return colors
+
+    def save_settings(self, user_id, settings_dict):
+        """Salvează un dicționar întreg de setări pentru un utilizator."""
+        self.all_users_settings = self.load_settings()
+        self.all_users_settings[user_id] = settings_dict
+
+        os.makedirs(os.path.dirname(self.__settings_path), exist_ok=True)
+        with open(self.__settings_path, "w") as f:
+            json.dump(self.all_users_settings, f, indent=4)
+
+        self.all_users_settings = self.load_settings()
+
+    def save_active_days(self, user_id, days_list):
+        """Salvează lista zilelor selectate în profilul utilizatorului."""
+        settings = self.get_user_settings(user_id)
+        settings["active_days"] = days_list
+        # Acum apelul de mai jos va funcționa
+        self.save_settings(user_id, settings)
 
     def get_colors_by_name(self, name):
         """Toate temele salvate, actualizate cu 'schedule_text' pentru contrast maxim."""
@@ -118,7 +136,7 @@ class SettingsService:
                 "bg": "#0F111A", "sidebar_bg": "#090B10", "fg": "#8F93A2",
                 "card_bg": "#090B10", "input_bg": "#1A1C25", "hover": "#24262E",
                 "grid_line": "#1A1C25", "accent": "#82AAFF", "success": "#C3E88D", "danger": "#FF5370",
-                "schedule_text": "#FFFFFF"
+                "schedule_text": "#FFFFFF", "schedule_text_1": "#000000"
             }
         elif name == "mocha_dark":
             return {

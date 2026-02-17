@@ -1,16 +1,19 @@
 import tkinter as tk
 
+from Internal.entity.Group import Group
+from Internal.ui.GroupEditUi import GroupEditUi
 
 class GroupsView:
     def __init__(self, parent_frame, controller):
         self.parent = parent_frame
         self.master = controller
+        self.user_id = self.master.user.get_id_entity()
+        self.colors = self.master.settings_service.get_colors(self.user_id)
 
     def render(self):
         """Randarea tabelului de gestionare grupe cu scroll și control prin mouse."""
         self.master.clear_content()
-        user_id = self.master.user.get_id_entity()
-        colors = self.master.settings_service.get_colors(user_id)
+        colors = self.master.settings_service.get_colors(self.user_id)
         txt_color = colors.get("schedule_text", colors["fg"])
 
         # 1. Header principal
@@ -72,7 +75,8 @@ class GroupsView:
                                                                                          expand=True)
 
         # 3. Populare rânduri
-        groups = self.master.group_service.get_groups_for_teacher(user_id)
+        groups = sorted(self.master.group_service.get_groups_for_teacher(self.user_id),
+                        key=lambda group: group.get_group_name())
 
         for idx, g in enumerate(groups):
             bg_row = colors["card_bg"] if idx % 2 == 0 else colors["input_bg"]
@@ -106,6 +110,10 @@ class GroupsView:
             btns.pack(expand=True)
 
             tk.Button(btns, text=" ✏️ ", bg="#F1C40F", relief="flat", cursor="hand2",
-                      command=lambda gr=g: self.master.open_edit_group_modal(gr)).pack(side="left", padx=5)
+                      command=lambda gr=g: self.open_edit_group_modal(gr)).pack(side="left", padx=5)
             tk.Button(btns, text=" 🗑️ ", bg="#E74C3C", fg="white", relief="flat", cursor="hand2",
                       command=lambda gr=g: self.master.handle_delete_group(gr)).pack(side="left", padx=5)
+
+    def open_edit_group_modal(self, group):
+        GroupEditUi(self.master.root, self.colors, group, self.master.group_service,
+                    self.master.student_service, self.master.show_groups)

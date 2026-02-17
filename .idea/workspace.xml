@@ -5,25 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3a0b11a4-86ce-4cf2-b25f-d61d7b2840be" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/entity/Student.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/entity/Student.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Groups.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Languages.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Presets.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Schedule.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Settings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Students.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Users.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Internal/repository/RepositoryGroup.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/repository/RepositoryGroup.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Internal/service/GroupService.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/service/GroupService.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Internal/service/SettingsService.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/service/SettingsService.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/service/StudentService.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/service/StudentService.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/service/UserService.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/service/UserService.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/ui/GroupAddUi.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/GroupAddUi.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/ui/LoginUi.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/LoginUi.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/ui/RegisterUi.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/RegisterUi.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Internal/ui/ScheduleEditUi.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/ScheduleEditUi.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Internal/ui/StartUi.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/StartUi.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/ui/StudentAddUi.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/StudentAddUi.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Internal/ui/UserUi.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/UserUi.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Internal/ui/components/DashboardView.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/components/DashboardView.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Internal/ui/components/GroupsView.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/components/GroupsView.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Internal/ui/components/ScheduleView.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/components/ScheduleView.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/ui/components/SettingsView.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/components/SettingsView.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/ui/components/StudentsView.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/components/StudentsView.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,6 +57,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -118,13 +118,25 @@
       <workItem from="1771161317777" duration="8050000" />
       <workItem from="1771183458697" duration="21860000" />
       <workItem from="1771205814406" duration="117000" />
+      <workItem from="1771253825161" duration="12503000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/ClassMaster$main.coverage" NAME="main Coverage Results" MODIFIED="1771205420829" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ClassMaster$main.coverage" NAME="main Coverage Results" MODIFIED="1771329105151" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

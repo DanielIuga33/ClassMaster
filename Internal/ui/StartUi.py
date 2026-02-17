@@ -1,8 +1,10 @@
 import tkinter as tk
 
+from Internal.service.SettingsService import SettingsService
+
 
 class StartUi:
-    def __init__(self, root, on_login_click, on_register_click, settings_service):
+    def __init__(self, root, on_login_click, on_register_click, settings_service: SettingsService):
         self.root = root
         self.root.title("ClassMaster")
         self.settings_service = settings_service

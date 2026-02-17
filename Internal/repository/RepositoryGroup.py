@@ -68,6 +68,11 @@ class RepositoryGroup:
         self.__group_list.remove(self.find_by_id(cell_id))
         self.__save()
 
+    def modify_group(self, group_old, group_new):
+        self.__group_list.remove(group_old)
+        self.__group_list.append(group_new)
+        self.__save()
+
     def get_all(self):
         return self.__group_list
 
