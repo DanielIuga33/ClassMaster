@@ -95,7 +95,7 @@ class DashboardView:
         current_time = now.strftime("%H:%M")
 
         sessions_today = []
-        for key, data in self.master.schedule_data.items():
+        for key, data in self.master.schedule_service.get_schedule_data().items():
             if key.startswith(uid) and "_raw" in key:
                 if today_date_str in key or f"_D{today_day_idx}_" in key:
                     sessions_today.append(data)

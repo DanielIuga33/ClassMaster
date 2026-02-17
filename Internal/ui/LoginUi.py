@@ -4,6 +4,7 @@ import time
 
 from Internal.service.GroupService import GroupService
 from Internal.service.PresetService import PresetService
+from Internal.service.ScheduleService import ScheduleService
 from Internal.service.SettingsService import SettingsService
 from Internal.service.StudentService import StudentService
 from Internal.service.UserService import UserService
@@ -12,7 +13,7 @@ from Internal.service.UserService import UserService
 class LoginUi:
     def __init__(self, root, user_service: UserService, student_service: StudentService,
                  group_service: GroupService, preset_service: PresetService,
-                 on_success, settings_service: SettingsService, on_back):
+                 on_success, settings_service: SettingsService, schedule_service: ScheduleService, on_back):
         self.root = root
         self.user_service = user_service
         self.student_service = student_service
@@ -20,6 +21,7 @@ class LoginUi:
         self.preset_service = preset_service
         self.on_success = on_success
         self.settings_service = settings_service
+        self.schedule_service = schedule_service
         self.on_back = on_back
 
         global_settings = self.settings_service.get_user_settings("global")
@@ -136,6 +138,8 @@ class LoginUi:
         self.group_service.set_repository_path(data_path)
         self.student_service.set_repository_path(data_path)
         self.preset_service.set_repository_path(data_path)
+        self.schedule_service.set_schedule_path(data_path)
+        self.settings_service.set_settings_path(data_path)
 
         user = self.user_service.authenticate(identifier, password)
 

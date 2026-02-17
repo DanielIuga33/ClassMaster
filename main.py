@@ -6,6 +6,7 @@ from Internal.repository.RepositoryStudent import RepositoryStudent
 from Internal.repository.RepositoryPreset import RepositoryPreset
 from Internal.service.LanguageService import LanguageService
 from Internal.service.PresetService import PresetService
+from Internal.service.ScheduleService import ScheduleService
 from Internal.service.StudentService import StudentService
 from Internal.service.UserService import UserService
 from Internal.service.GroupService import GroupService
@@ -26,6 +27,7 @@ class MainController:
         self.student_service = StudentService(RepositoryStudent(""))
         self.group_service = GroupService(RepositoryGroup(""))
         self.preset_service = PresetService(RepositoryPreset(""))
+        self.schedule_service = ScheduleService()
         self.show_start_screen()
 
     def clear_screen(self):
@@ -46,6 +48,7 @@ class MainController:
             self.preset_service,
             self.login_success,
             self.settings_service,
+            self.schedule_service,
             self.show_start_screen
         )
 
@@ -71,6 +74,7 @@ class MainController:
             self.student_service,
             self.group_service,
             self.preset_service,
+            self.schedule_service,
             self.language_service
         )
 

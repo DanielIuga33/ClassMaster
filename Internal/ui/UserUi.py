@@ -8,6 +8,7 @@ from tkcalendar import DateEntry
 from Internal.service.GroupService import GroupService
 from Internal.service.LanguageService import LanguageService
 from Internal.service.PresetService import PresetService
+from Internal.service.ScheduleService import ScheduleService
 from Internal.service.SettingsService import SettingsService
 from Internal.service.StudentService import StudentService
 from Internal.service.UserService import UserService
@@ -25,7 +26,8 @@ from Internal.ui.components.SettingsView import SettingsView
 class UserUi:
     def __init__(self, root, user, on_logout, settings_service: SettingsService, user_service: UserService,
                  student_service: StudentService, group_service: GroupService, preset_service: PresetService,
-                 language_service: LanguageService):
+                 schedule_service: ScheduleService, language_service: LanguageService):
+        self.rows_var = None
         self.root = root
         self.user = user
         self.on_logout = on_logout
@@ -34,13 +36,12 @@ class UserUi:
         self.student_service = student_service
         self.group_service = group_service
         self.preset_service = preset_service
+        self.schedule_service = schedule_service
         self.language_service = language_service
         self.colors = self.settings_service.get_colors(user.get_id_entity())
 
         # 1. Date de referință și configurări
         self.current_date = datetime.now()
-        self.schedule_file = os.path.join("Data", "Schedule.json")
-        self.schedule_data = self.load_schedule_data()
 
         # 2. Configurare fereastră principală
         self.root.title(f"ClassMaster - Panou Control: {user.get_first_name()}")
@@ -80,8 +81,9 @@ class UserUi:
 
     def setup_sidebar_content(self, user):
         """Configurează elementele vizuale din sidebar."""
-        current_rows = self.schedule_data.get("total_rows", 5)
-        self.rows_var = tk.IntVar(value=max(2, current_rows))
+        if self.schedule_service.get_schedule_data():
+            current_rows = self.schedule_service.get_schedule_data().get("total_rows", 5)
+            self.rows_var = tk.IntVar(value=max(2, current_rows))
 
         # Profil Utilizator
         profile_frame = tk.Frame(self.sidebar, bg=self.colors["sidebar_bg"], pady=30)
@@ -114,34 +116,6 @@ class UserUi:
         for widget in self.main_content.winfo_children():
             widget.destroy()
 
-    def load_schedule_data(self):
-        if os.path.exists(self.schedule_file):
-            try:
-                with open(self.schedule_file, "r") as f:
-                    return json.load(f)
-            except:
-                return {}
-        return {}
-
-    def save_schedule_data(self):
-        os.makedirs("Data", exist_ok=True)
-        with open(self.schedule_file, "w") as f: json.dump(self.schedule_data, f, indent=4)
-
-    # --- Persistență Orar (Apelate din ScheduleView sau Modale) ---
-    def process_schedule_save(self, cell_id, data):
-        unique_key = f"{self.user.get_id_entity()}_{cell_id}"
-        self.schedule_data[f"{unique_key}_raw"] = data
-        self.save_schedule_data()
-        self.show_schedule()
-
-    def process_schedule_delete(self, cell_id):
-        unique_key = f"{self.user.get_id_entity()}_{cell_id}"
-        full_key = f"{unique_key}_raw"
-        if full_key in self.schedule_data:
-            del self.schedule_data[full_key]
-            self.save_schedule_data()
-            self.show_schedule()
-
     # --- Secțiunea ORAR (Folosește noua componentă) ---
     def show_schedule(self):
         self.clear_content()
@@ -163,8 +137,8 @@ class UserUi:
             for col in range(6):
                 date_str = (start_of_week + timedelta(days=col)).strftime('%Y-%m-%d')
                 cell_key = f"{teacher_id}_{date_str}_R{row}_raw"
-                if cell_key in self.schedule_data:
-                    data_to_save[f"D{col}_R{row}"] = self.schedule_data[cell_key]
+                if cell_key in self.schedule_service.get_schedule_data():
+                    data_to_save[f"D{col}_R{row}"] = self.schedule_service.get_schedule_data()[cell_key]
 
         if data_to_save:
             status = self.preset_service.create_preset(teacher_id, name, data_to_save)
@@ -246,7 +220,7 @@ class UserUi:
             new_data['absentees'] = []  # Această săptămână începe de la zero cu prezența
 
             # Salvăm sub cheia unică a datei calendaristice specifice
-            self.schedule_data[f"{teacher_id}_{target_date}_R{row_num}_raw"] = new_data
+            self.schedule_service.get_schedule_data()[f"{teacher_id}_{target_date}_R{row_num}_raw"] = new_data
 
         self.save_schedule_data()
         self.show_schedule()
@@ -267,7 +241,7 @@ class UserUi:
 
     def update_rows_count(self):
         new_count = self.rows_var.get()
-        self.schedule_data["total_rows"] = new_count
+        self.schedule_service.get_schedule_data()["total_rows"] = new_count
         self.save_schedule_data()
         self.show_schedule()
 
@@ -287,7 +261,7 @@ class UserUi:
 
     def open_group_assignment_modal(self, cell_id):
         unique_key = f"{self.user.get_id_entity()}_{cell_id}"
-        current_data = self.schedule_data.get(f"{unique_key}_raw", None)
+        current_data = self.schedule_service.get_schedule_data().get(f"{unique_key}_raw", None)
 
         # Ne asigurăm că trimitem culorile proaspete ale utilizatorului
         uid = self.user.get_id_entity()
@@ -338,20 +312,34 @@ class UserUi:
         uid = self.user.get_id_entity()
         unique_key_raw = f"{uid}_{cell_id}_raw"
 
-        if unique_key_raw in self.schedule_data:
-            absentees = self.schedule_data[unique_key_raw].get('absentees', [])
+        if unique_key_raw in self.schedule_service.get_schedule_data():
+            absentees = self.schedule_service.get_schedule_data()[unique_key_raw].get('absentees', [])
 
             if student_id in absentees:
                 absentees.remove(student_id)
             else:
                 absentees.append(student_id)
 
-            self.schedule_data[unique_key_raw]['absentees'] = absentees
+            self.schedule_service.get_schedule_data()[unique_key_raw]['absentees'] = absentees
 
             # REPARARE: Folosim metoda internă a clasei în loc de un serviciu inexistent
-            self.save_schedule_data()
+            self.schedule_service.save_schedule_data()
 
             # Reîmprospătăm ecranul
+            self.show_schedule()
+
+    def process_schedule_save(self, cell_id, data):
+        unique_key = f"{self.user.get_id_entity()}_{cell_id}"
+        self.schedule_service.get_schedule_data()[f"{unique_key}_raw"] = data
+        self.schedule_service.save_schedule_data()
+        self.show_schedule()
+
+    def process_schedule_delete(self, cell_id):
+        unique_key = f"{self.user.get_id_entity()}_{cell_id}"
+        full_key = f"{unique_key}_raw"
+        if full_key in self.schedule_service.get_schedule_data():
+            del self.schedule_service.get_schedule_data()[full_key]
+            self.schedule_service.save_schedule_data()
             self.show_schedule()
 
     # --- Dashboard & Setări ---

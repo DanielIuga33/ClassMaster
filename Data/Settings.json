@@ -1,6 +1,13 @@
 {
     "global": {
-        "tema": "dark",
+        "tema": "light",
+        "language": "Romana",
+        "rows_count": 5,
+        "last_user": "DanielIuga33",
+        "last_data_path": "C:/Users/danie/Videos/Data"
+    },
+    "ffda6b15-5d7b-4d43-a7c5-505535371194": {
+        "tema": "dark_emerald",
         "language": "Romana",
         "rows_count": 5
     }

@@ -1,0 +1,314 @@
+[
+    {
+        "id_entity": "f7b3d6d9-62b7-4090-8630-1dfb2711adc2",
+        "first_name": "Alexandru",
+        "last_name": "Vescan",
+        "grade": "VIII",
+        "price": 120,
+        "teacher_id": "77fb0ad2-d3e4-43f1-86e6-71694f587de0"
+    },
+    {
+        "id_entity": "10ea42c0-2565-43b0-84a1-45c9aa1285e5",
+        "first_name": "Darius",
+        "last_name": "Pasca",
+        "grade": "VII",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "03818ef4-95b1-4f25-bb9e-6d0b208c5e06",
+        "first_name": "Maria",
+        "last_name": "Pacurariu",
+        "grade": "VIII",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "39086c9d-d49b-48d8-8288-3a7df897a532",
+        "first_name": "Andy",
+        "last_name": "Puscas",
+        "grade": "VI",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "f3b3902b-0c03-4977-8996-52f01241281c",
+        "first_name": "Stefan",
+        "last_name": "Marc",
+        "grade": "VI",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "3642211a-4cb4-4bed-86ac-ae024b40091f",
+        "first_name": "Alisa",
+        "last_name": "Lumperdean",
+        "grade": "VII",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "36b05948-cdf7-4676-93e2-64c9924f8d4a",
+        "first_name": "Karina",
+        "last_name": "Cosma",
+        "grade": "VIII",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "db88561b-6904-4898-b4a8-cdaef98caa9f",
+        "first_name": "Ana",
+        "last_name": "Cuc",
+        "grade": "VII",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "44232696-07f5-4e9e-acc8-d674f8c41fee",
+        "first_name": "Lorena",
+        "last_name": "Suciu",
+        "grade": "VII",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "977a0af8-662f-4189-912b-9b35ae1a1b67",
+        "first_name": "Alisa",
+        "last_name": "Turc",
+        "grade": "VI",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "852feaa3-8761-459c-aeaa-d34ce589140e",
+        "first_name": "Irina",
+        "last_name": "Beldean",
+        "grade": "VII",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "431d2d0a-6329-47e4-b2c9-e61b860e57a2",
+        "first_name": "Jessica",
+        "last_name": "",
+        "grade": "VI",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "3015c894-de85-464a-a9b0-2a5190be7900",
+        "first_name": "Casian",
+        "last_name": "Ciugudean",
+        "grade": "VI",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "58b8cc40-e82f-4426-bb06-753666804563",
+        "first_name": "Matei",
+        "last_name": "Moldovan",
+        "grade": "VI",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "017295a3-e457-48e8-9498-270a2c1afa6e",
+        "first_name": "Stefan",
+        "last_name": "Ciontos",
+        "grade": "VI",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "a2aad135-bff1-4e55-9bd9-d4d57f7c9c89",
+        "first_name": "Flaviu",
+        "last_name": "Puscas",
+        "grade": "VI",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "bcbdad55-bf85-4a16-bbb0-ea78bc4eb9b9",
+        "first_name": "Vlad",
+        "last_name": "Iosivas",
+        "grade": "VIII",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "4462e4ae-9974-4039-b9ca-fb78c04de1a2",
+        "first_name": "Marco",
+        "last_name": "Boldor",
+        "grade": "VIII",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "f6a5ccfe-38cd-494d-a7f8-a2df7854f62b",
+        "first_name": "Darius",
+        "last_name": "Botosan",
+        "grade": "VIII",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "863a7632-8d17-4713-a183-878be6c46741",
+        "first_name": "Nora",
+        "last_name": "",
+        "grade": "VIII",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "277ddbd7-7810-4af1-9bb4-60cecc2a9999",
+        "first_name": "Timeea",
+        "last_name": "Macra",
+        "grade": "VII",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "c7a9c95c-80b4-4571-8fe7-1b8fbccd342b",
+        "first_name": "Leea",
+        "last_name": "Gal",
+        "grade": "VII",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "5926ae50-5627-4a03-b991-23ac12cca112",
+        "first_name": "Antonia",
+        "last_name": "Gabor",
+        "grade": "VII",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "2c4040e9-19ac-4764-af8d-af328d93bc45",
+        "first_name": "Damian",
+        "last_name": "Cozac",
+        "grade": "VII",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "9fc2a196-0fa4-4b9e-b3ea-25a01c643ca5",
+        "first_name": "Alexandra",
+        "last_name": "",
+        "grade": "VII",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "888064de-732d-408a-b732-db42a42fb347",
+        "first_name": "Maya",
+        "last_name": "Ludusan",
+        "grade": "V",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "e49007b4-36de-44c7-8d05-58a976ced9d4",
+        "first_name": "Raluca",
+        "last_name": "Beldean",
+        "grade": "V",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "5782c7bd-bc0d-4689-a2f7-94f71875a8dc",
+        "first_name": "Ady",
+        "last_name": "Popa",
+        "grade": "V",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "b687548e-df7f-4b6f-b4a2-b5e15d4b3d24",
+        "first_name": "Diana",
+        "last_name": "Mocean",
+        "grade": "VI",
+        "price": 50,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "b213c39f-d17c-4690-a5be-d0e1eaad45da",
+        "first_name": "Crina",
+        "last_name": "Moldovan",
+        "grade": "VI",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "66f0b4ad-899f-4b39-a47c-582cbd4ec597",
+        "first_name": "Razvan",
+        "last_name": "Russ",
+        "grade": "VII",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "21be5473-c177-44c7-9aa0-6a3527c7fffc",
+        "first_name": "Maria",
+        "last_name": "Popa",
+        "grade": "VII",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "522e3508-076e-4c75-a517-928893e5a4cd",
+        "first_name": "Estera",
+        "last_name": "",
+        "grade": "VII",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "877059f8-74a7-4a99-a019-bf8c4bd59575",
+        "first_name": "Adelina",
+        "last_name": "Oros",
+        "grade": "VIII",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "ab30c5c3-5f1a-49ad-9815-e1c732b3f2f7",
+        "first_name": "Dani",
+        "last_name": "Muresan",
+        "grade": "VIII",
+        "price": 100,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "e8894397-2332-4171-b9f2-8d89e64a6ebe",
+        "first_name": "Florin",
+        "last_name": "Suciu",
+        "grade": "VIII",
+        "price": 100,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "3730138c-e41c-40df-8784-3da272359622",
+        "first_name": "Antonio",
+        "last_name": "Mihesan",
+        "grade": "IX",
+        "price": 80,
+        "teacher_id": "ffda6b15-5d7b-4d43-a7c5-505535371194"
+    },
+    {
+        "id_entity": "041a1e29-1e0d-4b6c-9971-9c18013381a3",
+        "first_name": "Andreea",
+        "last_name": "Lambrea",
+        "grade": "XII",
+        "price": 1200,
+        "teacher_id": "77fb0ad2-d3e4-43f1-86e6-71694f587de0"
+    },
+    {
+        "id_entity": "d7d28819-77c0-4652-8bb9-da70ffa0fef5",
+        "first_name": "Vlad",
+        "last_name": "Bala",
+        "grade": "IX",
+        "price": 5,
+        "teacher_id": "77fb0ad2-d3e4-43f1-86e6-71694f587de0"
+    }
+]

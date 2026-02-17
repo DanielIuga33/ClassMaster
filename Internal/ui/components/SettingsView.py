@@ -101,12 +101,13 @@ class SettingsView:
         tk.Label(t_controls, text="Variantă Temă:", font=("Segoe UI", 11, "bold"), bg=colors["bg"],
                  fg=txt_color).pack(side="left")
 
-        self.theme_combo = ttk.Combobox(t_controls, values=[
+        self.theme_combo = ttk.Combobox(t_controls, values= sorted([
             "classic_dark", "classic_light", "dark_emerald", "dark_start", "midnight_blue", "forest_dark", "dracula",
             "cyberpunk",
             "material_ocean", "dark_oled", "nordic_frost", "light_soft", "github_light", "tokyo_night",
-            "solarized_light"
-        ], state="readonly", width=25, font=("Segoe UI", 11))
+            "solarized_light", "sakura_blossom", "rosea_dark", "lavender_mist", "cotton_candy", "retro_terminal",
+            "ocean_sunset", "nord_deep", "coffee_shop"
+        ]), state="readonly", width=25, font=("Segoe UI", 11))
         self.theme_combo.set(self.master.settings_service.get_theme(uid))
         self.theme_combo.pack(side="left", padx=15)
         self.theme_combo.bind("<<ComboboxSelected>>", self.update_theme_preview)

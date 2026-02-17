@@ -6,23 +6,14 @@
   <component name="ChangeListManager">
     <list default="true" id="3a0b11a4-86ce-4cf2-b25f-d61d7b2840be" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Groups.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Languages.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Presets.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Schedule.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Settings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Students.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Users.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/repository/RepositoryGroup.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/repository/RepositoryGroup.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/service/GroupService.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/service/GroupService.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Settings.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Internal/service/SettingsService.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/service/SettingsService.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/ui/ScheduleEditUi.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/ScheduleEditUi.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/ui/StartUi.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/StartUi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Internal/ui/LoginUi.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/LoginUi.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Internal/ui/UserUi.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/UserUi.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Internal/ui/components/DashboardView.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/components/DashboardView.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/ui/components/GroupsView.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/components/GroupsView.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Internal/ui/components/ScheduleView.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/components/ScheduleView.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Internal/ui/components/SettingsView.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/components/SettingsView.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -119,6 +110,7 @@
       <workItem from="1771183458697" duration="21860000" />
       <workItem from="1771205814406" duration="117000" />
       <workItem from="1771253825161" duration="12503000" />
+      <workItem from="1771329239796" duration="16688000" />
     </task>
     <servers />
   </component>
@@ -137,6 +129,6 @@
     </option>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/ClassMaster$main.coverage" NAME="main Coverage Results" MODIFIED="1771329105151" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ClassMaster$main.coverage" NAME="main Coverage Results" MODIFIED="1771364105347" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
