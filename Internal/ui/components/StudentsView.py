@@ -1,26 +1,29 @@
 import tkinter as tk
 from Internal.ui.StudentEditUi import StudentEditUi
 
+
 class StudentsView:
     def __init__(self, parent_frame, controller):
         self.parent = parent_frame
         self.master = controller
 
     def render(self, sort_by="grade"):
-        """Randare cu Scroll de siguranță și Header interactiv pentru sortare."""
+        """Randare cu suport multilingv și sortare interactivă."""
         self.master.clear_content()
         user_id = self.master.user.get_id_entity()
+        ls = self.master.language_service  # Serviciul de limbă
         colors = self.master.settings_service.get_colors(user_id)
         txt_color = colors.get("schedule_text", colors["fg"])
 
-        # 1. Header principal
+        # 1. Header principal tradus
         header_frame = tk.Frame(self.parent, bg=colors["bg"])
         header_frame.pack(fill="x", pady=(0, 25))
 
-        tk.Label(header_frame, text="👥 Gestiune Studenți", font=("Segoe UI", 26, "bold"),
+        tk.Label(header_frame, text=f"👥 {ls.get_text(user_id, 'menu_students')}", font=("Segoe UI", 26, "bold"),
                  bg=colors["bg"], fg=colors["fg"]).pack(side="left")
 
-        tk.Button(header_frame, text="+ Student Nou", command=self.master.open_add_student_modal,
+        tk.Button(header_frame, text=ls.get_text(user_id, 'btn_add_student'),
+                  command=self.master.open_add_student_modal,
                   bg=colors.get("success", "#2ECC71"), fg="white", font=("Segoe UI", 11, "bold"),
                   relief="flat", padx=25, pady=12, cursor="hand2").pack(side="right")
 
@@ -56,21 +59,23 @@ class StudentsView:
         table_inner.bind("<Configure>", _on_frame_configure)
         canvas.bind("<Configure>", lambda e: canvas.itemconfig(canvas_window, width=e.width))
 
-        # --- REPARAȚIE: Header Tabel cu Sortare ---
+        # --- Header Tabel Tradus cu Sortare ---
         header_table = tk.Frame(table_inner, bg=colors["input_bg"])
         header_table.pack(fill="x")
 
-        # Configurație butoane header: (Text afișat, Cheie sortare)
+        # Configurație butoane header traduse
         headers_config = [
-            ("Nume și Prenume", "name"),
-            ("Clasă", "grade"),
-            ("Preț / h", "price"),
-            ("Acțiuni", None)
+            (ls.get_text(user_id, "col_name_lastname"), "name"),
+            (ls.get_text(user_id, "reg_city").replace(":", ""), "grade"),  # Reutilizăm etichete dacă e posibil
+            (ls.get_text(user_id, "col_price_h"), "price"),
+            (ls.get_text(user_id, "col_actions"), None)
         ]
+
+        # Corecție manuală pentru "Clasă" dacă nu vrei să reutilizezi orașul
+        headers_config[1] = (ls.get_text(user_id, "col_grade"), "grade")
 
         for text, sort_key in headers_config:
             if sort_key:
-                # Buton care declanșează re-randarea sortată
                 btn = tk.Button(header_table, text=text.upper(), font=("Segoe UI", 10, "bold"),
                                 bg=colors["input_bg"], fg=txt_color, relief="flat",
                                 activebackground=colors["accent"], cursor="hand2",
@@ -78,7 +83,8 @@ class StudentsView:
                 btn.pack(side="left", fill="x", expand=True, ipady=15)
             else:
                 tk.Label(header_table, text=text.upper(), font=("Segoe UI", 10, "bold"),
-                         bg=colors["input_bg"], fg=txt_color, pady=18, width=20).pack(side="left", fill="x", expand=True)
+                         bg=colors["input_bg"], fg=txt_color, pady=18, width=20).pack(side="left", fill="x",
+                                                                                      expand=True)
 
         # 3. Populare rânduri
         students = self.master.student_service.get_sorted_students(user_id, sort_by)
@@ -119,6 +125,11 @@ class StudentsView:
                       self.master.student_service, self.master.show_students)
 
     def confirm_delete(self, student):
+        user_id = self.master.user.get_id_entity()
+        ls = self.master.language_service
         self.master.student_service.delete_student(student)
-        self.master.show_toast(f"🗑️ Studentul {student.get_last_name()} a fost șters!", "#34495E")
+
+        # Mesaj ștergere tradus dinamic
+        msg = ls.get_text(user_id, "msg_student_deleted").replace("{name}", student.get_last_name())
+        self.master.show_toast(f"🗑️ {msg}", "#34495E")
         self.render()

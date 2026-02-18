@@ -7,47 +7,37 @@ class DashboardView:
         self.parent = parent_frame
         self.master = controller
         self.target_percent_var = tk.StringVar(value="0.0%")
-        self.target_title_var = tk.StringVar(value="Target Clasa VIII")
+        # Titlul target-ului va fi setat dinamic în render
+        self.target_title_var = tk.StringVar()
 
     def render(self):
         self.master.clear_content()
         uid = self.master.user.get_id_entity()
         colors = self.master.settings_service.get_colors(uid)
+        ls = self.master.language_service  # Scurtătură serviciu limbă
 
         # --- REPARARE SISTEM SCROLL ---
-        # Folosim fill="both" și expand=True pe toate containerele
         self.main_container = tk.Frame(self.parent, bg=colors["bg"])
         self.main_container.pack(fill="both", expand=True)
 
         canvas = tk.Canvas(self.main_container, bg=colors["bg"], highlightthickness=0)
         scrollbar = tk.Scrollbar(self.main_container, orient="vertical", command=canvas.yview)
-
-        # Frame-ul scrollable trebuie să fie copilul canvas-ului
         scrollable_content = tk.Frame(canvas, bg=colors["bg"], padx=40, pady=20)
-
-        # Creăm fereastra în canvas și salvăm ID-ul pentru a-i seta lățimea ulterior
         canvas_window = canvas.create_window((0, 0), window=scrollable_content, anchor="nw")
 
         def _on_mousewheel(event):
             canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
-        # Bindings pentru scroll
         canvas.bind("<Enter>", lambda _: canvas.bind_all("<MouseWheel>", _on_mousewheel))
         canvas.bind("<Leave>", lambda _: canvas.unbind_all("<MouseWheel>"))
-
         canvas.configure(yscrollcommand=scrollbar.set)
-
-        # Layout Canvas și Scrollbar
         scrollbar.pack(side="right", fill="y")
         canvas.pack(side="left", fill="both", expand=True)
 
-        # --- LOGICĂ REPARARE VIZUALIZARE ---
         def _configure_window(event):
-            # Forțăm conținutul să aibă lățimea canvas-ului
             canvas.itemconfig(canvas_window, width=event.width)
 
         def _update_scrollregion(event):
-            # Actualizăm zona de scroll când se adaugă elemente
             canvas.configure(scrollregion=canvas.bbox("all"))
 
         canvas.bind("<Configure>", _configure_window)
@@ -63,32 +53,37 @@ class DashboardView:
             g_name = s.get_grade()
             dist[g_name] = dist.get(g_name, 0) + 1
 
+        # Setăm target-ul inițial (ex: Clasa VIII) tradus
         v8_count = dist.get("VIII", 0)
         initial_target = (v8_count / num_students * 100) if num_students > 0 else 0
         self.target_percent_var.set(f"{initial_target:.1f}%")
+        self.target_title_var.set(f"{ls.get_text(uid, 'dash_target_title')} VIII")
 
-        # --- CONSTRUIRE INTERFAȚĂ (pe scrollable_content) ---
-        tk.Label(scrollable_content, text=f"Salutare, {self.master.user.get_first_name()}!",
+        # --- CONSTRUIRE INTERFAȚĂ ---
+        # Salutare tradusă
+        welcome_text = ls.get_text(uid, "dash_welcome").replace("{name}", self.master.user.get_first_name())
+        tk.Label(scrollable_content, text=welcome_text,
                  font=("Segoe UI", 28, "bold"), bg=colors["bg"], fg=colors["fg"]).pack(anchor="w", pady=(0, 30))
 
         cards_frame = tk.Frame(scrollable_content, bg=colors["bg"])
         cards_frame.pack(fill="x", pady=10)
 
-        self.create_stat_card(cards_frame, "Studenți Activi", str(num_students), colors["accent"], 0)
-        self.create_stat_card(cards_frame, "Venit Estimat / Săpt", f"{total_income} RON", "#27AE60", 1)
+        # Carduri de statistici traduse
+        self.create_stat_card(cards_frame, ls.get_text(uid, "dash_active_students"), str(num_students),
+                              colors["accent"], 0)
+        self.create_stat_card(cards_frame, ls.get_text(uid, "dash_est_income"), f"{total_income} RON", "#27AE60", 1)
         self.create_target_card(cards_frame, self.target_title_var, self.target_percent_var, "#E67E22", 2)
 
         self.create_distribution_chart(scrollable_content, dist, num_students, colors)
 
         # --- AGENDA ---
-        tk.Label(scrollable_content, text="📅 Agenda de Astăzi", font=("Segoe UI", 18, "bold"),
+        tk.Label(scrollable_content, text=f"📅 {ls.get_text(uid, 'dash_agenda_today')}", font=("Segoe UI", 18, "bold"),
                  bg=colors["bg"], fg=colors["fg"]).pack(anchor="w", pady=(30, 15))
 
         agenda_container = tk.Frame(scrollable_content, bg=colors["card_bg"], padx=20, pady=20,
                                     highlightthickness=1, highlightbackground=colors["grid_line"])
         agenda_container.pack(fill="x", pady=(0, 40))
 
-        # Filtrare date brute
         now = datetime.now()
         today_date_str = now.strftime("%Y-%m-%d")
         today_day_idx = now.weekday()
@@ -101,7 +96,7 @@ class DashboardView:
                     sessions_today.append(data)
 
         if not sessions_today:
-            tk.Label(agenda_container, text="Nu ai nicio ședință programată pentru astăzi.",
+            tk.Label(agenda_container, text=ls.get_text(uid, "dash_no_sessions"),
                      font=("Segoe UI", 11, "italic"), bg=colors["card_bg"], fg="#888").pack(pady=10)
         else:
             sessions_today.sort(key=lambda x: x.get("time", "00:00"))
@@ -116,18 +111,19 @@ class DashboardView:
 
                 tk.Label(row, text=start_time, font=("Segoe UI", 11, "bold"), bg=bg_row, fg=status_color, width=8).pack(
                     side="left")
-                tk.Label(row, text=session.get("group_name", "Ședință"), font=("Segoe UI", 11), bg=bg_row,
-                         fg=status_color).pack(side="left", padx=20)
-                tk.Label(row, text="✓ Finalizată" if is_passed else "⏳ În așteptare", font=("Segoe UI", 9, "italic"),
+                tk.Label(row, text=session.get("group_name", ls.get_text(uid, "session_generic")),
+                         font=("Segoe UI", 11), bg=bg_row, fg=status_color).pack(side="left", padx=20)
+
+                status_text = ls.get_text(uid, "session_done") if is_passed else ls.get_text(uid, "session_pending")
+                tk.Label(row, text=status_text, font=("Segoe UI", 9, "italic"),
                          bg=bg_row, fg=status_color).pack(side="right")
 
-        # Buton rapid către Orar
-        tk.Button(scrollable_content, text="Vezi Orar Complet →", font=("Segoe UI", 10, "bold"),
+        # Buton rapid tradus
+        tk.Button(scrollable_content, text=f"{ls.get_text(uid, 'dash_btn_full_schedule')} →",
+                  font=("Segoe UI", 10, "bold"),
                   bg=colors["accent"], fg="white", relief="flat", padx=20, pady=10,
                   command=self.master.show_schedule, cursor="hand2").pack(anchor="e", pady=(0, 20))
 
-    # --- METODE HELPER (create_target_card, update_target, create_distribution_chart, create_stat_card) ---
-    # Acestea rămân identice cu logica ta, dar asigură-te că sunt în interiorul clasei
     def create_target_card(self, parent, title_var, val_var, color, col):
         uid = self.master.user.get_id_entity()
         colors = self.master.settings_service.get_colors(uid)
@@ -140,24 +136,34 @@ class DashboardView:
             anchor="w", pady=(5, 0))
 
     def update_target(self, grade, count, total):
+        uid = self.master.user.get_id_entity()
+        ls = self.master.language_service
         percent = (count / total * 100) if total > 0 else 0
-        self.target_title_var.set(f"TARGET CLASA {grade}")
+        self.target_title_var.set(f"{ls.get_text(uid, 'dash_target_title')} {grade}")
         self.target_percent_var.set(f"{percent:.1f}%")
 
     def create_distribution_chart(self, parent, distribution, total_students, colors):
+        uid = self.master.user.get_id_entity()
+        ls = self.master.language_service
         chart_frame = tk.Frame(parent, bg=colors["card_bg"], padx=25, pady=25,
                                highlightthickness=1, highlightbackground=colors["grid_line"])
         chart_frame.pack(fill="x", pady=25)
-        tk.Label(chart_frame, text="📊 DISTRIBUȚIE ELEVI PE NIVEL DE STUDIU (Click pe rând pentru Target)",
+
+        tk.Label(chart_frame, text=ls.get_text(uid, "dash_dist_header"),
                  font=("Segoe UI", 10, "bold"), bg=colors["card_bg"], fg="#888").pack(anchor="w", pady=(0, 20))
+
         if not distribution: return
         max_val = max(distribution.values())
+        class_text = ls.get_text(uid, "dash_class_label")
+        students_text = ls.get_text(uid, "dash_students_label")
+
         for grade in sorted(distribution.keys()):
             count = distribution[grade]
             row = tk.Frame(chart_frame, bg=colors["card_bg"], cursor="hand2")
             row.pack(fill="x", pady=5)
             row.bind("<Button-1>", lambda e, g=grade, c=count: self.update_target(g, c, total_students))
-            lbl = tk.Label(row, text=f"Clasa {grade}", width=12, anchor="w", bg=colors["card_bg"], fg=colors["fg"])
+            lbl = tk.Label(row, text=f"{class_text} {grade}", width=15, anchor="w", bg=colors["card_bg"],
+                           fg=colors["fg"])
             lbl.pack(side="left")
             lbl.bind("<Button-1>", lambda e, g=grade, c=count: self.update_target(g, c, total_students))
             bar_bg = tk.Frame(row, bg=colors["input_bg"], height=18, width=400)
@@ -167,7 +173,7 @@ class DashboardView:
             bar = tk.Frame(bar_bg, bg=colors["accent"], height=18, width=(count / max_val) * 400)
             bar.pack(side="left")
             bar.bind("<Button-1>", lambda e, g=grade, c=count: self.update_target(g, c, total_students))
-            txt = tk.Label(row, text=f"{count} elevi", bg=colors["card_bg"], fg=colors["fg"],
+            txt = tk.Label(row, text=f"{count} {students_text}", bg=colors["card_bg"], fg=colors["fg"],
                            font=("Segoe UI", 10, "bold"))
             txt.pack(side="left", padx=5)
             txt.bind("<Button-1>", lambda e, g=grade, c=count: self.update_target(g, c, total_students))

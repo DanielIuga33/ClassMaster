@@ -1,9 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox, ttk
 
-
 class ScheduleEditUi(tk.Toplevel):
-    def __init__(self, parent, theme, cell_id, day, current_data, on_save, on_delete, group_service, user_id):
+    def __init__(self, parent, theme, cell_id, day, current_data, on_save, on_delete, group_service, user_id, lang_service):
         super().__init__(parent)
         self.theme = theme
         self.on_save = on_save
@@ -11,80 +10,80 @@ class ScheduleEditUi(tk.Toplevel):
         self.cell_id = cell_id
         self.group_service = group_service
         self.user_id = user_id
+        self.lang_service = lang_service # Serviciul de limbă injectat
 
-        # Preluăm culoarea de contrast dedicată (Alb pe Dark / Negru pe Light)
+        uid = self.user_id
+        ls = self.lang_service
         self.txt_color = theme.get("schedule_text", theme["fg"])
 
-        self.title(f"Programare - {day}")
+        # Titlu fereastră tradus dinamic
+        self.title(f"{ls.get_text(uid, 'sched_edit_title')} - {day}")
         self.setup_modal(400, 450)
         self.configure(bg=theme["bg"], padx=25, pady=25)
         self.grab_set()
 
-        # Titlu modal - Folosim culoarea de accent pentru a ieși în evidență
-        tk.Label(self, text=f"Alocare Grupă: {day}", font=("Segoe UI", 16, "bold"),
+        # Titlu modal tradus
+        tk.Label(self, text=f"{ls.get_text(uid, 'sched_edit_header')}: {day}", font=("Segoe UI", 16, "bold"),
                  bg=theme["bg"], fg=theme["accent"]).pack(pady=(0, 20))
 
         # --- SELECȚIE GRUPĂ ---
-        tk.Label(self, text="Alege Grupa:", bg=theme["bg"], fg=self.txt_color,
+        tk.Label(self, text=ls.get_text(uid, "sched_edit_choose_group"), bg=theme["bg"], fg=self.txt_color,
                  font=("Segoe UI", 9, "bold")).pack(anchor="w")
 
         self.available_groups = self.group_service.get_groups_for_teacher(self.user_id)
         group_names = [g.get_group_name() for g in self.available_groups]
 
-        # Combobox-ul necesită un stil pentru a nu rămâne alb pe teme dark
         self.group_combo = ttk.Combobox(self, values=group_names, font=("Segoe UI", 11), state="readonly")
         self.group_combo.pack(fill="x", pady=(5, 15), ipady=5)
 
         if current_data and "group_name" in current_data:
             self.group_combo.set(current_data["group_name"])
 
-        # --- INTERVAL ORAR REPROIECTAT ---
-        tk.Label(self, text="Interval Orar (HH:MM):", bg=theme["bg"], fg=self.txt_color,
+        # --- INTERVAL ORAR ---
+        tk.Label(self, text=ls.get_text(uid, "sched_edit_time_range"), bg=theme["bg"], fg=self.txt_color,
                  font=("Segoe UI", 9, "bold")).pack(anchor="w", pady=(10, 0))
 
         time_container = tk.Frame(self, bg=theme["bg"])
         time_container.pack(fill="x", pady=5)
 
-        # REPARARE FUNDAL INPUT: Folosim input_bg din temă
         entry_bg = theme["input_bg"]
 
-        # Start Time (HH:MM)
+        # Start Time
         self.start_hh = self.create_time_entry(time_container, entry_bg, 23)
         tk.Label(time_container, text=":", bg=theme["bg"], fg=self.txt_color, font=("bold")).pack(side="left")
         self.start_mm = self.create_time_entry(time_container, entry_bg, 59)
 
-        tk.Label(time_container, text="  până la  ", bg=theme["bg"], fg=self.txt_color,
+        # "până la" tradus
+        tk.Label(time_container, text=f"  {ls.get_text(uid, 'sched_edit_until')}  ", bg=theme["bg"], fg=self.txt_color,
                  font=("Segoe UI", 9, "italic")).pack(side="left", padx=5)
 
-        # End Time (HH:MM)
+        # End Time
         self.end_hh = self.create_time_entry(time_container, entry_bg, 23)
         tk.Label(time_container, text=":", bg=theme["bg"], fg=self.txt_color, font=("bold")).pack(side="left")
         self.end_mm = self.create_time_entry(time_container, entry_bg, 59)
 
-        # Populăm casetele dacă avem date existente
         if current_data and "time" in current_data:
             self.parse_and_fill_time(current_data["time"])
 
         # --- BUTOANE ---
-        # Folosim culoarea success din temă pentru butonul de confirmare
-        tk.Button(self, text="Confirmă Programarea", command=self.handle_save,
+        # Confirmare programare tradusă
+        tk.Button(self, text=ls.get_text(uid, "sched_edit_btn_confirm"), command=self.handle_save,
                   bg=theme.get("success", "#2ECC71"),
                   fg="white", font=("Segoe UI", 11, "bold"), relief="flat", pady=12, cursor="hand2").pack(fill="x",
                                                                                                           pady=(30, 5))
 
         if current_data:
-            tk.Button(self, text="Elimină din Orar", command=lambda: [self.on_delete(self.cell_id), self.destroy()],
+            # Eliminare tradusă
+            tk.Button(self, text=ls.get_text(uid, "sched_edit_btn_remove"), command=lambda: [self.on_delete(self.cell_id), self.destroy()],
                       bg=theme.get("danger", "#E74C3C"), fg="white", font=("Segoe UI", 10),
                       relief="flat", pady=8, cursor="hand2").pack(fill="x")
 
     def create_time_entry(self, parent, bg, limit):
-        """Creează o casetă de text cu contrast optimizat pentru Dark Mode."""
         vcmd = (self.register(self.validate_time), '%P', limit)
         ent = tk.Entry(parent, width=3, font=("Segoe UI", 12, "bold"), justify="center",
                        relief="flat", bg=bg, fg=self.txt_color,
                        insertbackground=self.txt_color, validate='key', validatecommand=vcmd)
         ent.pack(side="left", padx=2, ipady=4)
-
         ent.bind("<KeyRelease>", lambda e: self.auto_focus(e.widget))
         return ent
 
@@ -112,19 +111,20 @@ class ScheduleEditUi(tk.Toplevel):
             pass
 
     def setup_modal(self, w, h):
-        ws = self.winfo_screenwidth()
-        hs = self.winfo_screenheight()
-        x = (ws / 2) - (w / 2)
-        y = (hs / 2) - (h / 2)
+        ws, hs = self.winfo_screenwidth(), self.winfo_screenheight()
+        x, y = (ws / 2) - (w / 2), (hs / 2) - (h / 2)
         self.geometry(f'{w}x{h}+{int(x)}+{int(y)}')
 
     def handle_save(self):
+        uid = self.user_id
+        ls = self.lang_service
         selected_group_name = self.group_combo.get()
         sh, sm = self.start_hh.get().strip(), self.start_mm.get().strip()
         eh, em = self.end_hh.get().strip(), self.end_mm.get().strip()
 
         if not selected_group_name or not all([sh, sm, eh, em]):
-            messagebox.showwarning("Atenție", "Te rugăm să alegi grupa și să completezi intervalul orar!")
+            # Avertisment tradus
+            messagebox.showwarning(ls.get_text(uid, "warning"), ls.get_text(uid, "sched_edit_err_fields"))
             return
 
         time_formatted = f"{sh.zfill(2)}:{sm.zfill(2)}-{eh.zfill(2)}:{em.zfill(2)}"
@@ -135,7 +135,7 @@ class ScheduleEditUi(tk.Toplevel):
             "time": time_formatted,
             "group_id": selected_group.get_id_entity() if selected_group else "",
             "teacher_id": self.user_id,
-            "absentees": []  # Inițializăm lista de absenți pentru celula nouă
+            "absentees": []
         }
 
         self.on_save(self.cell_id, data)

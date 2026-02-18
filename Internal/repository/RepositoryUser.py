@@ -63,15 +63,19 @@ class RepositoryUser:
 
     def set_new_path(self, new_data_path: str):
         """Schimbă locația fișierului la înregistrare."""
-        if new_data_path:
-            os.makedirs(new_data_path, exist_ok=True)
-            self.__filename = os.path.join(new_data_path, "Users.json")
-            # Dacă fișierul nu există în noua locație, îl creăm
-            if not os.path.exists(self.__filename):
-                with open(self.__filename, "w") as f:
-                    json.dump([], f)
-            # Reîncărcăm lista din noua locație
-            self.__user_list = self.__read()
+        try:
+            if new_data_path:
+                os.makedirs(new_data_path, exist_ok=True)
+                self.__filename = os.path.join(new_data_path, "Users.json")
+                # Dacă fișierul nu există în noua locație, îl creăm
+                if not os.path.exists(self.__filename):
+                    with open(self.__filename, "w") as f:
+                        json.dump([], f)
+                # Reîncărcăm lista din noua locație
+                self.__user_list = self.__read()
+                return [200, "OK"]
+        except FileNotFoundError:
+            return [404, "File not found!"]
 
     def __save(self):
         # Verificăm dacă avem o cale validă înainte de a deschide fișierul

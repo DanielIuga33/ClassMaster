@@ -1,14 +1,14 @@
 {
     "global": {
-        "tema": "light",
-        "language": "Romana",
+        "tema": "dark",
+        "language": "en",
         "rows_count": 5,
         "last_user": "DanielIuga33",
-        "last_data_path": "C:/Users/danie/Videos/Data"
+        "last_data_path": "D:/Programare/GithubProjects/ClassMaster/Data"
     },
     "ffda6b15-5d7b-4d43-a7c5-505535371194": {
         "tema": "dark_emerald",
-        "language": "Romana",
+        "language": "ro",
         "rows_count": 5
     }
 }

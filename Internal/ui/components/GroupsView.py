@@ -1,5 +1,5 @@
 import tkinter as tk
-
+from tkinter import messagebox, ttk
 from Internal.entity.Group import Group
 from Internal.ui.GroupEditUi import GroupEditUi
 
@@ -11,36 +11,35 @@ class GroupsView:
         self.colors = self.master.settings_service.get_colors(self.user_id)
 
     def render(self):
-        """Randarea tabelului de gestionare grupe cu scroll și control prin mouse."""
+        """Randarea tabelului de gestionare grupe cu suport multilingv."""
         self.master.clear_content()
-        colors = self.master.settings_service.get_colors(self.user_id)
+        uid = self.user_id
+        ls = self.master.language_service # Serviciul de limbă
+        colors = self.master.settings_service.get_colors(uid)
         txt_color = colors.get("schedule_text", colors["fg"])
 
-        # 1. Header principal
+        # 1. Header principal tradus
         header_frame = tk.Frame(self.parent, bg=colors["bg"])
         header_frame.pack(fill="x", pady=(0, 25))
 
-        tk.Label(header_frame, text="🏫 Gestiune Grupe", font=("Segoe UI", 26, "bold"),
+        tk.Label(header_frame, text=f"🏫 {ls.get_text(uid, 'menu_groups')}", font=("Segoe UI", 26, "bold"),
                  bg=colors["bg"], fg=colors["fg"]).pack(side="left")
 
-        tk.Button(header_frame, text="+ Grupă Nouă", command=self.master.open_add_group_modal,
+        tk.Button(header_frame, text=ls.get_text(uid, 'btn_add_group'), command=self.master.open_add_group_modal,
                   bg="#9B59B6", fg="white", font=("Segoe UI", 11, "bold"),
                   relief="flat", padx=25, pady=12, cursor="hand2").pack(side="right")
 
-        # 2. Container Scrollbar (Canvas + Frame)
+        # 2. Container Scrollbar
         canvas_container = tk.Frame(self.parent, bg=colors["bg"])
         canvas_container.pack(fill="both", expand=True)
 
         canvas = tk.Canvas(canvas_container, bg=colors["bg"], highlightthickness=0)
         scrollbar = tk.Scrollbar(canvas_container, orient="vertical", command=canvas.yview)
-
-        # Frame-ul interior pentru conținut
         table_inner = tk.Frame(canvas, bg=colors["bg"])
         canvas_window = canvas.create_window((0, 0), window=table_inner, anchor="nw")
 
         canvas.configure(yscrollcommand=scrollbar.set)
 
-        # --- LOGICĂ SCROLL SIGURĂ ---
         def _on_mousewheel(event):
             try:
                 if canvas.winfo_exists():
@@ -62,12 +61,17 @@ class GroupsView:
         table_inner.bind("<Configure>", _on_frame_configure)
         canvas.bind("<Configure>", lambda e: canvas.itemconfig(canvas_window, width=e.width))
 
-        # --- Header Tabel ---
+        # --- Header Tabel Tradus ---
         header_table = tk.Frame(table_inner, bg=colors["input_bg"])
         header_table.pack(fill="x")
 
-        headers = ["Nume Grupă", "Membri & Tarife", "Total / Ședință", "Acțiuni"]
-        widths = [25, 40, 15, 20]  # Distribuție lățime coloane
+        headers = [
+            ls.get_text(uid, "col_group_name"),
+            ls.get_text(uid, "col_members_rates"),
+            ls.get_text(uid, "col_total_session"),
+            ls.get_text(uid, "col_actions")
+        ]
+        widths = [25, 40, 15, 20]
 
         for i, h in enumerate(headers):
             tk.Label(header_table, text=h.upper(), font=("Segoe UI", 10, "bold"),
@@ -75,7 +79,7 @@ class GroupsView:
                                                                                          expand=True)
 
         # 3. Populare rânduri
-        groups = sorted(self.master.group_service.get_groups_for_teacher(self.user_id),
+        groups = sorted(self.master.group_service.get_groups_for_teacher(uid),
                         key=lambda group: group.get_group_name())
 
         for idx, g in enumerate(groups):

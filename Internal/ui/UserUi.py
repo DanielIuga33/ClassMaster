@@ -1,10 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
 from datetime import datetime, timedelta
-import json
-import os
-from tkcalendar import DateEntry
-
 from Internal.service.GroupService import GroupService
 from Internal.service.LanguageService import LanguageService
 from Internal.service.PresetService import PresetService
@@ -37,38 +33,38 @@ class UserUi:
         self.group_service = group_service
         self.preset_service = preset_service
         self.schedule_service = schedule_service
-        self.language_service = language_service
+        self.language_service = language_service  # Serviciul de limbă injectat
         self.colors = self.settings_service.get_colors(user.get_id_entity())
 
-        # 1. Date de referință și configurări
+        # 1. Date de referință
         self.current_date = datetime.now()
+        uid = self.user.get_id_entity()
 
-        # 2. Configurare fereastră principală
-        self.root.title(f"ClassMaster - Panou Control: {user.get_first_name()}")
+        # 2. Configurare fereastră principală cu titlu tradus
+        app_title = self.language_service.get_text(uid, "app_title")
+        self.root.title(f"{app_title} - {user.get_first_name()}")
         self.setup_window(1725, 800)
         self.root.configure(bg=self.colors["bg"])
 
-        # 3. Crearea structurii de layout (Containerele)
-        # --- Sidebar ---
+        # 3. Layout
         self.sidebar = tk.Frame(self.root, bg=self.colors["sidebar_bg"], width=260)
         self.sidebar.pack(side="left", fill="y")
         self.sidebar.pack_propagate(False)
 
-        # --- Zona de Conținut Principală (Aici se vor randa componentele) ---
         self.main_content = tk.Frame(self.root, bg=self.colors["bg"], padx=40, pady=40)
         self.main_content.pack(side="right", expand=True, fill="both")
 
-        # 4. Inițializarea Componentelor (Acum main_content EXISTĂ în self)
+        # 4. Componente
         self.dashboard_component = DashboardView(self.main_content, self)
         self.schedule_component = ScheduleView(self.main_content, self)
         self.students_component = StudentsView(self.main_content, self)
         self.groups_component = GroupsView(self.main_content, self)
         self.settings_component = SettingsView(self.main_content, self)
 
-        # 5. Popularea Sidebar-ului (Meniu și Profil)
+        # 5. Sidebar
         self.setup_sidebar_content(user)
 
-        # 6. Afișarea paginii de start
+        # 6. Start
         self.show_dashboard()
 
     def setup_window(self, w, h):
@@ -80,7 +76,9 @@ class UserUi:
         self.root.geometry(f'{int(w)}x{int(h)}+{int(x)}+{int(y)}')
 
     def setup_sidebar_content(self, user):
-        """Configurează elementele vizuale din sidebar."""
+        """Configurează elementele vizuale din sidebar cu traduceri."""
+        uid = user.get_id_entity()
+
         if self.schedule_service.get_schedule_data():
             current_rows = self.schedule_service.get_schedule_data().get("total_rows", 5)
             self.rows_var = tk.IntVar(value=max(2, current_rows))
@@ -94,14 +92,17 @@ class UserUi:
         tk.Label(profile_frame, text=f"{user.get_first_name()} {user.get_last_name()}",
                  font=("Segoe UI", 11, "bold"), bg=self.colors["sidebar_bg"], fg=self.colors["fg"]).pack(pady=10)
 
-        # Butoane Meniu
-        self.create_menu_button("🏠 Dashboard", self.show_dashboard)
-        self.create_menu_button("📅 Orar Interactiv", self.show_schedule)
-        self.create_menu_button("👥 Gestiune Studenți", lambda: self.show_students("grade"))
-        self.create_menu_button("🏫 Gestiune Grupe", self.show_groups)
-        self.create_menu_button("⚙️ Setări Profil", self.show_settings)
+        # Butoane Meniu Traduse
+        self.create_menu_button(f"🏠 {self.language_service.get_text(uid, 'menu_dashboard')}", self.show_dashboard)
+        self.create_menu_button(f"📅 {self.language_service.get_text(uid, 'menu_schedule')}", self.show_schedule)
+        self.create_menu_button(f"👥 {self.language_service.get_text(uid, 'menu_students')}",
+                                lambda: self.show_students("grade"))
+        self.create_menu_button(f"🏫 {self.language_service.get_text(uid, 'menu_groups')}", self.show_groups)
+        self.create_menu_button(f"⚙️ {self.language_service.get_text(uid, 'menu_settings')}", self.show_settings)
 
-        tk.Button(self.sidebar, text="🚪 Deconectare", command=self.on_logout,
+        # Deconectare tradus
+        logout_text = self.language_service.get_text(uid, "btn_logout")
+        tk.Button(self.sidebar, text=f"🚪 {logout_text}", command=self.on_logout,
                   font=("Segoe UI", 11), bg="#E74C3C", fg="white", relief="flat",
                   cursor="hand2", pady=10).pack(side="bottom", fill="x", padx=20, pady=20)
 
@@ -116,67 +117,61 @@ class UserUi:
         for widget in self.main_content.winfo_children():
             widget.destroy()
 
-    # --- Secțiunea ORAR (Folosește noua componentă) ---
     def show_schedule(self):
         self.clear_content()
         self.schedule_component.render()
 
-    # --- Logică Preseturi (Rămân aici ca funcții suport pentru moment) ---
     def save_as_preset(self):
-        """Deschide fereastra modernă de salvare preset."""
-        # Creăm instanța noii ferestre și îi transmitem funcția de procesare
-        PresetSaveUi(self.root, self.colors, self.process_preset_creation)
+        PresetSaveUi(self.root, self.colors, self.process_preset_creation,
+                     self.language_service, self.user.get_id_entity())
 
     def process_preset_creation(self, name):
-        """Logica de scriere a datelor în JSON după ce userul a ales numele."""
+        uid = self.user.get_id_entity()
         start_of_week = self.current_date - timedelta(days=self.current_date.weekday())
-        teacher_id = self.user.get_id_entity()
         data_to_save = {}
 
         for row in range(1, self.rows_var.get() + 1):
             for col in range(6):
                 date_str = (start_of_week + timedelta(days=col)).strftime('%Y-%m-%d')
-                cell_key = f"{teacher_id}_{date_str}_R{row}_raw"
+                cell_key = f"{uid}_{date_str}_R{row}_raw"
                 if cell_key in self.schedule_service.get_schedule_data():
                     data_to_save[f"D{col}_R{row}"] = self.schedule_service.get_schedule_data()[cell_key]
 
         if data_to_save:
-            status = self.preset_service.create_preset(teacher_id, name, data_to_save)
+            status = self.preset_service.create_preset(uid, name, data_to_save)
             if status[0] == 201:
-                # ÎNLOCUIT: messagebox.showinfo -> show_toast
-                self.show_toast(f"✅ Presetul '{name}' a fost salvat!")
+                msg = self.language_service.get_text(uid, "msg_preset_saved").replace("{name}", name)
+                self.show_toast(f"✅ {msg}")
             else:
-                self.show_toast("❌ Numele de preset există deja.", "#E74C3C")
+                err = self.language_service.get_text(uid, "err_preset_exists")
+                self.show_toast(f"❌ {err}", "#E74C3C")
 
     def open_presets_manager(self):
-        teacher_id = self.user.get_id_entity()
-        presets = self.preset_service.get_all_presets_for_teacher(teacher_id)
+        uid = self.user.get_id_entity()
+        presets = self.preset_service.get_all_presets_for_teacher(uid)
 
         if not presets:
-            messagebox.showinfo("Info", "Nu ai preseturi salvate.")
+            info_msg = self.language_service.get_text(uid, "msg_no_presets")
+            messagebox.showinfo("Info", info_msg)
             return
 
         manager = tk.Toplevel(self.root)
-        manager.title("Gestionare Preseturi")
+        manager_title = self.language_service.get_text(uid, "title_preset_manager")
+        manager.title(manager_title)
 
-        # --- CENTRARE FEREASTRĂ ---
         w, h = 450, 550
-        ws = manager.winfo_screenwidth()
-        hs = manager.winfo_screenheight()
-        x = (ws / 2) - (w / 2)
-        y = (hs / 2) - (h / 2)
-        manager.geometry(f'{w}x{h}+{int(x)}+{int(y)}')
-
+        ws, hs = manager.winfo_screenwidth(), manager.winfo_screenheight()
+        manager.geometry(f'{w}x{h}+{int((ws / 2) - (w / 2))}+{int((hs / 2) - (h / 2))}')
         manager.configure(bg=self.colors["bg"], padx=25, pady=25)
         manager.grab_set()
 
-        # Titlu modern
-        tk.Label(manager, text="📋 Preseturi Salvate", font=("Segoe UI", 14, "bold"),
+        tk.Label(manager, text=f"📋 {manager_title}", font=("Segoe UI", 14, "bold"),
                  bg=self.colors["bg"], fg=self.colors["accent"]).pack(pady=(0, 20))
 
-        # Container scrollabil pentru listă (dacă ai multe preseturi)
         container = tk.Frame(manager, bg=self.colors["bg"])
         container.pack(fill="both", expand=True)
+
+        apply_text = self.language_service.get_text(uid, "btn_apply")
 
         for p in presets:
             row = tk.Frame(container, bg=self.colors["card_bg"], pady=12, padx=15,
@@ -187,46 +182,36 @@ class UserUi:
                      fg=self.colors.get("schedule_text", "#FFFFFF"),
                      font=("Segoe UI", 11, "bold")).pack(side="left")
 
-            # Buton Ștergere
             tk.Button(row, text="🗑️", bg="#E74C3C", fg="white", relief="flat",
-                      command=lambda preset_obj=p: [
-                          self.preset_service.delete_preset(preset_obj),
+                      command=lambda po=p: [
+                          self.preset_service.delete_preset(po),
                           manager.destroy(),
-                          self.show_toast("🗑️ Preset șters cu succes!", "#34495E"),  # Notificare discretă
+                          self.show_toast(f"🗑️ {self.language_service.get_text(uid, 'msg_preset_deleted')}", "#34495E"),
                           self.open_presets_manager()
                       ]).pack(side="right", padx=5)
 
-            # Buton Aplică
-            tk.Button(row, text="📋 Aplică", bg="#8E44AD", fg="white", relief="flat", font=("Segoe UI", 9, "bold"),
-                      cursor="hand2", padx=10,
-                      command=lambda preset_obj=p: [self.apply_preset_logic(preset_obj),
-                                                    manager.destroy()]).pack(side="right", padx=5)
+            tk.Button(row, text=f"📋 {apply_text}", bg="#8E44AD", fg="white", relief="flat",
+                      font=("Segoe UI", 9, "bold"), cursor="hand2", padx=10,
+                      command=lambda po=p: [self.apply_preset_logic(po), manager.destroy()]).pack(side="right", padx=5)
 
     def apply_preset_logic(self, preset_obj):
-        """Aplică presetul asigurându-se că absențele sunt resetate pentru noua săptămână."""
         start_of_week = self.current_date - timedelta(days=self.current_date.weekday())
-        teacher_id = self.user.get_id_entity()
+        uid = self.user.get_id_entity()
 
         for key, data in preset_obj.get_data().items():
-            # key este de forma "D0_R1" (Day 0, Row 1)
             parts = key.split('_')
             day_idx = int(parts[0][1:])
             row_num = parts[1][1:]
-
             target_date = (start_of_week + timedelta(days=day_idx)).strftime('%Y-%m-%d')
 
-            # REPARAȚIA: Facem o copie a datelor, dar RESETĂM lista de absenți
             new_data = data.copy()
-            new_data['absentees'] = []  # Această săptămână începe de la zero cu prezența
+            new_data['absentees'] = []
+            self.schedule_service.get_schedule_data()[f"{uid}_{target_date}_R{row_num}_raw"] = new_data
 
-            # Salvăm sub cheia unică a datei calendaristice specifice
-            self.schedule_service.get_schedule_data()[f"{teacher_id}_{target_date}_R{row_num}_raw"] = new_data
-
-        self.save_schedule_data()
+        self.schedule_service.save_schedule_data()
         self.show_schedule()
 
-    # --- Navigare Dată ---
-    def on_date_selected(self, event):
+    def on_date_selected(self):
         selected_date = self.schedule_component.cal_select.get_date()
         self.current_date = datetime.combine(selected_date, datetime.min.time())
         self.root.after(100, self.show_schedule)
@@ -242,10 +227,9 @@ class UserUi:
     def update_rows_count(self):
         new_count = self.rows_var.get()
         self.schedule_service.get_schedule_data()["total_rows"] = new_count
-        self.save_schedule_data()
+        self.schedule_service.save_schedule_data()
         self.show_schedule()
 
-    # --- Studenți & Grupe (Urmează să fie mutate în componente) ---
     def show_students(self, sort_by="grade"):
         self.students_component.render(sort_by)
 
@@ -253,25 +237,22 @@ class UserUi:
         self.groups_component.render()
 
     def go_to_today(self):
-        """Resetează calendarul la data curentă a sistemului."""
         self.current_date = datetime.now()
-        # Afișăm o notificare discretă pentru confirmare
-        self.show_toast("🏠 Revenit la săptămâna curentă")
+        msg = self.language_service.get_text(self.user.get_id_entity(), "msg_returned_today")
+        self.show_toast(f"🏠 {msg}")
         self.show_schedule()
 
     def open_group_assignment_modal(self, cell_id):
-        unique_key = f"{self.user.get_id_entity()}_{cell_id}"
-        current_data = self.schedule_service.get_schedule_data().get(f"{unique_key}_raw", None)
-
-        # Ne asigurăm că trimitem culorile proaspete ale utilizatorului
         uid = self.user.get_id_entity()
+        unique_key = f"{uid}_{cell_id}"
+        current_data = self.schedule_service.get_schedule_data().get(f"{unique_key}_raw", None)
         user_colors = self.settings_service.get_colors(uid)
 
-        # Deschidem modalul cu tema completă
         ScheduleEditUi(parent=self.root, theme=user_colors, cell_id=cell_id,
                        day=cell_id.split('_')[0], current_data=current_data,
                        on_save=self.process_schedule_save, on_delete=self.process_schedule_delete,
                        group_service=self.group_service, user_id=uid)
+
 
     def get_formatted_students(self, data):
         group_id = data.get('group_id')
@@ -291,7 +272,7 @@ class UserUi:
     def open_add_student_modal(self):
         StudentAddUi(parent=self.root, theme=self.colors, user_id=self.user.get_id_entity(),
                      student_service=self.student_service, on_success=self.show_students,
-                     settings_service=self.settings_service)
+                     settings_service=self.settings_service, lang_service=self.language_service)
 
     def handle_delete_student(self, student):
         if messagebox.askyesno("Confirmare", f"Ștergi studentul {student.get_last_name()} {student.get_first_name()}?"):
@@ -300,7 +281,8 @@ class UserUi:
 
     def open_add_group_modal(self):
         GroupAddUi(parent=self.root, theme=self.colors, user_id=self.user.get_id_entity(),
-                   group_service=self.group_service, student_service=self.student_service, on_success=self.show_groups)
+                   group_service=self.group_service, student_service=self.student_service, on_success=self.show_groups,
+                   lang_service=self.language_service)
 
     def handle_delete_group(self, group):
         if messagebox.askyesno("Confirmare", f"Ștergi grupa {group.get_group_name()}?"):
@@ -342,7 +324,6 @@ class UserUi:
             self.schedule_service.save_schedule_data()
             self.show_schedule()
 
-    # --- Dashboard & Setări ---
     def show_dashboard(self):
         self.clear_content()
         self.dashboard_component.render()
@@ -352,57 +333,51 @@ class UserUi:
         self.settings_component.render()
 
     def toggle_theme_ui(self):
-        """Reîmprospătează culorile și randează din nou interfața."""
+        """Reîmprospătează culorile și randează interfața."""
         uid = self.user.get_id_entity()
-
-        # IMPORTANT: Actualizăm variabila locală de culori cu noua temă salvată
         self.colors = self.settings_service.get_colors(uid)
 
-        # 1. Actualizăm fundalul ferestrei principale și al containerelor
+        # Update UI title (could have changed with language)
+        app_title = self.language_service.get_text(uid, "app_title")
+        self.root.title(f"{app_title} - {self.user.get_first_name()}")
+
         self.root.configure(bg=self.colors["bg"])
         self.main_content.configure(bg=self.colors["bg"])
 
-        # 2. Resetăm sidebar-ul (pentru a aplica culorile noi pe butoane și fundal)
         for widget in self.sidebar.winfo_children():
             widget.destroy()
         self.sidebar.configure(bg=self.colors["sidebar_bg"])
         self.setup_sidebar_content(self.user)
-
-        # 3. Forțăm SettingsView să se deseneze din nou pentru a vedea schimbarea
         self.show_settings()
 
     def show_toast(self, message, color="#2ECC71"):
-        """Afișează o notificare discretă în partea de jos a ecranului."""
+        """Afișează o notificare discretă."""
         toast = tk.Toplevel(self.root)
-        toast.overrideredirect(True)  # Elimină marginile ferestrei de sistem
+        toast.overrideredirect(True)
         toast.attributes("-topmost", True)
-        toast.attributes("-alpha", 0.0)  # Începe invizibil pentru animație
+        toast.attributes("-alpha", 0.0)
 
-        # Design-ul notificării
         label = tk.Label(toast, text=message, bg=color, fg="white",
                          padx=20, pady=10, font=("Segoe UI", 10, "bold"))
         label.pack()
 
-        # Poziționare în partea de jos, central
         self.root.update_idletasks()
         x = self.root.winfo_x() + (self.root.winfo_width() // 2) - (label.winfo_reqwidth() // 2)
         y = self.root.winfo_y() + self.root.winfo_height() - 70
         toast.geometry(f"+{int(x)}+{int(y)}")
 
-        # Animație de Fade In
         def fade_in():
-            alpha = toast.attributes("-alpha")
-            if alpha < 0.9:
-                toast.attributes("-alpha", alpha + 0.1)
-                self.root.after(30, fade_in)
-            else:
-                # Dispare automat după 3 secunde
-                self.root.after(3000, lambda: self.fade_out(toast))
+            if toast.winfo_exists():
+                alpha = toast.attributes("-alpha")
+                if alpha < 0.9:
+                    toast.attributes("-alpha", alpha + 0.1)
+                    self.root.after(30, fade_in)
+                else:
+                    self.root.after(3000, lambda: self.fade_out(toast))
 
         fade_in()
 
     def fade_out(self, window):
-        """Efect de dispariție treptată."""
         if window.winfo_exists():
             alpha = window.attributes("-alpha")
             if alpha > 0.0:

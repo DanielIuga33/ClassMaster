@@ -44,7 +44,7 @@ class UserService:
         self.__repository.modify_user(user_old, user_new)
 
     def set_repository_path(self, path):
-        self.__repository.set_new_path(path)
+        return self.__repository.set_new_path(path)
 
     def delete_user(self, email: str, password: str):
         for user in self.__repository.get_all():

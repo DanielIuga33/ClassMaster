@@ -1,22 +1,25 @@
 import tkinter as tk
 from tkinter import messagebox
-
 from Internal.service.SettingsService import SettingsService
 from Internal.service.StudentService import StudentService
-
+from Internal.service.LanguageService import LanguageService # Import pentru localizare
 
 class StudentAddUi(tk.Toplevel):
     def __init__(self, parent, theme, user_id, student_service: StudentService, on_success,
-                 settings_service: SettingsService):
+                 settings_service: SettingsService, lang_service: LanguageService): # Injectăm lang_service
         super().__init__(parent)
         self.theme = theme
         self.user_id = user_id
         self.student_service = student_service
         self.on_success = on_success
         self.settings_service = settings_service
+        self.lang_service = lang_service
+
+        uid = self.user_id
+        ls = self.lang_service
 
         # Preluăm setul complet de culori și culoarea de contrast dedicată
-        self.colors = self.settings_service.get_colors(self.user_id)
+        self.colors = self.settings_service.get_colors(uid)
         self.txt_color = self.colors.get("schedule_text", self.colors["fg"])
 
         self.configure(bg=self.colors["bg"])
@@ -24,29 +27,27 @@ class StudentAddUi(tk.Toplevel):
         # Înregistrăm funcția de validare pentru caractere romane
         self.vcmd_roman = (self.register(self.validate_roman_entry), '%S')
 
-        self.title("Adaugă Student Nou")
+        # Titlu fereastră tradus
+        self.title(ls.get_text(uid, "student_add_title"))
         self.setup_modal(350, 520)
         self.configure(padx=25, pady=25)
         self.grab_set()
 
-        # Titlu - Folosim culoarea de accent pentru consistență vizuală
-        tk.Label(self, text="👤 Student Nou", font=("Segoe UI", 16, "bold"),
+        # Titlu Header tradus
+        tk.Label(self, text=f"👤 {ls.get_text(uid, 'student_add_header')}", font=("Segoe UI", 16, "bold"),
                  bg=self.colors["bg"], fg=self.colors["accent"]).pack(pady=(0, 20))
 
         # Câmpuri
         self.entries = {}
 
-        # Câmpul Nume
-        self.create_field("Nume", "ln")
+        # Nume și Prenume traduse
+        self.create_field(ls.get_text(uid, "reg_last_name"), "ln")
+        self.create_field(ls.get_text(uid, "reg_first_name"), "fn")
 
-        # Câmpul Prenume
-        self.create_field("Prenume", "fn")
-
-        # Câmpul Clasă cu validare ROMANĂ
-        tk.Label(self, text="Clasă (Cifre Romane: I, V, X...)", bg=self.colors["bg"],
+        # Câmpul Clasă cu validare ROMANĂ și instrucțiuni traduse
+        tk.Label(self, text=ls.get_text(uid, "student_grade_label"), bg=self.colors["bg"],
                  fg=self.txt_color, font=("Segoe UI", 9, "bold")).pack(anchor="w")
 
-        # REPARARE FUNDAL: Folosim input_bg din temă și culoarea forțată de text
         grade_ent = tk.Entry(self, font=("Segoe UI", 11), relief="flat",
                              bg=self.colors["input_bg"],
                              fg=self.txt_color,
@@ -58,11 +59,11 @@ class StudentAddUi(tk.Toplevel):
         grade_ent.bind("<KeyRelease>", lambda e: self.to_uppercase(grade_ent))
         self.entries["gr"] = grade_ent
 
-        # Câmpul Preț
-        self.create_field("Preț Ședință (RON)", "pr")
+        # Câmpul Preț tradus
+        self.create_field(ls.get_text(uid, "col_price_h"), "pr")
 
-        # Buton Salvare - Folosim culoarea success din temă
-        tk.Button(self, text="Salvează Student", command=self.handle_save,
+        # Buton Salvare tradus
+        tk.Button(self, text=ls.get_text(uid, "btn_save_student"), command=self.handle_save,
                   bg=self.colors.get("success", "#2ECC71"), fg="white", font=("Segoe UI", 11, "bold"),
                   relief="flat", pady=12, cursor="hand2").pack(fill="x", pady=(15, 0))
 
@@ -71,7 +72,6 @@ class StudentAddUi(tk.Toplevel):
         tk.Label(self, text=label_text, bg=self.colors["bg"], fg=self.txt_color,
                  font=("Segoe UI", 9, "bold")).pack(anchor="w")
 
-        # Eliminăm culorile hardcoded (#E8F0FE / #333)
         ent = tk.Entry(self, font=("Segoe UI", 11), relief="flat",
                        bg=self.colors["input_bg"],
                        fg=self.txt_color,
@@ -100,19 +100,23 @@ class StudentAddUi(tk.Toplevel):
         self.geometry(f'{w}x{h}+{int(x)}+{int(y)}')
 
     def handle_save(self):
+        uid = self.user_id
+        ls = self.lang_service
         fn = self.entries['fn'].get().strip()
         ln = self.entries['ln'].get().strip()
         gr = self.entries['gr'].get().strip()
         pr = self.entries['pr'].get().strip()
 
         if not all([gr, pr]):
-            messagebox.showwarning("Atenție", "Toate câmpurile sunt obligatorii!")
+            # Avertisment tradus
+            messagebox.showwarning(ls.get_text(uid, "warning"), ls.get_text(uid, "err_fill_fields"))
             return
 
-        res = self.student_service.add_student(fn, ln, gr, pr, self.user_id)
+        res = self.student_service.add_student(fn, ln, gr, pr, uid)
 
         if res[0] == 201:
             self.on_success()
             self.destroy()
         else:
-            messagebox.showerror("Eroare", res[1])
+            # Eroare tradusă
+            messagebox.showerror(ls.get_text(uid, "error"), res[1])

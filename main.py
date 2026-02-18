@@ -36,7 +36,7 @@ class MainController:
 
     def show_start_screen(self):
         self.clear_screen()
-        StartUi(self.root, self.show_login, self.show_register, self.settings_service)
+        StartUi(self.root, self.show_login, self.show_register, self.settings_service, self.language_service)
 
     def show_login(self):
         self.clear_screen()
@@ -49,7 +49,8 @@ class MainController:
             self.login_success,
             self.settings_service,
             self.schedule_service,
-            self.show_start_screen
+            self.show_start_screen,
+            self.language_service
         )
 
     def show_register(self):
@@ -58,7 +59,8 @@ class MainController:
             self.root,
             self.user_service,
             self.show_start_screen,
-            self.settings_service
+            self.settings_service,
+            self.language_service
         )
 
     def login_success(self, user):
