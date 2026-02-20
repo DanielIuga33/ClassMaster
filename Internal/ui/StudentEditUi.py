@@ -110,4 +110,5 @@ class StudentEditUi(tk.Toplevel):
 
     def setup_modal(self, w, h):
         ws, hs = self.winfo_screenwidth(), self.winfo_screenheight()
-        self.geometry(f'{w}x{h}+{int((ws / 2) - (w / 2))}+{int((hs / 2) - (h / 2))}')
+        self.geometry(f'{w}x{h}+{int((ws / 2) - (w / 2))}+{int((hs / 2) - (h / 2))}'
+                      )

@@ -128,7 +128,7 @@ class SettingsView:
         self.lang_combo = ttk.Combobox(l_controls, values=["Română", "English"], state="readonly", width=15,
                                        font=("Segoe UI", 11))
 
-        current_lang_raw = self.master.settings_service.get_user_settings(uid).get("language", "ro")
+        current_lang_raw = self.master.settings_service.get_user_settings(uid).get("language")
         self.lang_combo.set("Română" if current_lang_raw == "ro" else "English")
         self.lang_combo.pack(side="left", padx=15)
 

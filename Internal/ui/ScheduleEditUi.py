@@ -2,7 +2,8 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 
 class ScheduleEditUi(tk.Toplevel):
-    def __init__(self, parent, theme, cell_id, day, current_data, on_save, on_delete, group_service, user_id, lang_service):
+    def __init__(self, parent, theme, cell_id, day, current_data, on_save, on_delete, group_service,
+                 user_id, lang_service):
         super().__init__(parent)
         self.theme = theme
         self.on_save = on_save
@@ -10,7 +11,7 @@ class ScheduleEditUi(tk.Toplevel):
         self.cell_id = cell_id
         self.group_service = group_service
         self.user_id = user_id
-        self.lang_service = lang_service # Serviciul de limbă injectat
+        self.lang_service = lang_service  # Serviciul de limbă injectat
 
         uid = self.user_id
         ls = self.lang_service

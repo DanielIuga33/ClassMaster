@@ -1,0 +1,10 @@
+{
+    "tema": "dark",
+    "language": "ro",
+    "rows_count": 5,
+    "global": {
+        "tema": "light",
+        "language": "en",
+        "rows_count": 5
+    }
+}

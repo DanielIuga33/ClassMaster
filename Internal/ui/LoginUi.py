@@ -129,7 +129,7 @@ class LoginUi:
         if folder:
             self.entry_path.delete(0, tk.END)
             self.entry_path.insert(0, folder)
-            self.settings_service.save_user_setting("global", "last_data_path", folder)
+            self.settings_service.save_for_global("last_data_path", folder)
 
     def handle_login(self):
         self.root.unbind('<Return>')
@@ -163,8 +163,8 @@ class LoginUi:
 
         if user:
             self.settings_service.get_colors(user.get_id_entity())
-            self.settings_service.save_user_setting("global", "last_user", identifier)
-            self.settings_service.save_user_setting("global", "last_data_path", data_path)
+            self.settings_service.save_for_global("last_user", identifier)
+            self.settings_service.save_for_global("last_data_path", data_path)
 
             # Mesaj succes tradus
             welcome_msg = self.lang_service.get_text("global", "msg_welcome")

@@ -126,7 +126,9 @@
     "err_fill_fields": "Toate câmpurile sunt obligatorii!",
     "student_edit_window_title": "Editare Student: {name}",
     "student_edit_header": "Editare Student",
-    "err_roman_only": "Folosește doar cifre romane (I, V, X)!"
+    "err_roman_only": "Folosește doar cifre romane (I, V, X)!",
+    "msg_delete_student_confirm": "Sigur dorești să ștergi studentul {name}?",
+    "msg_delete_group_confirm": "Sigur dorești să ștergi grupa {name}?"
   },
   "en": {
     "app_title": "ClassMaster",
@@ -255,7 +257,9 @@
     "err_fill_fields": "All fields are mandatory!",
     "student_edit_window_title": "Edit Student: {name}",
     "student_edit_header": "Edit Student",
-    "err_roman_only": "Use Roman numerals only (I, V, X)!"
+    "err_roman_only": "Use Roman numerals only (I, V, X)!",
+    "msg_delete_student_confirm": "Are you sure you want to delete student {name}?",
+    "msg_delete_group_confirm": "Are you sure you want to delete group {name}?"
   }
 }
 

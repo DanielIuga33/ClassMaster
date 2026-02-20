@@ -7,7 +7,7 @@ class SettingsService:
         self.__settings_path = None
         self.__default_user_config = {
             "tema": "light",
-            "language": "Romana",
+            "language": "ro",
             "rows_count": 5
         }
         self.all_users_settings = self.load_settings()
@@ -16,7 +16,7 @@ class SettingsService:
         """Citește baza de date de setări de pe disc."""
         if not self.__settings_path or not os.path.exists(self.__settings_path):
             try:
-                with open("Data/Settings.json", "r") as f:
+                with open("Internal/Resources/Settings.json", "r") as f:
                     return json.load(f)
             except (json.JSONDecodeError, IOError):
                 return {}
@@ -39,6 +39,9 @@ class SettingsService:
 
     def get_user_settings(self, user_id):
         """Reîncarcă setările pentru a asigura sincronizarea între ecrane."""
+        if user_id == "global":
+            with open("Internal/Resources/Settings.json", "r") as f:
+                return json.load(f)
         self.all_users_settings = self.load_settings()
         return self.all_users_settings.get(user_id, self.__default_user_config.copy())
 
@@ -54,23 +57,30 @@ class SettingsService:
         self.all_users_settings = self.load_settings()
 
         if user_id not in self.all_users_settings:
+            print("NU este")
             self.all_users_settings[user_id] = self.__default_user_config.copy()
 
         self.all_users_settings[user_id][key] = value
         if not self.__settings_path:
-            self.__settings_path = "Data/Settings.Json"
+            print("Am ajuns aici ")
+            self.__settings_path = "Internal/Data/Settings.Json"
         if user_id == "global":
-            os.makedirs(os.path.dirname("Data/Settings.Json"), exist_ok=True)
-            with open("Data/Settings.Json", "w") as f:
-                json.dump(self.all_users_settings, f, indent=4)
-                self.all_users_settings = self.load_settings()
-                return
+            print("Sunt Global dar ama ajuns in save user settings")
+            self.save_for_global(key, value)
         os.makedirs(os.path.dirname(self.__settings_path), exist_ok=True)
         with open(self.__settings_path, "w") as f:
             json.dump(self.all_users_settings, f, indent=4)
-
         # Sincronizăm memoria locală imediat după salvare
         self.all_users_settings = self.load_settings()
+
+    def save_for_global(self, key, value):
+        os.makedirs(os.path.dirname("Internal/Resources/Settings.Json"), exist_ok=True)
+        with open("Internal/Resources/Settings.json", "r") as f:
+            global_user = json.load(f)
+            global_user[key] = value
+        with open("Internal/Resources/Settings.Json", "w") as f:
+            json.dump(global_user, f, indent=4)
+            return
 
     def get_colors(self, user_id=None):
         """Metodă sigură care returnează întotdeauna un dicționar valid."""

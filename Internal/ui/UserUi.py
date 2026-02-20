@@ -251,12 +251,12 @@ class UserUi:
         ScheduleEditUi(parent=self.root, theme=user_colors, cell_id=cell_id,
                        day=cell_id.split('_')[0], current_data=current_data,
                        on_save=self.process_schedule_save, on_delete=self.process_schedule_delete,
-                       group_service=self.group_service, user_id=uid)
-
+                       group_service=self.group_service, user_id=uid, lang_service=self.language_service)
 
     def get_formatted_students(self, data):
         group_id = data.get('group_id')
-        if not group_id: return ""
+        if not group_id:
+            return ""
         selected_group = self.group_service.get_group_by_id(group_id)
         student_list_text = ""
         if selected_group:
@@ -275,7 +275,17 @@ class UserUi:
                      settings_service=self.settings_service, lang_service=self.language_service)
 
     def handle_delete_student(self, student):
-        if messagebox.askyesno("Confirmare", f"Ștergi studentul {student.get_last_name()} {student.get_first_name()}?"):
+        uid = self.user.get_id_entity()
+        ls = self.language_service
+
+        # Construim mesajul de confirmare dinamic
+        title = ls.get_text(uid, "confirmation")
+        # Folosim placeholder-ul {name} definit anterior în JSON pentru consistență
+        question = ls.get_text(uid, "msg_delete_student_confirm").replace("{name}",
+                                                                          f"{student.get_last_name()}"
+                                                                          f" {student.get_first_name()}")
+
+        if messagebox.askyesno(title, question):
             self.student_service.delete_student(student)
             self.show_students()
 
@@ -285,7 +295,14 @@ class UserUi:
                    lang_service=self.language_service)
 
     def handle_delete_group(self, group):
-        if messagebox.askyesno("Confirmare", f"Ștergi grupa {group.get_group_name()}?"):
+        uid = self.user.get_id_entity()
+        ls = self.language_service
+
+        # Construim mesajul de confirmare tradus
+        title = ls.get_text(uid, "confirmation")
+        question = ls.get_text(uid, "msg_delete_group_confirm").replace("{name}", group.get_group_name())
+
+        if messagebox.askyesno(title, question):
             self.group_service.delete_group(group.get_id_entity())
             self.show_groups()
 
