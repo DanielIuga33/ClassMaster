@@ -128,7 +128,11 @@
     "student_edit_header": "Editare Student",
     "err_roman_only": "Folosește doar cifre romane (I, V, X)!",
     "msg_delete_student_confirm": "Sigur dorești să ștergi studentul {name}?",
-    "msg_delete_group_confirm": "Sigur dorești să ștergi grupa {name}?"
+    "msg_delete_group_confirm": "Sigur dorești să ștergi grupa {name}?",
+    "msg_securing_data": "Securizăm datele cu noua parolă. Te rugăm să aștepți...",
+    "msg_pass_sync_error": "Eroare: Datele nu au putut fi re-criptate. Parola nu a fost schimbată.",
+    "confirm_title": "Confirmare Ștergere",
+    "confirm_delete_student": "Ești sigur că vrei să ștergi studentul {name}? Această acțiune este ireversibilă."
   },
   "en": {
     "app_title": "ClassMaster",
@@ -259,7 +263,11 @@
     "student_edit_header": "Edit Student",
     "err_roman_only": "Use Roman numerals only (I, V, X)!",
     "msg_delete_student_confirm": "Are you sure you want to delete student {name}?",
-    "msg_delete_group_confirm": "Are you sure you want to delete group {name}?"
+    "msg_delete_group_confirm": "Are you sure you want to delete group {name}?",
+    "msg_securing_data": "Securing data with the new password. Please wait...",
+    "msg_pass_sync_error": "Error: Data could not be re-encrypted. Password remained unchanged.",
+    "confirm_title": "Delete Confirmation",
+    "confirm_delete_student": "Are you sure you want to delete student {name}? This action cannot be undone."
   }
 }
 

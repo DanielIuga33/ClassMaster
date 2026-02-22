@@ -1,5 +1,6 @@
 import tkinter as tk
 from Internal.ui.StudentEditUi import StudentEditUi
+from tkinter import messagebox
 
 
 class StudentsView:
@@ -127,9 +128,21 @@ class StudentsView:
     def confirm_delete(self, student):
         user_id = self.master.user.get_id_entity()
         ls = self.master.language_service
-        self.master.student_service.delete_student(student)
 
-        # Mesaj ștergere tradus dinamic
-        msg = ls.get_text(user_id, "msg_student_deleted").replace("{name}", student.get_last_name())
-        self.master.show_toast(f"🗑️ {msg}", "#34495E")
-        self.render()
+        # Preluăm textele traduse pentru confirmare
+        title = ls.get_text(user_id, "confirm_title")  # ex: "Confirmare"
+        # ex: "Sigur vrei să ștergi studentul {name}?"
+        question = ls.get_text(user_id, "confirm_delete_student").replace("{name}", student.get_last_name())
+
+        # Afișăm fereastra de tip DA/NU
+        answer = messagebox.askyesno(title, question)
+
+        if answer:  # Dacă utilizatorul a apăsat "DA"
+            self.master.student_service.delete_student(student)
+            self.master.group_service.delete_cascade(student.get_id_entity())
+
+            # Mesaj ștergere tradus dinamic
+            msg = ls.get_text(user_id, "msg_student_deleted").replace("{name}", student.get_last_name())
+            self.master.show_toast(f"🗑️ {msg}", "#34495E")
+            self.render()
+

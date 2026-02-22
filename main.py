@@ -24,9 +24,9 @@ class MainController:
         self.language_service = LanguageService(self.settings_service)
         self.current_theme = self.settings_service.get_theme(user_id="global")
         self.user_service = UserService(RepositoryUser(""))
-        self.student_service = StudentService(RepositoryStudent(""))
-        self.group_service = GroupService(RepositoryGroup(""))
-        self.preset_service = PresetService(RepositoryPreset(""))
+        self.student_service = StudentService(RepositoryStudent("", None))
+        self.group_service = GroupService(RepositoryGroup("", None))
+        self.preset_service = PresetService(RepositoryPreset("", None))
         self.schedule_service = ScheduleService()
         self.show_start_screen()
 

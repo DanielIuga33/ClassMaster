@@ -1,35 +1,42 @@
 import json
 import os
+from Internal.security.EncryptionManager import EncryptionManager
 
 
 class ScheduleService:
     def __init__(self):
         self.__filename = None
         self.__schedule_data = []
+        self.__current_password = None
 
-    def set_schedule_path(self, new_data_path: str):
+    def set_schedule_path(self, new_data_path: str, password: str):
         if new_data_path:
+            self.__current_password = password
             os.makedirs(new_data_path, exist_ok=True)
-            self.__filename = os.path.join(new_data_path, "Schedule.json")
-            # Dacă fișierul nu există în noua locație, îl creăm
+
+            # 1. Schimbăm extensia în .enc
+            self.__filename = os.path.join(new_data_path, "Schedule.enc")
+
+            # 2. Dacă nu există, creăm un fișier criptat cu un dicționar gol
             if not os.path.exists(self.__filename):
-                with open(self.__filename, "w") as f:
-                    json.dump({}, f)
-            # Reîncărcăm lista din noua locație
+                EncryptionManager.encrypt_to_file(self.__filename, {}, self.__current_password)
+
+            # 3. Reîncărcăm datele (acum decriptate)
             self.__schedule_data = self.load_schedule_data()
 
     def load_schedule_data(self):
-        if not os.path.exists(self.__filename):
-            return []
-        try:
-            with open(self.__filename, "r") as f:
-                return json.load(f)
-        except json.JSONDecodeError:
-            return []
+        if not self.__filename or not os.path.exists(self.__filename):
+            return {}  # Returnăm dicționar pentru orar
+
+        # 4. Folosim decriptarea în loc de json.load
+        data = EncryptionManager.decrypt_from_file(self.__filename, self.__current_password)
+
+        return data if data is not None else {}
 
     def get_schedule_data(self):
         return self.__schedule_data
 
     def save_schedule_data(self):
-        os.makedirs("Data", exist_ok=True)
-        with open(self.__filename, "w") as f: json.dump(self.__schedule_data, f, indent=4)
+        if not self.__filename:
+            return
+        EncryptionManager.encrypt_to_file(self.__filename, self.__schedule_data, self.__current_password)

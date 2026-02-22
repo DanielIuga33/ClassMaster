@@ -6,7 +6,7 @@ from Internal.service.LanguageService import LanguageService # Import pentru ser
 
 class GroupAddUi(tk.Toplevel):
     def __init__(self, parent, theme, user_id, group_service: GroupService, student_service: StudentService,
-                 on_success, lang_service: LanguageService): # Injectăm lang_service
+                 on_success, lang_service: LanguageService):
         super().__init__(parent)
         self.theme = theme
         self.user_id = user_id

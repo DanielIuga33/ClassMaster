@@ -6,8 +6,9 @@ class GroupService:
     def __init__(self, repository: RepositoryGroup):
         self.__repository = repository
 
-    def set_repository_path(self, path):
-        self.__repository.set_new_path(path)
+    def set_repository_path(self, path, password):
+        # Trimitem atât calea cât și parola către repository
+        self.__repository.set_new_path(path, password)
 
     def add_group(self, name, ids, teacher_id):
         if not name:
@@ -27,6 +28,17 @@ class GroupService:
 
     def delete_group(self, group_id: str):
         self.__repository.delete_group(group_id)
+
+    def delete_cascade(self, student_id):
+        for group in self.__repository.get_all():
+            if student_id in self.get_group_students(group.get_id_entity()):
+                if len(self.get_group_students(group.get_id_entity())) < 2:
+                    self.delete_group(group.get_id_entity())
+                else:
+                    students = group.get_student_ids()
+                    students.remove(student_id)
+                    group.set_student_ids(students)
+                    self.__repository.modify_group(group, group)
 
     def get_groups_for_teacher(self, teacher_id):
         result = []

@@ -63,7 +63,7 @@ class SettingsService:
         self.all_users_settings[user_id][key] = value
         if not self.__settings_path:
             print("Am ajuns aici ")
-            self.__settings_path = "Internal/Data/Settings.Json"
+            self.__settings_path = "Internal/Resources/Settings.json"
         if user_id == "global":
             print("Sunt Global dar ama ajuns in save user settings")
             self.save_for_global(key, value)
@@ -74,11 +74,11 @@ class SettingsService:
         self.all_users_settings = self.load_settings()
 
     def save_for_global(self, key, value):
-        os.makedirs(os.path.dirname("Internal/Resources/Settings.Json"), exist_ok=True)
+        os.makedirs(os.path.dirname("Internal/Resources/Settings.json"), exist_ok=True)
         with open("Internal/Resources/Settings.json", "r") as f:
             global_user = json.load(f)
             global_user[key] = value
-        with open("Internal/Resources/Settings.Json", "w") as f:
+        with open("Internal/Resources/Settings.json", "w") as f:
             json.dump(global_user, f, indent=4)
             return
 

@@ -19,5 +19,6 @@ class PresetService:
         """Șterge un preset prin intermediul repository-ului."""
         return self.__repository.remove_preset(preset)
 
-    def set_repository_path(self, path):
-        self.__repository.set_new_path(path)
+    def set_repository_path(self, path, password):  # Adaugă 'password' aici
+        """Actualizează calea și parola pentru repository-ul de presetări."""
+        self.__repository.set_new_path(path, password)

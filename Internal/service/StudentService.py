@@ -1,9 +1,10 @@
 from Internal.repository.RepositoryStudent import RepositoryStudent
 
 
-def __roman_to_int(roman):
+def roman_to_int(roman):
     """Transformă cifre romane (I, V, X, XII) în numere întregi pentru sortare."""
-    if not roman: return 0
+    if not roman:
+        return 0
     # Curățăm textul de caractere extra (ex: "IX-a" -> "IX")
     roman = str(roman).split('-')[0].upper().strip()
 
@@ -84,8 +85,9 @@ class StudentService:
         if criteria == "grade":
             try:
                 # Sortare numerică folosind conversia din cifre romane
-                students.sort(key=lambda s: __roman_to_int(s.get_grade()), reverse=self.__reverse_toggle)
-            except:
+                students.sort(key=lambda s: roman_to_int(s.get_grade()), reverse=self.__reverse_toggle)
+            except Exception as e:
+                print(e)
                 students.sort(key=lambda s: str(s.get_grade()), reverse=self.__reverse_toggle)
 
         elif criteria == "price":
@@ -102,5 +104,5 @@ class StudentService:
     def delete_student(self, student):
         return self.__repository.remove_student(student)
 
-    def set_repository_path(self, path):
-        self.__repository.set_new_path(path)
+    def set_repository_path(self, path, password):
+        self.__repository.set_new_path(path, password)

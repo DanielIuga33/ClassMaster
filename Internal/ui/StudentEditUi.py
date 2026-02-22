@@ -4,6 +4,14 @@ from Internal.service.StudentService import StudentService
 from Internal.service.LanguageService import LanguageService  # Import necesar pentru localizare
 
 
+def to_uppercase(widget):
+    pos = widget.index(tk.INSERT)
+    current_text = widget.get().upper()
+    widget.delete(0, tk.END)
+    widget.insert(0, current_text)
+    widget.icursor(pos)
+
+
 class StudentEditUi(tk.Toplevel):
     def __init__(self, parent, theme, student: Student, student_service: StudentService, on_success,
                  lang_service: LanguageService):
@@ -53,12 +61,13 @@ class StudentEditUi(tk.Toplevel):
                     if "grade" in attr:
                         val_clasa = value
                         break
-        except:
+        except Exception as e:
+            print(e)
             pass
 
         ent_gr.insert(0, str(val_clasa) if val_clasa else "")
         ent_gr.pack(fill="x", pady=(5, 15), ipady=5)
-        ent_gr.bind("<KeyRelease>", lambda e: self.to_uppercase(ent_gr))
+        ent_gr.bind("<KeyRelease>", lambda ea: to_uppercase(ent_gr))
         self.entries["gr"] = ent_gr
 
         # 4. PREȚ tradus
@@ -77,13 +86,6 @@ class StudentEditUi(tk.Toplevel):
         ent.insert(0, value)
         ent.pack(fill="x", pady=(5, 15), ipady=5)
         self.entries[key] = ent
-
-    def to_uppercase(self, widget):
-        pos = widget.index(tk.INSERT)
-        current_text = widget.get().upper()
-        widget.delete(0, tk.END)
-        widget.insert(0, current_text)
-        widget.icursor(pos)
 
     def handle_save(self):
         """Validăm datele și salvăm folosind mesaje traduse."""
@@ -110,5 +112,4 @@ class StudentEditUi(tk.Toplevel):
 
     def setup_modal(self, w, h):
         ws, hs = self.winfo_screenwidth(), self.winfo_screenheight()
-        self.geometry(f'{w}x{h}+{int((ws / 2) - (w / 2))}+{int((hs / 2) - (h / 2))}'
-                      )
+        self.geometry(f'{w}x{h}+{int((ws / 2) - (w / 2))}+{int((hs / 2) - (h / 2))}')

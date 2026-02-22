@@ -19,7 +19,6 @@ class LanguageService:
         self.translations = self._load_translations()
 
     def _load_translations(self):
-        """Încarcă fișierul JSON cu encodare UTF-8 pentru diacritice."""
         if not os.path.exists(self.lang_file):
             print(f"ATENȚIE: Fișierul de limbi nu a fost găsit la: {self.lang_file}")
             return {}
@@ -43,14 +42,6 @@ class LanguageService:
             "ro": "ro",
             "en": "en"
         }
-
-        # Convertim valoarea sau folosim 'ro' implicit dacă nu există în mapare
         user_lang = lang_mapping.get(raw_lang, "ro")
-
-        # Extragem dicționarul pentru limba respectivă
         lang_dict = self.translations.get(user_lang, {})
-
-        # Debug opțional: elimină după ce verifici că funcționează
-        # print(f"DEBUG: Caut '{key}' în '{user_lang}'. Rezultat: {lang_dict.get(key, 'NOT FOUND')}")
-
         return lang_dict.get(key, key)

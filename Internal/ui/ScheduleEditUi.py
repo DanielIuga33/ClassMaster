@@ -141,3 +141,4 @@ class ScheduleEditUi(tk.Toplevel):
 
         self.on_save(self.cell_id, data)
         self.destroy()
+

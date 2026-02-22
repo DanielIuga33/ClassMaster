@@ -3,6 +3,7 @@ from tkinter import messagebox, ttk
 from Internal.entity.Group import Group
 from Internal.ui.GroupEditUi import GroupEditUi
 
+
 class GroupsView:
     def __init__(self, parent_frame, controller):
         self.parent = parent_frame

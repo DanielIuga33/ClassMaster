@@ -4,6 +4,31 @@ from datetime import datetime, timedelta
 from tkcalendar import DateEntry
 
 
+def get_dynamic_colors(cell_id, raw_data, colors):
+    if not raw_data.get('group_name'):
+        return colors["card_bg"], colors["fg"]
+    now = datetime.now()
+    today_str = now.strftime("%Y-%m-%d")
+    curr_t = now.strftime("%H:%M")
+    cell_date = cell_id.split('_')[0]
+    end_of_current_week = (now + timedelta(days=(6 - now.weekday()))).strftime("%Y-%m-%d")
+
+    try:
+        start_t, end_t = raw_data.get('time', "00:00-00:00").split("-")
+        if cell_date < today_str or (cell_date == today_str and curr_t > end_t):
+            return colors.get("schedule_past_bg", "#1B3D2F"), colors.get("schedule_past_fg", "#A5D6A7")
+        if cell_date == today_str and start_t <= curr_t <= end_t:
+            return colors["accent"], "white"
+        if cell_date == today_str:
+            return colors.get("schedule_today_bg", "#1A237E"), colors.get("schedule_today_fg", "#E8EAF6")
+        if today_str < cell_date <= end_of_current_week:
+            return colors.get("schedule_future_bg", "#3D3A1B"), colors.get("schedule_future_fg", "#FFF59D")
+    except Exception as e:
+        print(e)
+        pass
+    return colors["card_bg"], colors["fg"]
+
+
 class ScheduleView:
     def __init__(self, parent_frame, controller):
         self.parent = parent_frame
@@ -140,7 +165,8 @@ class ScheduleView:
         for widget in self.table_container.winfo_children():
             widget.destroy()
 
-        for i in range(10): self.table_container.grid_columnconfigure(i, weight=0, minsize=0)
+        for i in range(10):
+            self.table_container.grid_columnconfigure(i, weight=0, minsize=0)
 
         colors = self.master.colors
         now = datetime.now()
@@ -150,7 +176,8 @@ class ScheduleView:
             num_rows = self.master.rows_var.get()
 
         active_days_indices = [i for i, var in enumerate(self.selected_days) if var.get()]
-        if not active_days_indices: return
+        if not active_days_indices:
+            return
 
         dynamic_minsize = 160 if len(active_days_indices) > 5 else 220
 
@@ -184,7 +211,7 @@ class ScheduleView:
         uid = self.master.user.get_id_entity()
         raw_data = self.master.schedule_service.get_schedule_data().get(f"{uid}_{cell_id}_raw", {})
         colors = self.master.colors
-        bg_color, text_color = self.get_dynamic_colors(cell_id, raw_data, colors)
+        bg_color, text_color = get_dynamic_colors(cell_id, raw_data, colors)
 
         cell_frame = tk.Frame(self.table_container, bg=bg_color)
         cell_frame.grid(row=row, column=col, sticky="nsew", padx=1, pady=1)
@@ -216,28 +243,6 @@ class ScheduleView:
                 s_lbl.pack(fill="x")
                 s_lbl.bind("<Button-1>", lambda e, cid=cell_id: self.master.open_group_assignment_modal(cid))
                 s_lbl.bind("<Button-3>", lambda e, cid=cell_id, stid=sid: self.master.toggle_absentee(cid, stid))
-
-    def get_dynamic_colors(self, cell_id, raw_data, colors):
-        if not raw_data.get('group_name'): return colors["card_bg"], colors["fg"]
-        now = datetime.now()
-        today_str = now.strftime("%Y-%m-%d")
-        curr_t = now.strftime("%H:%M")
-        cell_date = cell_id.split('_')[0]
-        end_of_current_week = (now + timedelta(days=(6 - now.weekday()))).strftime("%Y-%m-%d")
-
-        try:
-            start_t, end_t = raw_data.get('time', "00:00-00:00").split("-")
-            if cell_date < today_str or (cell_date == today_str and curr_t > end_t):
-                return colors.get("schedule_past_bg", "#1B3D2F"), colors.get("schedule_past_fg", "#A5D6A7")
-            if cell_date == today_str and start_t <= curr_t <= end_t:
-                return colors["accent"], "white"
-            if cell_date == today_str:
-                return colors.get("schedule_today_bg", "#1A237E"), colors.get("schedule_today_fg", "#E8EAF6")
-            if today_str < cell_date <= end_of_current_week:
-                return colors.get("schedule_future_bg", "#3D3A1B"), colors.get("schedule_future_fg", "#FFF59D")
-        except:
-            pass
-        return colors["card_bg"], colors["fg"]
 
     def render_stats_panel(self, colors):
         """Widget financiar tradus."""
@@ -289,7 +294,8 @@ class ScheduleView:
                         if s.get_id_entity() not in raw.get('absentees', []):
                             try:
                                 total += float(s.get_price())
-                            except:
+                            except Exception as e:
+                                print(e)
                                 continue
         return int(total)
 
@@ -309,10 +315,11 @@ class ScheduleView:
                         st = self.master.student_service.get_students_by_id_list(
                             self.master.group_service.get_group_students(raw.get('group_id')))
                         is_past = (data_str < today_str) or (
-                                data_str == today_str and current_time_str > raw.get('time', "00:00-00:00").split("-")[
-                            1])
+                                data_str == today_str and
+                                current_time_str > raw.get('time', "00:00-00:00").split("-")[1])
                         for s in st:
                             p = float(s.get_price())
                             v_max += p
-                            if is_past and s.get_id_entity() not in raw.get('absentees', []): v_act += p
+                            if is_past and s.get_id_entity() not in raw.get('absentees', []):
+                                v_act += p
         return int(v_max), int(v_act)
