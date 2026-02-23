@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 import hashlib
+from Internal.utils.utils import get_colors_by_name
+
 
 class SettingsView:
     def __init__(self, parent_frame, controller):
@@ -10,6 +12,7 @@ class SettingsView:
         self.pass_entries = {}
         self.theme_combo = None
         self.lang_combo = None
+        self.preview_canvas = None
 
     def render(self):
         """Randare cu suport multilingv și elemente de UI îmbunătățite."""
@@ -181,7 +184,8 @@ class SettingsView:
             new_user.set_password(hashlib.sha256(new.encode()).hexdigest())
             self.master.user_service.modify_user(self.master.user, new_user)
             self.master.show_toast(f"✅ {ls.get_text(uid, 'sett_msg_pass_changed')}")
-            for e in self.pass_entries.values(): e.delete(0, tk.END)
+            for e in self.pass_entries.values():
+                e.delete(0, tk.END)
         else:
             self.master.show_toast(ls.get_text(uid, "sett_err_wrong_pass"), "#E74C3C")
 
@@ -203,8 +207,9 @@ class SettingsView:
 
     def update_theme_preview(self, event=None):
         selected = self.theme_combo.get()
-        c = self.master.settings_service.get_colors_by_name(selected)
-        if not c: return
+        c = get_colors_by_name(selected)
+        if not c:
+            return
         self.preview_canvas.delete("all")
         self.preview_canvas.create_oval(5, 5, 25, 25, fill=c["bg"], outline=c["fg"])
         self.preview_canvas.create_oval(35, 5, 55, 25, fill=c["accent"], outline=c["fg"])

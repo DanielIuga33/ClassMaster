@@ -138,7 +138,7 @@ class LoginUi:
             return
 
         identifier = self.entry_identifier.get().strip()
-        password = self.entry_password.get().strip()  # Aceasta este parola text-clar de care avem nevoie
+        password = self.entry_password.get().strip()
         data_path = self.entry_path.get().strip()
 
         if not identifier or not password or not data_path:
@@ -146,23 +146,18 @@ class LoginUi:
             self.root.bind('<Return>', lambda event: self.handle_login())
             return
 
-        # 1. Mai întâi setăm calea pentru user_service (care nu e criptat cu parola userului, ci cu system_key)
         if self.user_service.set_repository_path(data_path)[0] == 404:
             self.show_toast(self.lang_service.get_text("global", "error_invalid_path"), is_error=True)
             self.root.bind('<Return>', lambda event: self.handle_login())
             return
 
-        # 2. Autentificăm utilizatorul pentru a vedea dacă parola este corectă
         user = self.user_service.authenticate(identifier, password)
 
         if user:
-            # 3. DOAR DACĂ LOGINUL A REUȘIT, "descuem" celelalte repository-uri cu parola primită
-            # Trebuie să modifici aceste metode în Service-uri să accepte și al doilea argument: password
             self.group_service.set_repository_path(data_path, password)
             self.student_service.set_repository_path(data_path, password)
             self.preset_service.set_repository_path(data_path, password)
 
-            # Acestea pot rămâne așa dacă nu sunt criptate cu parola utilizatorului
             self.schedule_service.set_schedule_path(data_path, password)
             self.settings_service.set_settings_path(data_path)
 

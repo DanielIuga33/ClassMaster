@@ -2,7 +2,8 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 from Internal.service.GroupService import GroupService
 from Internal.service.StudentService import StudentService
-from Internal.service.LanguageService import LanguageService # Import pentru servicii
+from Internal.service.LanguageService import LanguageService
+
 
 class GroupAddUi(tk.Toplevel):
     def __init__(self, parent, theme, user_id, group_service: GroupService, student_service: StudentService,

@@ -123,21 +123,18 @@ class StudentsView:
 
     def open_edit_modal(self, student):
         StudentEditUi(self.parent, self.master.colors, student,
-                      self.master.student_service, self.master.show_students)
+                      self.master.student_service, self.master.show_students, self.master.language_service)
 
     def confirm_delete(self, student):
         user_id = self.master.user.get_id_entity()
         ls = self.master.language_service
 
-        # Preluăm textele traduse pentru confirmare
-        title = ls.get_text(user_id, "confirm_title")  # ex: "Confirmare"
-        # ex: "Sigur vrei să ștergi studentul {name}?"
+        title = ls.get_text(user_id, "confirm_title")
         question = ls.get_text(user_id, "confirm_delete_student").replace("{name}", student.get_last_name())
 
-        # Afișăm fereastra de tip DA/NU
         answer = messagebox.askyesno(title, question)
 
-        if answer:  # Dacă utilizatorul a apăsat "DA"
+        if answer:
             self.master.student_service.delete_student(student)
             self.master.group_service.delete_cascade(student.get_id_entity())
 
@@ -145,4 +142,3 @@ class StudentsView:
             msg = ls.get_text(user_id, "msg_student_deleted").replace("{name}", student.get_last_name())
             self.master.show_toast(f"🗑️ {msg}", "#34495E")
             self.render()
-

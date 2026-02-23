@@ -2,11 +2,13 @@ import tkinter as tk
 from tkinter import messagebox
 from Internal.service.SettingsService import SettingsService
 from Internal.service.StudentService import StudentService
-from Internal.service.LanguageService import LanguageService # Import pentru localizare
+from Internal.service.LanguageService import LanguageService
+from Internal.utils.utils import to_uppercase, validate_roman_entry
+
 
 class StudentAddUi(tk.Toplevel):
     def __init__(self, parent, theme, user_id, student_service: StudentService, on_success,
-                 settings_service: SettingsService, lang_service: LanguageService): # Injectăm lang_service
+                 settings_service: SettingsService, lang_service: LanguageService):
         super().__init__(parent)
         self.theme = theme
         self.user_id = user_id
@@ -18,14 +20,12 @@ class StudentAddUi(tk.Toplevel):
         uid = self.user_id
         ls = self.lang_service
 
-        # Preluăm setul complet de culori și culoarea de contrast dedicată
         self.colors = self.settings_service.get_colors(uid)
         self.txt_color = self.colors.get("schedule_text", self.colors["fg"])
 
         self.configure(bg=self.colors["bg"])
 
-        # Înregistrăm funcția de validare pentru caractere romane
-        self.vcmd_roman = (self.register(self.validate_roman_entry), '%S')
+        self.vcmd_roman = (self.register(validate_roman_entry), '%S')
 
         # Titlu fereastră tradus
         self.title(ls.get_text(uid, "student_add_title"))
@@ -56,7 +56,7 @@ class StudentAddUi(tk.Toplevel):
         grade_ent.pack(fill="x", pady=(5, 15), ipady=5)
 
         # Transformăm automat în majuscule
-        grade_ent.bind("<KeyRelease>", lambda e: self.to_uppercase(grade_ent))
+        grade_ent.bind("<KeyRelease>", lambda e: to_uppercase(grade_ent))
         self.entries["gr"] = grade_ent
 
         # Câmpul Preț tradus
@@ -78,19 +78,6 @@ class StudentAddUi(tk.Toplevel):
                        insertbackground=self.txt_color)
         ent.pack(fill="x", pady=(5, 15), ipady=5)
         self.entries[key] = ent
-
-    def validate_roman_entry(self, char):
-        """Permite doar caracterele romane valide."""
-        allowed_chars = "IVXLCDMivxlcdm"
-        return char in allowed_chars
-
-    def to_uppercase(self, widget):
-        """Transformă textul în majuscule în timp real."""
-        pos = widget.index(tk.INSERT)
-        current_text = widget.get().upper()
-        widget.delete(0, tk.END)
-        widget.insert(0, current_text)
-        widget.icursor(pos)
 
     def setup_modal(self, w, h):
         ws = self.winfo_screenwidth()

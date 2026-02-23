@@ -7,16 +7,15 @@ class DashboardView:
         self.parent = parent_frame
         self.master = controller
         self.target_percent_var = tk.StringVar(value="0.0%")
-        # Titlul target-ului va fi setat dinamic în render
+        self.main_container = None
         self.target_title_var = tk.StringVar()
 
     def render(self):
         self.master.clear_content()
         uid = self.master.user.get_id_entity()
         colors = self.master.settings_service.get_colors(uid)
-        ls = self.master.language_service  # Scurtătură serviciu limbă
+        ls = self.master.language_service
 
-        # --- REPARARE SISTEM SCROLL ---
         self.main_container = tk.Frame(self.parent, bg=colors["bg"])
         self.main_container.pack(fill="both", expand=True)
 
@@ -53,7 +52,6 @@ class DashboardView:
             g_name = s.get_grade()
             dist[g_name] = dist.get(g_name, 0) + 1
 
-        # Setăm target-ul inițial (ex: Clasa VIII) tradus
         v8_count = dist.get("VIII", 0)
         initial_target = (v8_count / num_students * 100) if num_students > 0 else 0
         self.target_percent_var.set(f"{initial_target:.1f}%")
@@ -152,7 +150,8 @@ class DashboardView:
         tk.Label(chart_frame, text=ls.get_text(uid, "dash_dist_header"),
                  font=("Segoe UI", 10, "bold"), bg=colors["card_bg"], fg="#888").pack(anchor="w", pady=(0, 20))
 
-        if not distribution: return
+        if not distribution:
+            return
         max_val = max(distribution.values())
         class_text = ls.get_text(uid, "dash_class_label")
         students_text = ls.get_text(uid, "dash_students_label")

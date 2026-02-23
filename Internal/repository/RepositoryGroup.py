@@ -1,6 +1,6 @@
 import os
 from Internal.entity.Group import Group
-from Internal.security.EncryptionManager import EncryptionManager  # Import necesar
+from Internal.security.EncryptionManager import EncryptionManager
 
 
 class RepositoryGroup:

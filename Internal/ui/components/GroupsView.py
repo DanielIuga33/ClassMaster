@@ -15,7 +15,7 @@ class GroupsView:
         """Randarea tabelului de gestionare grupe cu suport multilingv."""
         self.master.clear_content()
         uid = self.user_id
-        ls = self.master.language_service # Serviciul de limbă
+        ls = self.master.language_service
         colors = self.master.settings_service.get_colors(uid)
         txt_color = colors.get("schedule_text", colors["fg"])
 
@@ -121,4 +121,4 @@ class GroupsView:
 
     def open_edit_group_modal(self, group):
         GroupEditUi(self.master.root, self.colors, group, self.master.group_service,
-                    self.master.student_service, self.master.show_groups)
+                    self.master.student_service, self.master.show_groups, self.master.language_service)

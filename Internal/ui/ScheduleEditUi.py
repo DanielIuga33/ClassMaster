@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox, ttk
 
+
 class ScheduleEditUi(tk.Toplevel):
     def __init__(self, parent, theme, cell_id, day, current_data, on_save, on_delete, group_service,
                  user_id, lang_service):
@@ -51,7 +52,7 @@ class ScheduleEditUi(tk.Toplevel):
 
         # Start Time
         self.start_hh = self.create_time_entry(time_container, entry_bg, 23)
-        tk.Label(time_container, text=":", bg=theme["bg"], fg=self.txt_color, font=("bold")).pack(side="left")
+        tk.Label(time_container, text=":", bg=theme["bg"], fg=self.txt_color, font="bold").pack(side="left")
         self.start_mm = self.create_time_entry(time_container, entry_bg, 59)
 
         # "până la" tradus
@@ -60,7 +61,7 @@ class ScheduleEditUi(tk.Toplevel):
 
         # End Time
         self.end_hh = self.create_time_entry(time_container, entry_bg, 23)
-        tk.Label(time_container, text=":", bg=theme["bg"], fg=self.txt_color, font=("bold")).pack(side="left")
+        tk.Label(time_container, text=":", bg=theme["bg"], fg=self.txt_color, font="bold").pack(side="left")
         self.end_mm = self.create_time_entry(time_container, entry_bg, 59)
 
         if current_data and "time" in current_data:
@@ -75,7 +76,8 @@ class ScheduleEditUi(tk.Toplevel):
 
         if current_data:
             # Eliminare tradusă
-            tk.Button(self, text=ls.get_text(uid, "sched_edit_btn_remove"), command=lambda: [self.on_delete(self.cell_id), self.destroy()],
+            tk.Button(self, text=ls.get_text(uid, "sched_edit_btn_remove"),
+                      command=lambda: [self.on_delete(self.cell_id), self.destroy()],
                       bg=theme.get("danger", "#E74C3C"), fg="white", font=("Segoe UI", 10),
                       relief="flat", pady=8, cursor="hand2").pack(fill="x")
 
@@ -89,13 +91,15 @@ class ScheduleEditUi(tk.Toplevel):
         return ent
 
     def validate_time(self, P, limit):
-        if P == "": return True
+        if P == "":
+            return True
         if P.isdigit() and len(P) <= 2:
             if int(P) <= int(limit):
                 return True
         return False
 
-    def auto_focus(self, widget):
+    @staticmethod
+    def auto_focus(widget):
         if len(widget.get()) == 2:
             widget.tk_focusNext().focus()
 
@@ -108,7 +112,8 @@ class ScheduleEditUi(tk.Toplevel):
             self.start_mm.insert(0, sm)
             self.end_hh.insert(0, eh)
             self.end_mm.insert(0, em)
-        except:
+        except Exception as e:
+            print(e)
             pass
 
     def setup_modal(self, w, h):
@@ -141,4 +146,3 @@ class ScheduleEditUi(tk.Toplevel):
 
         self.on_save(self.cell_id, data)
         self.destroy()
-
