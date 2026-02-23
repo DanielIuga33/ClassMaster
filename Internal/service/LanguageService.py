@@ -5,15 +5,8 @@ import os
 class LanguageService:
     def __init__(self, settings_service):
         self.settings_service = settings_service
-
-        # --- CALCULARE CALE DINAMICĂ ---
-        # __file__ este calea către acest script (Internal/service/LanguageService.py)
         current_dir = os.path.dirname(os.path.abspath(__file__))
-
-        # Urcăm un nivel din 'service' în 'Internal'
         internal_dir = os.path.dirname(current_dir)
-
-        # Construim calea către Internal/Resources/translations.json
         self.lang_file = os.path.join(internal_dir, 'Resources', 'translations.json')
 
         self.translations = self._load_translations()
@@ -31,11 +24,8 @@ class LanguageService:
             return {}
 
     def get_text(self, user_id, key):
-        """Returnează traducerea, gestionând conversia de la nume lung la cod scurt."""
         user_settings = self.settings_service.get_user_settings(user_id)
         raw_lang = user_settings.get("language", "ro")
-
-        # Mapare pentru a asigura compatibilitatea cu interfața de setări
         lang_mapping = {
             "Română": "ro",
             "English": "en",

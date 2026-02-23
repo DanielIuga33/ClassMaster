@@ -7,7 +7,6 @@ class GroupService:
         self.__repository = repository
 
     def set_repository_path(self, path, password):
-        # Trimitem atât calea cât și parola către repository
         self.__repository.set_new_path(path, password)
 
     def add_group(self, name, ids, teacher_id):

@@ -5,35 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3a0b11a4-86ce-4cf2-b25f-d61d7b2840be" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/ClassMaster.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/ClassMaster.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Groups.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Languages.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Presets.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Schedule.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Settings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Students.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Users.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/Data/Settings.Json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/Resources/Settings.Json" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/Resources/Settings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/Resources/translations.json" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/Resources/translations.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/repository/RepositoryGroup.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/repository/RepositoryGroup.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/repository/RepositoryPreset.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/repository/RepositoryPreset.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/repository/RepositoryStudent.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/repository/RepositoryStudent.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/repository/RepositoryUser.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/repository/RepositoryUser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Internal/Resources/Settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/Resources/Settings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Internal/security/EncryptionManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/security/EncryptionManager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Internal/service/GroupService.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/service/GroupService.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Internal/service/LanguageService.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/service/LanguageService.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/service/PresetService.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/service/PresetService.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/service/ScheduleService.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/service/ScheduleService.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Internal/service/SettingsService.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/service/SettingsService.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/service/StudentService.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/service/StudentService.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/ui/GroupAddUi.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/GroupAddUi.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/ui/LoginUi.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/LoginUi.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/ui/ScheduleEditUi.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/ScheduleEditUi.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/ui/StudentEditUi.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/StudentEditUi.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/ui/components/GroupsView.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/components/GroupsView.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/ui/components/ScheduleView.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/components/ScheduleView.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Internal/ui/components/StudentsView.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/components/StudentsView.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Internal/service/UserService.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/service/UserService.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Internal/ui/StudentAddUi.py" beforeDir="false" afterPath="$PROJECT_DIR$/Internal/ui/StudentAddUi.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -111,8 +92,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-PY-242.23726.102" />
-        <option value="bundled-python-sdk-5e1850174b45-399fe30bd8c1-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-242.23726.102" />
+        <option value="bundled-js-predefined-d6986cc7102b-09060db00ec0-JavaScript-PY-251.26927.90" />
+        <option value="bundled-python-sdk-41e8cd69c857-64d779b69b7a-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-251.26927.90" />
       </set>
     </attachedChunks>
   </component>
@@ -141,6 +122,7 @@
       <workItem from="1771598767688" duration="3375000" />
       <workItem from="1771765322082" duration="587000" />
       <workItem from="1771776609935" duration="1949000" />
+      <workItem from="1771827572555" duration="1609000" />
     </task>
     <servers />
   </component>
@@ -159,6 +141,6 @@
     </option>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/ClassMaster$main.coverage" NAME="main Coverage Results" MODIFIED="1771778489902" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ClassMaster$main.coverage" NAME="main Coverage Results" MODIFIED="1771828006090" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

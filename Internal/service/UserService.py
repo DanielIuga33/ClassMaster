@@ -1,5 +1,4 @@
 from Internal.repository.RepositoryUser import RepositoryUser
-from Internal.entity.User import User
 import hashlib
 
 
@@ -49,7 +48,7 @@ class UserService:
     def delete_user(self, email: str, password: str):
         for user in self.__repository.get_all():
             if user.email == email and user.password == password:
-                self.__repository.delete_user(user)
+                self.__repository.remove_user(user)
                 return [200, "User deleted"]
             elif user.email == email and user.password != password:
                 return [400, "Password mismatch"]

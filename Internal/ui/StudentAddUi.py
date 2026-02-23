@@ -108,7 +108,6 @@ class StudentAddUi(tk.Toplevel):
         pr = self.entries['pr'].get().strip()
 
         if not all([gr, pr]):
-            # Avertisment tradus
             messagebox.showwarning(ls.get_text(uid, "warning"), ls.get_text(uid, "err_fill_fields"))
             return
 
@@ -118,5 +117,4 @@ class StudentAddUi(tk.Toplevel):
             self.on_success()
             self.destroy()
         else:
-            # Eroare tradusă
             messagebox.showerror(ls.get_text(uid, "error"), res[1])

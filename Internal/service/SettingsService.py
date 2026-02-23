@@ -52,20 +52,15 @@ class SettingsService:
         return settings.get("tema", "light")
 
     def save_user_setting(self, user_id, key, value):
-        """Salvează o setare pe disc și reîncarcă memoria locală."""
-        # Ne asigurăm că avem ultimele date înainte de scriere
         self.all_users_settings = self.load_settings()
 
         if user_id not in self.all_users_settings:
-            print("NU este")
             self.all_users_settings[user_id] = self.__default_user_config.copy()
 
         self.all_users_settings[user_id][key] = value
         if not self.__settings_path:
-            print("Am ajuns aici ")
             self.__settings_path = "Internal/Resources/Settings.json"
         if user_id == "global":
-            print("Sunt Global dar ama ajuns in save user settings")
             self.save_for_global(key, value)
         os.makedirs(os.path.dirname(self.__settings_path), exist_ok=True)
         with open(self.__settings_path, "w") as f:
