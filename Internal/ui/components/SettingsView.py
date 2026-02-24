@@ -111,7 +111,9 @@ class SettingsView:
             "classic_dark", "classic_light", "dark_emerald", "dark_start", "midnight_blue", "forest_dark", "dracula",
             "cyberpunk", "material_ocean", "dark_oled", "nordic_frost", "light_soft", "github_light", "tokyo_night",
             "solarized_light", "sakura_blossom", "rosea_dark", "lavender_mist", "cotton_candy", "retro_terminal",
-            "ocean_sunset", "nord_deep", "coffee_shop"
+            "ocean_sunset", "nord_deep", "coffee_shop", "monokai_pro", "everforest_dark", "deep_sea", "nord_light",
+            "vibrant_purple", "sepia_paper", "catppuccin", "space_gray", "night_owl", "synthwave", "aura_dark",
+            "gruvbox_dark", "nordic_night", "rose_pine_moon", "oxocarbon", "erebus", "forest_stream"
         ]), state="readonly", width=25, font=("Segoe UI", 11))
         self.theme_combo.set(self.master.settings_service.get_theme(uid))
         self.theme_combo.pack(side="left", padx=15)

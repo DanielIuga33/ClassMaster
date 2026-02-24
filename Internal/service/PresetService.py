@@ -19,6 +19,16 @@ class PresetService:
         """Șterge un preset prin intermediul repository-ului."""
         return self.__repository.remove_preset(preset)
 
+    def delete_cascade(self, group_id, id_teacher):
+        for preset in self.get_all_presets_for_teacher(id_teacher):
+            ok = False
+            for group in preset['data']:
+                if group['group_id'] == group_id:
+                    preset['data'].remove(group)
+                    ok = True
+            if ok:
+                self.__repository.update_preset(preset, preset)
+
     def set_repository_path(self, path, password):  # Adaugă 'password' aici
         """Actualizează calea și parola pentru repository-ul de presetări."""
         self.__repository.set_new_path(path, password)

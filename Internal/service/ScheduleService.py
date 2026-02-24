@@ -40,3 +40,12 @@ class ScheduleService:
         if not self.__filename:
             return
         EncryptionManager.encrypt_to_file(self.__filename, self.__schedule_data, self.__current_password)
+
+    def delete_cascade(self, id_group):
+        print("sunt aici")
+        for schedule in self.get_schedule_data():
+            print("caut")
+            if schedule['group_id'] == id_group:
+                print("am gasit")
+                self.__schedule_data.remove(schedule)
+                self.save_schedule_data()

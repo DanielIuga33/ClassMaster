@@ -41,6 +41,12 @@ class RepositoryPreset:
                 return True
         return False
 
+    def update_preset(self, preset_old, preset_new):
+        for preset in self.__preset_list:
+            if preset.get_id_entity() == preset_old.get_id_entity():
+                self.__preset_list.remove(preset)
+                self.__preset_list.append(preset_new)
+
     def get_presets_by_teacher(self, teacher_id):
         return [p for p in self.__preset_list if p.get_teacher_id() == teacher_id]
 

@@ -304,6 +304,8 @@ class UserUi:
 
         if messagebox.askyesno(title, question):
             self.group_service.delete_group(group.get_id_entity())
+            self.schedule_service.delete_cascade(group.get_id_entity())
+            self.preset_service.delete_cascade(group.get_id_entity(), uid)
             self.show_groups()
 
     def toggle_absentee(self, cell_id, student_id):

@@ -281,4 +281,191 @@ def get_colors_by_name(name):
             "schedule_future_bg": "#434C5E", "schedule_future_fg": "#EBCB8B",
             "header_today_bg": "#81A1C1"
         }
+    elif name == "monokai_pro":
+        return {
+            "bg": "#2D2A2E", "sidebar_bg": "#221F22", "fg": "#FCFCFA",
+            "card_bg": "#221F22", "input_bg": "#403E41", "hover": "#5B595C",
+            "grid_line": "#403E41", "accent": "#FFD866", "success": "#A9DC76", "danger": "#FF6188",
+            "schedule_text": "#FFFFFF",
+            "schedule_past_bg": "#373B30", "schedule_past_fg": "#A9DC76",
+            "schedule_today_bg": "#303541", "schedule_today_fg": "#78DCE8",
+            "schedule_future_bg": "#41363A", "schedule_future_fg": "#FC9867",
+            "header_today_bg": "#AB9DF2"
+        }
+    elif name == "everforest_dark":
+        return {
+            "bg": "#2D353B", "sidebar_bg": "#232A2E", "fg": "#D3C6AA",
+            "card_bg": "#232A2E", "input_bg": "#343F44", "hover": "#3D484D",
+            "grid_line": "#3D484D", "accent": "#A7C080", "success": "#A7C080", "danger": "#E67E80",
+            "schedule_text": "#FFFFFF",
+            "schedule_past_bg": "#323C41", "schedule_past_fg": "#A7C080",
+            "schedule_today_bg": "#3A4B59", "schedule_today_fg": "#7FBBB3",
+            "schedule_future_bg": "#4A463B", "schedule_future_fg": "#DBBC7F",
+            "header_today_bg": "#D699B6"
+        }
+    elif name == "deep_sea":
+        return {
+            "bg": "#011627", "sidebar_bg": "#010E1A", "fg": "#D6DEEB",
+            "card_bg": "#010E1A", "input_bg": "#0B2942", "hover": "#123E5A",
+            "grid_line": "#123E5A", "accent": "#82AAFF", "success": "#22DA6E", "danger": "#EF5350",
+            "schedule_text": "#FFFFFF",
+            "schedule_past_bg": "#122D30", "schedule_past_fg": "#22DA6E",
+            "schedule_today_bg": "#1A254D", "schedule_today_fg": "#82AAFF",
+            "schedule_future_bg": "#3D3728", "schedule_future_fg": "#ADDB67",
+            "header_today_bg": "#7F7AF3"
+        }
+    elif name == "nord_light":
+        return {
+            "bg": "#ECEFF4", "sidebar_bg": "#E5E9F0", "fg": "#2E3440",
+            "card_bg": "#FFFFFF", "input_bg": "#E5E9F0", "hover": "#D8DEE9",
+            "grid_line": "#D8DEE9", "accent": "#5E81AC", "success": "#A3BE8C", "danger": "#BF616A",
+            "schedule_text": "#000000",
+            "schedule_past_bg": "#EDF4E9", "schedule_past_fg": "#4F7336",
+            "schedule_today_bg": "#E1E9F0", "schedule_today_fg": "#5E81AC",
+            "schedule_future_bg": "#F5EFE0", "schedule_future_fg": "#8F6E2B",
+            "header_today_bg": "#81A1C1"
+        }
+    elif name == "vibrant_purple":
+        return {
+            "bg": "#120B1A", "sidebar_bg": "#1A1125", "fg": "#E9D5FF",
+            "card_bg": "#1A1125", "input_bg": "#2A1B3D", "hover": "#3B2654",
+            "grid_line": "#3B2654", "accent": "#A855F7", "success": "#22C55E", "danger": "#EF4444",
+            "schedule_text": "#FFFFFF",
+            "schedule_past_bg": "#142E1F", "schedule_past_fg": "#4ADE80",
+            "schedule_today_bg": "#2E1065", "schedule_today_fg": "#D8B4FE",
+            "schedule_future_bg": "#422006", "schedule_future_fg": "#FDE68A",
+            "header_today_bg": "#9333EA"
+        }
+    elif name == "sepia_paper":
+        return {
+            "bg": "#F4ECD8", "sidebar_bg": "#EADFCA", "fg": "#433422",
+            "card_bg": "#F9F4E8", "input_bg": "#EADFCA", "hover": "#DBCFB6",
+            "grid_line": "#D3C2A3", "accent": "#8B4513", "success": "#4F6F52", "danger": "#A04747",
+            "schedule_text": "#433422",
+            "schedule_past_bg": "#E3EDD3", "schedule_past_fg": "#3A5A40",
+            "schedule_today_bg": "#D6E4F0", "schedule_today_fg": "#2D4B73",
+            "schedule_future_bg": "#F0EAD6", "schedule_future_fg": "#A67B5B",
+            "header_today_bg": "#A67B5B"
+        }
+    elif name == "catppuccin":
+        return {
+            "bg": "#24273A", "sidebar_bg": "#1E2030", "fg": "#CAD3F5",
+            "card_bg": "#1E2030", "input_bg": "#363A4F", "hover": "#494D64",
+            "grid_line": "#494D64", "accent": "#8AADF4", "success": "#A6DA95", "danger": "#ED8796",
+            "schedule_text": "#CAD3F5",
+            "schedule_past_bg": "#2D3F36", "schedule_past_fg": "#A6DA95",
+            "schedule_today_bg": "#313958", "schedule_today_fg": "#8AADF4",
+            "schedule_future_bg": "#463E33", "schedule_future_fg": "#EED49F",
+            "header_today_bg": "#C6A0F6"
+        }
+    elif name == "space_gray":
+        return {
+            "bg": "#2B303B", "sidebar_bg": "#232830", "fg": "#C0C5CE",
+            "card_bg": "#232830", "input_bg": "#343D46", "hover": "#4F5B66",
+            "grid_line": "#4F5B66", "accent": "#65737E", "success": "#99C794", "danger": "#EC5F67",
+            "schedule_text": "#FFFFFF",
+            "schedule_past_bg": "#2E3D35", "schedule_past_fg": "#99C794",
+            "schedule_today_bg": "#2D3E4F", "schedule_today_fg": "#6699CC",
+            "schedule_future_bg": "#433D2D", "schedule_future_fg": "#FAC863",
+            "header_today_bg": "#AB7967"
+        }
+    elif name == "night_owl":
+        return {
+            "bg": "#011627", "sidebar_bg": "#01111D", "fg": "#D6DEEB",
+            "card_bg": "#01111D", "input_bg": "#0B2942", "hover": "#123E5A",
+            "grid_line": "#123E5A", "accent": "#7FDBCA", "success": "#ADDB67", "danger": "#EF5350",
+            "schedule_text": "#FFFFFF",
+            "schedule_past_bg": "#122D30", "schedule_past_fg": "#ADDB67",
+            "schedule_today_bg": "#1A254D", "schedule_today_fg": "#82AAFF",
+            "schedule_future_bg": "#3D3728", "schedule_future_fg": "#ECC48D",
+            "header_today_bg": "#C792EA"
+        }
+    elif name == "synthwave":
+        return {
+            "bg": "#262335", "sidebar_bg": "#241B2F", "fg": "#FFFFFF",
+            "card_bg": "#241B2F", "input_bg": "#34294F", "hover": "#443566",
+            "grid_line": "#FF7EDB", "accent": "#F97E72", "success": "#72F1B8", "danger": "#FE4450",
+            "schedule_text": "#FFFFFF",
+            "schedule_past_bg": "#1E3A3A", "schedule_past_fg": "#72F1B8",
+            "schedule_today_bg": "#2A1E3D", "schedule_today_fg": "#FF7EDB",
+            "schedule_future_bg": "#3D352A", "schedule_future_fg": "#FEDE5D",
+            "header_today_bg": "#03E8F3"
+        }
+    elif name == "aura_dark":
+        return {
+            "bg": "#15141B", "sidebar_bg": "#111016", "fg": "#EDECEE",
+            "card_bg": "#111016", "input_bg": "#1C1B22", "hover": "#292631",
+            "grid_line": "#292631", "accent": "#A277FF", "success": "#61FFCA", "danger": "#FF6767",
+            "schedule_text": "#FFFFFF",
+            "schedule_past_bg": "#1E2D28", "schedule_past_fg": "#61FFCA",
+            "schedule_today_bg": "#221E3D", "schedule_today_fg": "#A277FF",
+            "schedule_future_bg": "#302B1E", "schedule_future_fg": "#FFCA85",
+            "header_today_bg": "#61FFCA"
+        }
+    elif name == "gruvbox_dark":
+        return {
+            "bg": "#282828", "sidebar_bg": "#1D2021", "fg": "#D4BE98",
+            "card_bg": "#1D2021", "input_bg": "#32302F", "hover": "#3C3836",
+            "grid_line": "#3C3836", "accent": "#7DAEA3", "success": "#A9B665", "danger": "#EA6962",
+            "schedule_text": "#D4BE98",
+            "schedule_past_bg": "#32361A", "schedule_past_fg": "#A9B665",
+            "schedule_today_bg": "#263035", "schedule_today_fg": "#7DAEA3",
+            "schedule_future_bg": "#413020", "schedule_future_fg": "#D8A657",
+            "header_today_bg": "#D3869B"
+        }
+    elif name == "nordic_night":
+        return {
+            "bg": "#1A1C23", "sidebar_bg": "#16161E", "fg": "#D8DEE9",
+            "card_bg": "#16161E", "input_bg": "#24283B", "hover": "#2F334D",
+            "grid_line": "#2F334D", "accent": "#81A1C1", "success": "#A3BE8C", "danger": "#BF616A",
+            "schedule_text": "#FFFFFF",
+            "schedule_past_bg": "#23332B", "schedule_past_fg": "#A3BE8C",
+            "schedule_today_bg": "#1E223A", "schedule_today_fg": "#88C0D0",
+            "schedule_future_bg": "#332F2A", "schedule_future_fg": "#EBCB8B",
+            "header_today_bg": "#5E81AC"
+        }
+    elif name == "rose_pine_moon":
+        return {
+            "bg": "#232136", "sidebar_bg": "#1F1D2E", "fg": "#E0DEF4",
+            "card_bg": "#1F1D2E", "input_bg": "#2A273F", "hover": "#393552",
+            "grid_line": "#393552", "accent": "#C4A7E7", "success": "#9CCFD8", "danger": "#EB6F92",
+            "schedule_text": "#FFFFFF",
+            "schedule_past_bg": "#243337", "schedule_past_fg": "#9CCFD8",
+            "schedule_today_bg": "#2D2845", "schedule_today_fg": "#C4A7E7",
+            "schedule_future_bg": "#3E3639", "schedule_future_fg": "#F6C177",
+            "header_today_bg": "#EBBCBA"
+        }
+    elif name == "oxocarbon":
+        return {
+            "bg": "#161616", "sidebar_bg": "#0D0D0D", "fg": "#DDE1E6",
+            "card_bg": "#0D0D0D", "input_bg": "#262626", "hover": "#393939",
+            "grid_line": "#393939", "accent": "#BE95FF", "success": "#42BE65", "danger": "#FF7EB6",
+            "schedule_text": "#FFFFFF",
+            "schedule_past_bg": "#122D1B", "schedule_past_fg": "#42BE65",
+            "schedule_today_bg": "#231B33", "schedule_today_fg": "#BE95FF",
+            "schedule_future_bg": "#332616", "schedule_future_fg": "#82CFFF",
+            "header_today_bg": "#EE5396"
+        }
+    elif name == "erebus":
+        return {
+            "bg": "#0A0A0A", "sidebar_bg": "#050505", "fg": "#E0E0E0",
+            "card_bg": "#050505", "input_bg": "#1A1A1A", "hover": "#252525",
+            "grid_line": "#252525", "accent": "#D4AF37", "success": "#85BB65", "danger": "#B22222",
+            "schedule_text": "#FFFFFF",
+            "schedule_past_bg": "#1A241A", "schedule_past_fg": "#85BB65",
+            "schedule_today_bg": "#1A1A24", "schedule_today_fg": "#D4AF37",
+            "schedule_future_bg": "#241A1A", "schedule_future_fg": "#CD7F32",
+            "header_today_bg": "#C0C0C0"
+        }
+    elif name == "forest_stream":
+        return {
+            "bg": "#0B1212", "sidebar_bg": "#080D0D", "fg": "#9DB7B7",
+            "card_bg": "#080D0D", "input_bg": "#141F1F", "hover": "#1D2E2E",
+            "grid_line": "#1D2E2E", "accent": "#4DB6AC", "success": "#81C784", "danger": "#E57373",
+            "schedule_text": "#FFFFFF",
+            "schedule_past_bg": "#1A2D23", "schedule_past_fg": "#81C784",
+            "schedule_today_bg": "#152633", "schedule_today_fg": "#4DB6AC",
+            "schedule_future_bg": "#2D261A", "schedule_future_fg": "#D4E157",
+            "header_today_bg": "#26A69A"
+        }
     return None
