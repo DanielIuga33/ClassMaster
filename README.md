@@ -1,48 +1,40 @@
-# 🎓 ClassMaster - Sistem de Management Școlar
+# 🎓 ClassMaster - Sistem de Management Școlar 
 
-**ClassMaster** este o aplicație desktop modernă dezvoltată în Python, concepută pentru a eficientiza gestionarea datelor școlare (studenți, cursuri, note). Proiectul pune un accent deosebit pe **securitate**, **arhitectură curată** și **experiența utilizatorului**.
-
----
-
-## 🚀 Funcționalități Principale
-
-* **Sistem de Autentificare Hibrid**: Permite logarea securizată folosind fie `Username`, fie `Email`.
-* **Securitate Avansată**: Parolele sunt protejate folosind algoritmul de hashing **SHA-256** prin librăria `hashlib`.
-* **Managementul Datelor (JSON)**: Persistența datelor este realizată în format JSON, oferind portabilitate și viteză.
-* **Stocare Dinamică**: Utilizatorul are posibilitatea de a alege locația bazei de date (ex: pe un stick USB sau folder de cloud).
-* **Interfață Adaptivă**: Suport complet pentru **Dark Mode** și **Light Mode**, cu scalare automată pentru monitor (DPI Awareness).
-* **Arhitectură Layered (N-Tier)**: Proiectul este structurat pentru a asigura separarea responsabilităților:
-    * **UI Layer**: Interfață grafică realizată cu Tkinter.
-    * **Service Layer**: Logica de business, validări și criptare.
-    * **Repository Layer**: Gestionarea operațiunilor de citire/scriere (I/O).
-    * **Entity Layer**: Definirea modelelor de date.
-
-
+**ClassMaster** este o aplicație desktop avansată dezvoltată în Python, concepută pentru profesori și mentori. Proiectul pune un accent critic pe **securitatea datelor prin criptare**, o **arhitectură robustă N-Tier** și o **interfață ultra-personalizabilă**.
 
 ---
 
-## 🛠️ Tehnologii Utilizate
+## 🚀 Funcționalități Noi și Îmbunătățite
+
+* **Securitate Militarizată (AES-256)**: Datele despre studenți, grupuri și orar sunt criptate folosind algoritmul AES prin `EncryptionManager`, fiind accesibile doar cu parola utilizatorului.
+* **Orar Interactiv și Inteligent**: 
+    * Diferențiere vizuală dinamică între ședințele trecute, cele în desfășurare și cele care urmează astăzi.
+    * Logica de "Domeniul Trecutului" pentru vizualizarea săptămânilor anterioare în tonuri de gri.
+* **Sistem de Presetări (Templates)**: Salvarea structurilor de orar sub formă de preseturi criptate și aplicarea lor rapidă pe săptămâni viitoare.
+* **Ștergere în Cascadă (Data Integrity)**: Eliminarea unui grup curăță automat toate referințele din orarul activ și din toate preseturile salvate pentru a preveni erorile de tip `KeyError`.
+* **Motor de Tematizare Avansat**: Peste 30 de teme incluse (ex: *Rose Pine Moon*, *Everforest*, *Oxocarbon*), cu suport pentru personalizarea culorilor la nivel de celulă.
+* **Suport Multilingv Dinamic**: Interfața se adaptează instantaneu la limba aleasă (RO/EN) prin `LanguageService`.
+
+---
+
+## 🏗️ Arhitectura Sistemului
+
+
+
+Proiectul este structurat pe straturi pentru a asigura o mentenanță ușoară:
+* **UI Layer (Tkinter)**: Componente modulare (`ScheduleView`, `GroupsView`) care gestionează interacțiunea cu utilizatorul.
+* **Service Layer**: Gestionează logica de business, calculele financiare și sincronizarea datelor.
+* **Repository Layer**: Gestionează persistența fișierelor `.enc` și operațiunile I/O criptate.
+* **Security & Utils**: Module dedicate pentru criptare (AES), hashing (SHA-256) și funcții helper.
+
+---
+
+## 🛠️ Tehnologii și Biblioteci
 
 * **Limbaj**: Python 3.12+
-* **Interfață**: Tkinter
-* **Format Date**: JSON
-* **Securitate**: SHA-256 Hashing
-* **OS Awareness**: `ctypes` pentru scalare High-DPI în Windows.
-
----
-
-## 📦 Instalare și Rulare
-
-1.  **Clonarea depozitului**:
-    ```bash
-    git clone [https://github.com/utilizator/ClassMaster.git](https://github.com/utilizator/ClassMaster.git)
-    cd ClassMaster
-    ```
-
-2.  **Lansarea aplicației**:
-    ```bash
-    python main.py
-    ```
+* **Criptare**: `cryptography` (Fernet/AES-128/256)
+* **Interfață**: `tkinter` cu suport High-DPI Awareness.
+* **Componente**: `tkcalendar`, `customtkinter` (opțional pentru elemente moderne).
 
 ---
 
@@ -50,11 +42,12 @@
 
 ```text
 ClassMaster/
-├── Data/               # Locația implicită pentru baze de date (Users.json)
-├── Internal/           # Nucleul aplicației
-│   ├── entity/         # Modelele (User.py, Student.py)
-│   ├── repository/     # Logica de salvare/încărcare date
-│   ├── service/        # Logica de business (UserService.py)
-│   └── ui/             # Modulele de interfață (LoginUi.py, RegisterUi.py)
-├── main.py             # Punctul de intrare (MainController)
-└── settings.txt        # Configurațiile utilizatorului (tema, ultima locație date)
+├── Internal/
+│   ├── entity/         # Modele de date (User, Student, Group, Preset)
+│   ├── repository/     # Gestionarea fișierelor criptate .enc
+│   ├── service/        # Logica de business (StudentService, ScheduleService)
+│   ├── ui/             # Modulele de interfață grafică (ScheduleView, etc.)
+│   ├── security/       # Nucleul de criptare: EncryptionManager.py
+│   └── utils/          # Funcții utilitare globale: utils.py
+├── main.py             # MainController și punctul de intrare în aplicație
+└── settings.txt        # Configurațiile persistente ale utilizatorului
