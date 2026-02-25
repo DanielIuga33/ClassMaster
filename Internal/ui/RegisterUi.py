@@ -3,6 +3,7 @@ from tkinter import filedialog
 from Internal.entity.User import User
 from Internal.service.UserService import UserService
 from Internal.service.LanguageService import LanguageService
+from Internal.utils.utils import validate_password, validate_email
 
 
 class RegisterUi:
@@ -100,7 +101,13 @@ class RegisterUi:
         password = self.entry_pass.get()
         confirm_pass = self.entry_confirm_pass.get()
         data_path = self.entry_path.get()
-
+        email_errors = validate_email(self.entry_email.get())
+        if email_errors is not None:
+            self.show_toast(f"{email_errors}", "#E74C3C")
+            return
+        password_errors = validate_password(password)
+        if password_errors is not None:
+            self.show_toast(f"{email_errors}", "#E74C3C")
         # Verificare parole
         if password != confirm_pass:
             self.show_toast(self.lang_service.get_text("global", "err_pass_mismatch"), "#E74C3C")

@@ -57,8 +57,6 @@ def get_dynamic_colors(cell_id, raw_data, colors):
 
         # ȘEDINȚE CARE URMEAZĂ *AZI* (Culoare specială) ---
         if cell_date_str == today_str and curr_t < start_t:
-            # Poți folosi o culoare nouă din dicționar sau una fixă (ex: portocaliu/auriu)
-            # Dacă vrei să fie din temă, adaugă în get_colors_by_name cheia "schedule_upcoming_today"
             return colors.get("schedule_upcoming_today_bg", "#D35400"), "white"
 
         # ȘEDINȚE DIN ZILELE VIITOARE ALE SĂPTĂMÂNII ---
