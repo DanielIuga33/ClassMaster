@@ -87,6 +87,9 @@ class RepositoryGroup:
     def get_all(self):
         return self.__group_list
 
+    def size(self):
+        return len(self.__group_list)
+
     def set_new_path(self, new_data_path: str, password: str):
         if new_data_path:
             # Aici salvăm parola primită de la login!

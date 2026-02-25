@@ -45,6 +45,10 @@ class RepositoryStudent:
             return [200, "OK"]
         return [404, "Student not found!"]
 
+
+    def size(self):
+        return len(self.__student_list)
+
     def __exist(self, student):
         return student in self.__student_list
 

@@ -3,7 +3,7 @@ import tkinter as tk
 
 def validate_roman_entry(char):
     """Permite doar caracterele romane valide."""
-    allowed_chars = "IVXLCDMivxlcdm"
+    allowed_chars = "IVXivx"
     return char in allowed_chars
 
 

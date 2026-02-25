@@ -53,3 +53,7 @@ class UserService:
             elif user.email == email and user.password != password:
                 return [400, "Password mismatch"]
         return [404, "User not found"]
+
+    def size(self):
+        return self.__repository.size()
+

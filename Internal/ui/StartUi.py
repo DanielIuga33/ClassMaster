@@ -23,16 +23,10 @@ class StartUi:
                 "btn_log": "#374151", "btn_reg": "#059669", "icon": "☀️"
             }
         }
-
         self.current_theme_name = self.settings_service.get_theme("global")
-
-        # Buton temă
         self.theme_button = tk.Button(self.root, command=self.toggle_theme,
                                       font=("Segoe UI", 12), relief="flat", cursor="hand2")
         self.theme_button.place(x=350, y=10)
-
-        # --- BUTON LIMBĂ ---
-        # Plasat la stânga butonului de temă
         self.lang_button = tk.Button(self.root, command=self.toggle_language,
                                      font=("Segoe UI", 10, "bold"), relief="flat", cursor="hand2")
         self.lang_button.place(x=310, y=12)
@@ -69,7 +63,6 @@ class StartUi:
     def toggle_language(self):
         """Schimbă limba și salvează în profilul global."""
         current_lang = self.settings_service.get_user_settings("global").get("language", "ro")
-        # Rotim între 'ro' și 'en'
         new_lang = "en" if current_lang == "ro" else "ro"
 
         self.settings_service.save_for_global("language", new_lang)
@@ -79,14 +72,10 @@ class StartUi:
         """Actualizează culorile, traducerile și textul butonului de limbă."""
         theme = self.ui_themes[self.current_theme_name]
         current_lang = self.settings_service.get_user_settings("global").get("language")
-
-        # --- TRADUCERI ---
         self.lbl_title.configure(text=self.lang_service.get_text("global", "app_title"))
         self.lbl_subtitle.configure(text=self.lang_service.get_text("global", "app_subtitle"))
         self.btn_login.configure(text=self.lang_service.get_text("global", "btn_login"))
         self.btn_reg.configure(text=self.lang_service.get_text("global", "btn_register"))
-
-        # Textul butonului de limbă arată limba care VA FI activată (ex: arată EN dacă ești pe RO)
         lang_btn_text = "EN" if current_lang == "ro" else "RO"
         self.lang_button.configure(text=lang_btn_text, bg=theme["bg"], fg=theme["fg"], activebackground=theme["bg"])
 

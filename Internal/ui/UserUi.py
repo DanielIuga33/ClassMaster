@@ -23,7 +23,7 @@ class UserUi:
     def __init__(self, root, user, on_logout, settings_service: SettingsService, user_service: UserService,
                  student_service: StudentService, group_service: GroupService, preset_service: PresetService,
                  schedule_service: ScheduleService, language_service: LanguageService):
-        self.rows_var = None
+        self.rows_var = 0
         self.root = root
         self.user = user
         self.on_logout = on_logout
@@ -33,38 +33,26 @@ class UserUi:
         self.group_service = group_service
         self.preset_service = preset_service
         self.schedule_service = schedule_service
-        self.language_service = language_service  # Serviciul de limbă injectat
+        self.language_service = language_service
         self.colors = self.settings_service.get_colors(user.get_id_entity())
 
-        # 1. Date de referință
         self.current_date = datetime.now()
         uid = self.user.get_id_entity()
-
-        # 2. Configurare fereastră principală cu titlu tradus
         app_title = self.language_service.get_text(uid, "app_title")
         self.root.title(f"{app_title} - {user.get_first_name()}")
         self.setup_window(1725, 800)
         self.root.configure(bg=self.colors["bg"])
-
-        # 3. Layout
         self.sidebar = tk.Frame(self.root, bg=self.colors["sidebar_bg"], width=260)
         self.sidebar.pack(side="left", fill="y")
         self.sidebar.pack_propagate(False)
-
         self.main_content = tk.Frame(self.root, bg=self.colors["bg"], padx=40, pady=40)
         self.main_content.pack(side="right", expand=True, fill="both")
-
-        # 4. Componente
         self.dashboard_component = DashboardView(self.main_content, self)
         self.schedule_component = ScheduleView(self.main_content, self)
         self.students_component = StudentsView(self.main_content, self)
         self.groups_component = GroupsView(self.main_content, self)
         self.settings_component = SettingsView(self.main_content, self)
-
-        # 5. Sidebar
         self.setup_sidebar_content(user)
-
-        # 6. Start
         self.show_dashboard()
 
     def setup_window(self, w, h):
@@ -82,8 +70,6 @@ class UserUi:
         if self.schedule_service.get_schedule_data():
             current_rows = self.schedule_service.get_schedule_data().get("total_rows", 5)
             self.rows_var = tk.IntVar(value=max(2, current_rows))
-
-        # Profil Utilizator
         profile_frame = tk.Frame(self.sidebar, bg=self.colors["sidebar_bg"], pady=30)
         profile_frame.pack(fill="x")
         initials = f"{user.get_first_name()[0]}{user.get_last_name()[0]}".upper()
@@ -92,12 +78,13 @@ class UserUi:
         tk.Label(profile_frame, text=f"{user.get_first_name()} {user.get_last_name()}",
                  font=("Segoe UI", 11, "bold"), bg=self.colors["sidebar_bg"], fg=self.colors["fg"]).pack(pady=10)
 
-        # Butoane Meniu Traduse
-        self.create_menu_button(f"🏠 {self.language_service.get_text(uid, 'menu_dashboard')}", self.show_dashboard)
-        self.create_menu_button(f"📅 {self.language_service.get_text(uid, 'menu_schedule')}", self.show_schedule)
+        self.create_menu_button(f"🏠 {self.language_service.get_text(uid, 'menu_dashboard')}",
+                                self.show_dashboard)
+        self.create_menu_button(f"📅 {self.language_service.get_text(uid, 'menu_schedule')}",
+                                self.show_schedule)
+        self.create_menu_button(f"🏫 {self.language_service.get_text(uid, 'menu_groups')}", self.show_groups)
         self.create_menu_button(f"👥 {self.language_service.get_text(uid, 'menu_students')}",
                                 lambda: self.show_students("grade"))
-        self.create_menu_button(f"🏫 {self.language_service.get_text(uid, 'menu_groups')}", self.show_groups)
         self.create_menu_button(f"⚙️ {self.language_service.get_text(uid, 'menu_settings')}", self.show_settings)
 
         # Deconectare tradus
@@ -234,7 +221,11 @@ class UserUi:
         self.students_component.render(sort_by)
 
     def show_groups(self):
-        self.groups_component.render()
+        if self.student_service.size_for_user(self.user.get_id_entity()) > 0:
+            self.groups_component.render()
+        else:
+            self.show_toast(f"❌ {self.language_service.get_text(self.user.get_id_entity(),
+                                                                'no_students')}","#E74C3C")
 
     def go_to_today(self):
         self.current_date = datetime.now()
@@ -243,6 +234,10 @@ class UserUi:
         self.show_schedule()
 
     def open_group_assignment_modal(self, cell_id):
+        if self.group_service.size_for_user(self.user.get_id_entity()) == 0:
+            self.show_toast(f"❌ {self.language_service.get_text(self.user.get_id_entity(),
+                                                                'no_groups')}", "#E74C3C")
+            return
         uid = self.user.get_id_entity()
         unique_key = f"{uid}_{cell_id}"
         current_data = self.schedule_service.get_schedule_data().get(f"{unique_key}_raw", None)

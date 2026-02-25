@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox, ttk
+from tkinter import ttk
 from datetime import datetime, timedelta
 from tkcalendar import DateEntry
 
@@ -37,33 +37,31 @@ def get_dynamic_colors(cell_id, raw_data, colors):
     curr_t = now.strftime("%H:%M")
     cell_date_str = cell_id.split('_')[0]
     cell_date_obj = datetime.strptime(cell_date_str, "%Y-%m-%d")
-
-    # Începutul săptămânii reale
     start_of_current_week = (now - timedelta(days=now.weekday())).replace(hour=0, minute=0, second=0, microsecond=0)
 
     try:
         time_range = raw_data.get('time', "00:00-00:00")
         start_t, end_t = time_range.split("-")
 
-        # --- 1. SĂPTĂMÂNI TRECUTE COMPLET ---
+        # SĂPTĂMÂNI TRECUTE COMPLET ---
         if cell_date_obj < start_of_current_week:
             return colors.get("schedule_past_bg", "#2C2C2C"), colors.get("schedule_past_fg", "#777777")
 
-        # --- 2. ȘEDINȚE TERMINATE (Azi sau în sapt. curentă) ---
+        # ȘEDINȚE TERMINATE (Azi sau în sapt. curentă) ---
         if cell_date_str < today_str or (cell_date_str == today_str and curr_t > end_t):
             return colors.get("schedule_past_bg", "#1B3D2F"), colors.get("schedule_past_fg", "#A5D6A7")
 
-        # --- 3. ȘEDINȚA ACTIVĂ CHIAR ACUM ---
+        # ȘEDINȚA ACTIVĂ CHIAR ACUM ---
         if cell_date_str == today_str and start_t <= curr_t <= end_t:
             return colors["accent"], "white"
 
-        # --- 4. ȘEDINȚE CARE URMEAZĂ *AZI* (Culoare specială) ---
+        # ȘEDINȚE CARE URMEAZĂ *AZI* (Culoare specială) ---
         if cell_date_str == today_str and curr_t < start_t:
             # Poți folosi o culoare nouă din dicționar sau una fixă (ex: portocaliu/auriu)
             # Dacă vrei să fie din temă, adaugă în get_colors_by_name cheia "schedule_upcoming_today"
             return colors.get("schedule_upcoming_today_bg", "#D35400"), "white"
 
-        # --- 5. ȘEDINȚE DIN ZILELE VIITOARE ALE SĂPTĂMÂNII ---
+        # ȘEDINȚE DIN ZILELE VIITOARE ALE SĂPTĂMÂNII ---
         return colors.get("schedule_future_bg", "#3D3A1B"), colors.get("schedule_future_fg", "#FFF59D")
 
     except Exception as e:
@@ -262,8 +260,6 @@ class ScheduleView:
         # 1. Calculăm începutul săptămânii AFIȘATE în grid
         start_of_displayed_week = self.master.current_date - timedelta(days=self.master.current_date.weekday())
 
-        # 2. Calculăm începutul săptămânii REALE (cea de azi)
-        # Folosim replace pentru a ne asigura că comparăm doar datele, nu și orele
         start_of_current_real_week = (now - timedelta(days=now.weekday())).replace(hour=0, minute=0, second=0,
                                                                                    microsecond=0)
 

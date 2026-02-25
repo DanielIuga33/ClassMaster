@@ -1,5 +1,4 @@
 import os
-import json
 from Internal.security.EncryptionManager import EncryptionManager
 
 
@@ -122,5 +121,8 @@ class RepositoryUser:
 
     def get_all(self):
         return self.__user_list
+
+    def size(self):
+        return len(self.__user_list)
 
 

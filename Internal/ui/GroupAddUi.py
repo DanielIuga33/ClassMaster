@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import messagebox, ttk
+from tkinter import messagebox
 from Internal.service.GroupService import GroupService
 from Internal.service.StudentService import StudentService
 from Internal.service.LanguageService import LanguageService

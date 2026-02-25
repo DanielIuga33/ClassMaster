@@ -106,3 +106,9 @@ class StudentService:
 
     def set_repository_path(self, path, password):
         self.__repository.set_new_path(path, password)
+
+    def size_for_user(self, user_id):
+        return len(self.get_students_for_teacher(user_id))
+
+    def size(self):
+        return self.__repository.size()

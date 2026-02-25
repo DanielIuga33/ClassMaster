@@ -42,10 +42,21 @@ class ScheduleService:
         EncryptionManager.encrypt_to_file(self.__filename, self.__schedule_data, self.__current_password)
 
     def delete_cascade(self, id_group):
-        print("sunt aici")
-        for schedule in self.get_schedule_data():
-            print("caut")
-            if schedule['group_id'] == id_group:
-                print("am gasit")
-                self.__schedule_data.remove(schedule)
-                self.save_schedule_data()
+        # Facem o listă cu cheile pe care trebuie să le ștergem
+        # Nu putem șterge direct din dicționar în timp ce îl parcurgem
+        keys_to_delete = []
+
+        current_data = self.get_schedule_data()
+
+        for key, value in current_data.items():
+            # Verificăm dacă valoarea este un dicționar și are group_id
+            if isinstance(value, dict) and value.get('group_id') == id_group:
+                keys_to_delete.append(key)
+
+        # Dacă am găsit ceva de șters
+        if keys_to_delete:
+            for key in keys_to_delete:
+                del self.__schedule_data[key]
+
+            # Salvăm o singură dată la final, nu în interiorul for-ului (pentru performanță)
+            self.save_schedule_data()

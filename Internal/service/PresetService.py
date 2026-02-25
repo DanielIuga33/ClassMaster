@@ -1,4 +1,3 @@
-import uuid
 from Internal.entity.Preset import Preset
 from Internal.repository.RepositoryPreset import RepositoryPreset
 
@@ -20,15 +19,27 @@ class PresetService:
         return self.__repository.remove_preset(preset)
 
     def delete_cascade(self, group_id, id_teacher):
-        for preset in self.get_all_presets_for_teacher(id_teacher):
-            ok = False
-            for group in preset['data']:
-                if group['group_id'] == group_id:
-                    preset['data'].remove(group)
-                    ok = True
-            if ok:
-                self.__repository.update_preset(preset, preset)
+        """Șterge grupul din presetări și elimină presetările care rămân goale."""
+        presets = self.get_all_presets_for_teacher(id_teacher)
 
-    def set_repository_path(self, path, password):  # Adaugă 'password' aici
-        """Actualizează calea și parola pentru repository-ul de presetări."""
+        # Folosim o listă pentru a itera în siguranță dacă decidem să ștergem obiecte
+        for preset in presets:
+            data = preset.get_data()
+            keys_to_remove = [cell_id for cell_id, group_info in data.items()
+                              if group_info.get('group_id') == group_id]
+
+            if keys_to_remove:
+                for key in keys_to_remove:
+                    del data[key]
+
+                # Verificăm dacă preset-ul mai are alte meditații rămase
+                if not data:
+                    # Dacă e gol, îl ștergem definitiv din repository
+                    self.__repository.remove_preset(preset)
+                else:
+                    # Dacă mai are date, doar îl actualizăm
+                    preset.set_data(data)
+                    self.__repository.update_preset(preset, preset)
+
+    def set_repository_path(self, path, password):
         self.__repository.set_new_path(path, password)

@@ -136,7 +136,10 @@ class StudentsView:
 
         if answer:
             self.master.student_service.delete_student(student)
-            self.master.group_service.delete_cascade(student.get_id_entity())
+            group_id =  self.master.group_service.delete_cascade(student.get_id_entity())
+            if group_id is not None:
+                self.master.schedule_service.delete_cascade(group_id)
+                self.master.preset_service.delete_cascade(group_id, self.master.user.get_id_entity())
 
             # Mesaj ștergere tradus dinamic
             msg = ls.get_text(user_id, "msg_student_deleted").replace("{name}", student.get_last_name())

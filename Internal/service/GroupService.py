@@ -33,11 +33,13 @@ class GroupService:
             if student_id in self.get_group_students(group.get_id_entity()):
                 if len(self.get_group_students(group.get_id_entity())) < 2:
                     self.delete_group(group.get_id_entity())
+                    return group.get_id_entity()
                 else:
                     students = group.get_student_ids()
                     students.remove(student_id)
                     group.set_student_ids(students)
                     self.__repository.modify_group(group, group)
+        return None
 
     def get_groups_for_teacher(self, teacher_id):
         result = []
@@ -46,6 +48,8 @@ class GroupService:
                 result.append(group)
         return result
 
+    def size(self):
+        return self.__repository.size()
 
-
-
+    def size_for_user(self, user_id):
+        return len(self.get_groups_for_teacher(user_id))

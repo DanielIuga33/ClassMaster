@@ -90,11 +90,12 @@ class ScheduleEditUi(tk.Toplevel):
         ent.bind("<KeyRelease>", lambda e: self.auto_focus(e.widget))
         return ent
 
-    def validate_time(self, P, limit):
-        if P == "":
+    @staticmethod
+    def validate_time(p, limit):
+        if p == "":
             return True
-        if P.isdigit() and len(P) <= 2:
-            if int(P) <= int(limit):
+        if p.isdigit() and len(p) <= 2:
+            if int(p) <= int(limit):
                 return True
         return False
 

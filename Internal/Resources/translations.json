@@ -132,7 +132,9 @@
     "msg_securing_data": "Securizăm datele cu noua parolă. Te rugăm să aștepți...",
     "msg_pass_sync_error": "Eroare: Datele nu au putut fi re-criptate. Parola nu a fost schimbată.",
     "confirm_title": "Confirmare Ștergere",
-    "confirm_delete_student": "Ești sigur că vrei să ștergi studentul {name}? Această acțiune este ireversibilă."
+    "confirm_delete_student": "Ești sigur că vrei să ștergi studentul {name}? Această acțiune este ireversibilă.",
+    "no_students": "Trebuie să adaugi studenţi prima dată.",
+    "no_groups": "Trebuie să adaugi grupe prima dată."
   },
   "en": {
     "app_title": "ClassMaster",
@@ -267,7 +269,9 @@
     "msg_securing_data": "Securing data with the new password. Please wait...",
     "msg_pass_sync_error": "Error: Data could not be re-encrypted. Password remained unchanged.",
     "confirm_title": "Delete Confirmation",
-    "confirm_delete_student": "Are you sure you want to delete student {name}? This action cannot be undone."
+    "confirm_delete_student": "Are you sure you want to delete student {name}? This action cannot be undone.",
+    "no_students": "You need to add students first.",
+    "no_groups": "You need to add groups first."
   }
 }
 

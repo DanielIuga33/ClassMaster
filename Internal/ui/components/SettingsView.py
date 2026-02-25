@@ -19,16 +19,14 @@ class SettingsView:
         self.master.clear_content()
         uid = self.master.user.get_id_entity()
         colors = self.master.settings_service.get_colors(uid)
-        ls = self.master.language_service  # Scurtătură pentru LanguageService
-
-        # Preluăm culoarea de contrast dedicată temei
+        ls = self.master.language_service
         txt_color = colors.get("schedule_text", colors["fg"])
 
-        # Header pagină tradus
+        # Header
         tk.Label(self.parent, text=f"⚙️ {ls.get_text(uid, 'menu_settings')}", font=("Segoe UI", 28, "bold"),
                  bg=colors["bg"], fg=colors["accent"]).pack(anchor="w", pady=(0, 30))
 
-        # --- Secțiune 1: PROFIL & SECURITATE ---
+        # PROFIL & SECURITATE ---
         main_profile_frame = tk.Frame(self.parent, bg=colors["bg"])
         main_profile_frame.pack(fill="x", pady=(0, 20))
 

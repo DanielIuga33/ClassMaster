@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import filedialog
-import time
 
 from Internal.service.GroupService import GroupService
 from Internal.service.PresetService import PresetService
@@ -8,7 +7,6 @@ from Internal.service.ScheduleService import ScheduleService
 from Internal.service.SettingsService import SettingsService
 from Internal.service.StudentService import StudentService
 from Internal.service.UserService import UserService
-# Importăm serviciul de limbă
 from Internal.service.LanguageService import LanguageService
 
 
@@ -26,7 +24,7 @@ class LoginUi:
         self.settings_service = settings_service
         self.schedule_service = schedule_service
         self.on_back = on_back
-        self.lang_service = lang_service  # Injectăm serviciul de limbă
+        self.lang_service = lang_service
 
         global_settings = self.settings_service.get_user_settings("global")
         self.colors = self.settings_service.get_colors("global")
@@ -34,8 +32,6 @@ class LoginUi:
         if self.colors is None:
             self.colors = {"bg": "#18191A", "fg": "#E4E6EB", "input_bg": "#3A3B3C", "accent": "#007BFF",
                            "success": "#059669"}
-
-        # Titlu fereastră tradus
         self.root.title(f"{self.lang_service.get_text('global', 'login_title')} - ClassMaster")
         self.setup_window(400, 600)
         self.root.configure(bg=self.colors["bg"])
@@ -52,12 +48,9 @@ class LoginUi:
             "insertbackground": self.colors["fg"]
         }
 
-        # Titlu pagină tradus
         tk.Label(self.container, text=self.lang_service.get_text("global", "login_title"),
                  font=("Segoe UI", 24, "bold"),
                  bg=self.colors["bg"], fg=self.colors["fg"]).pack(pady=(0, 20))
-
-        # --- Locație stocare date ---
         tk.Label(self.container, text=self.lang_service.get_text("global", "data_location"),
                  **lbl_style).pack(anchor="w", pady=(10, 0))
         path_frame = tk.Frame(self.container, bg=self.colors["bg"])
@@ -66,12 +59,8 @@ class LoginUi:
         self.entry_path = tk.Entry(path_frame, **ent_style)
         self.entry_path.pack(side="left", expand=True, fill="x", ipady=5)
         self.entry_path.insert(0, global_settings.get("last_data_path", ""))
-
-        # Buton Răsfoiește tradus
         tk.Button(path_frame, text=self.lang_service.get_text("global", "browse"), command=self.browse_folder,
                   bg=self.colors["accent"], fg="white", relief="flat", cursor="hand2").pack(side="right", padx=(5, 0))
-
-        # --- Identificator ---
         tk.Label(self.container, text=self.lang_service.get_text("global", "user_identifier"),
                  **lbl_style).pack(anchor="w", pady=(10, 0))
         self.entry_identifier = tk.Entry(self.container, width=30, **ent_style)
@@ -80,22 +69,15 @@ class LoginUi:
         last_user = global_settings.get("last_user", "")
         if last_user:
             self.entry_identifier.insert(0, last_user)
-
-        # --- Parolă ---
         tk.Label(self.container, text=self.lang_service.get_text("global", "password"),
                  **lbl_style).pack(anchor="w", pady=(10, 0))
         self.entry_password = tk.Entry(self.container, width=30, show="*", **ent_style)
         self.entry_password.pack(pady=(5, 30), ipady=5)
-
-        # --- Butoane ---
-        # Buton Login tradus
         login_btn = tk.Button(self.container, text=self.lang_service.get_text("global", "btn_login_submit"),
                               command=self.handle_login,
                               font=("Segoe UI", 12, "bold"), bg=self.colors["accent"], fg="white",
                               relief="flat", width=25, cursor="hand2")
         login_btn.pack(pady=10, ipady=5)
-
-        # Buton Înapoi tradus
         tk.Button(self.container, text=self.lang_service.get_text("global", "btn_back"),
                   command=self.on_back,
                   font=("Segoe UI", 10), bg=self.colors["bg"], fg="#888",

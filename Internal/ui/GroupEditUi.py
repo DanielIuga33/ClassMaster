@@ -1,14 +1,14 @@
 import tkinter as tk
-from tkinter import messagebox, ttk
+from tkinter import messagebox
 from Internal.entity.Group import Group
 from Internal.service.GroupService import GroupService
 from Internal.service.StudentService import StudentService
-from Internal.service.LanguageService import LanguageService  # Import necesar
+from Internal.service.LanguageService import LanguageService
 
 
 class GroupEditUi(tk.Toplevel):
     def __init__(self, parent, theme, group: Group, group_service: GroupService, student_service: StudentService,
-                 on_success, lang_service: LanguageService):  # Injectăm lang_service
+                 on_success, lang_service: LanguageService):
         super().__init__(parent)
         self.group = group
         self.theme = theme
@@ -19,25 +19,16 @@ class GroupEditUi(tk.Toplevel):
 
         uid = group.get_teacher_id()
         ls = self.lang_service
-
-        # Culori și stil
         self.txt_color = theme.get("schedule_text", "#FFFFFF")
         self.accent_color = theme.get("accent", "#9B59B6")
-
-        # Titlu fereastră tradus
-        # Folosim placeholder {name} pentru a injecta numele grupei în titlu
         win_title = ls.get_text(uid, "group_edit_window_title").replace("{name}", group.get_group_name())
         self.title(win_title)
 
         self.setup_modal(450, 650)
         self.configure(bg=theme["bg"], padx=30, pady=25)
         self.grab_set()
-
-        # Titlu stilizat tradus
         tk.Label(self, text=f"📝 {ls.get_text(uid, 'group_edit_header')}", font=("Segoe UI", 18, "bold"),
                  bg=theme["bg"], fg=self.accent_color).pack(pady=(0, 20))
-
-        # 1. Câmp Nume Grupă tradus
         tk.Label(self, text=ls.get_text(uid, "col_group_name"), bg=theme["bg"], fg=self.txt_color,
                  font=("Segoe UI", 10, "bold")).pack(anchor="w")
         self.name_entry = tk.Entry(self, font=("Segoe UI", 11), relief="flat",
@@ -45,8 +36,6 @@ class GroupEditUi(tk.Toplevel):
                                    insertbackground=self.txt_color)
         self.name_entry.insert(0, group.get_group_name())
         self.name_entry.pack(fill="x", pady=(5, 20), ipady=8)
-
-        # 2. Selecție Studenți tradusă
         tk.Label(self, text=ls.get_text(uid, "group_select_members_hint"),
                  bg=theme["bg"], fg=self.txt_color, font=("Segoe UI", 10, "bold")).pack(anchor="w")
 
@@ -74,8 +63,6 @@ class GroupEditUi(tk.Toplevel):
 
             if student.get_id_entity() in current_members:
                 self.student_listbox.select_set(idx)
-
-        # 3. Buton Salvare tradus
         tk.Button(self, text=ls.get_text(uid, "btn_save_changes"), command=self.handle_save,
                   bg=theme.get("success", "#2ECC71"), fg="white",
                   font=("Segoe UI", 12, "bold"), relief="flat",
@@ -89,7 +76,6 @@ class GroupEditUi(tk.Toplevel):
         selected_indices = self.student_listbox.curselection()
 
         if not new_name:
-            # Mesaj eroare tradus
             messagebox.showwarning(ls.get_text(uid, "warning"), ls.get_text(uid, "err_group_name_req"))
             return
 
@@ -123,8 +109,6 @@ class GroupEditUi(tk.Toplevel):
             s for s in all_students
             if s.get_id_entity() not in assigned_student_ids
         ]
-
-        # Includem și studenții care fac deja parte din această grupă pentru a-i putea păstra/edita
         for s in all_students:
             if s.get_id_entity() in self.group.get_student_ids() and s not in available_students:
                 available_students.append(s)

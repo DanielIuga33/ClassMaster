@@ -1,5 +1,5 @@
 import tkinter as tk
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 class DashboardView:

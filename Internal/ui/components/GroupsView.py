@@ -1,6 +1,4 @@
 import tkinter as tk
-from tkinter import messagebox, ttk
-from Internal.entity.Group import Group
 from Internal.ui.GroupEditUi import GroupEditUi
 
 
