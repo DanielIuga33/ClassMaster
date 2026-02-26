@@ -1,33 +1,21 @@
 # -*- mode: python ; coding: utf-8 -*-
 import os
+from PyInstaller.utils.hooks import collect_all
 
-proiect_path = r'D:\Programare\GithubProjects\ClassMaster'
-site_packages = os.path.join(proiect_path, '.venv', 'Lib', 'site-packages')
+# Colectăm automat tot ce ține de bibliotecile care lipsesc
+tkcal_datas, tkcal_binaries, tkcal_hidden = collect_all('tkcalendar')
+babel_datas, babel_binaries, babel_hidden = collect_all('babel')
+crypto_datas, crypto_binaries, crypto_hidden = collect_all('cryptography')
 
-# Definirea căilor către folderele care lipsesc
-crypto_dir = os.path.join(site_packages, 'cryptography')
-cffi_dir = os.path.join(site_packages, 'cffi')
-# Verifică dacă acest nume de fișier este identic cu cel găsit la Pasul 1
-cffi_backend = os.path.join(site_packages, '_cffi_backend.cp313-win_amd64.pyd')
+proiect_path = r'E:\Programare\GitHub Projects\ClassMaster'
 
 a = Analysis(
     ['main.py'],
     pathex=[proiect_path],
-    binaries=[(cffi_backend, '.')], # Forțăm includerea binarelor CFFI
-    datas=[
-        ('Internal', 'Internal'),
-        (crypto_dir, 'cryptography'), # Copiem manual tot folderul de criptare
-        (cffi_dir, 'cffi')
-    ],
-    hiddenimports=[
-        'cryptography',
-        'cffi',
-        '_cffi_backend',
-        'hmac',
-        'hashlib',
-        'base64',
-        'tkcalendar',
-        'babel.numbers'
+    binaries=tkcal_binaries + babel_binaries + crypto_binaries,
+    datas=tkcal_datas + babel_datas + crypto_datas + [('Internal', 'Internal')],
+    hiddenimports=tkcal_hidden + babel_hidden + crypto_hidden + [
+        'tkcalendar', 'babel.numbers', 'cryptography', '_cffi_backend'
     ],
     hookspath=[],
     hooksconfig={},
@@ -45,11 +33,11 @@ exe = EXE(
     [],
     exclude_binaries=True,
     name='ClassMaster',
-    debug=True, # Lăsăm Debug=True pentru a vedea erorile într-o consolă dacă dă greș
+    debug=False,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    console=True, # Lăsăm consola deschisă temporar pentru diagnosticare
+    console=False, # O punem pe False acum că am văzut eroarea
     icon=['icon.ico'],
 )
 coll = COLLECT(

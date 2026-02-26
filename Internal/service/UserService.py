@@ -17,7 +17,7 @@ class UserService:
 
         # Setăm calea și salvăm
         path_ales = user.get_data_path()
-        self.__repository.set_new_path(path_ales)
+        self.__repository.set_new_path(path_ales + "/ClassMasterSavedData")
         return self.__repository.add_user(user)
 
     def get_user(self, first_name: str, last_name: str):

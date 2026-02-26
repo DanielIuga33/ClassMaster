@@ -33,12 +33,12 @@ DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only).
 ;PrivilegesRequired=lowest
-PrivilegesRequiredOverridesAllowed=dialog
-OutputDir=D:\Programare\GithubProjects\ClassMaster
-OutputBaseFilename=ClassMaster_Setup_v2
-SetupIconFile=D:\Programare\GithubProjects\ClassMaster\icon.ico
+;PrivilegesRequiredOverridesAllowed=dialog
+OutputDir=E:\Programare\GitHub Projects\ClassMaster
+OutputBaseFilename=Setup
+SetupIconFile=E:\Programare\GitHub Projects\ClassMaster\icon.ico
 SolidCompression=yes
-WizardStyle=modern dark
+;WizardStyle=modern dark
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -49,10 +49,10 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 [Files]
 ; Aceasta linie instalează executabilul principal
-Source: "D:\Programare\GithubProjects\ClassMaster\dist\ClassMaster\ClassMaster.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Programare\GitHub Projects\ClassMaster\dist\ClassMaster\ClassMaster.exe"; DestDir: "{app}"; Flags: ignoreversion
 
 ; Aceasta linie instalează TOATE subfolderele (Internal, biblioteci etc.)
-Source: "D:\Programare\GithubProjects\ClassMaster\dist\ClassMaster\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "E:\Programare\GitHub Projects\ClassMaster\dist\ClassMaster\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]
