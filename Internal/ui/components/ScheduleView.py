@@ -4,30 +4,6 @@ from datetime import datetime, timedelta
 from tkcalendar import DateEntry
 
 
-# def get_dynamic_colors(cell_id, raw_data, colors):
-#     if not raw_data.get('group_name'):
-#         return colors["card_bg"], colors["fg"]
-#     now = datetime.now()
-#     today_str = now.strftime("%Y-%m-%d")
-#     curr_t = now.strftime("%H:%M")
-#     cell_date = cell_id.split('_')[0]
-#     end_of_current_week = (now + timedelta(days=(6 - now.weekday()))).strftime("%Y-%m-%d")
-#
-#     try:
-#         start_t, end_t = raw_data.get('time', "00:00-00:00").split("-")
-#         if cell_date < today_str or (cell_date == today_str and curr_t > end_t):
-#             return colors.get("schedule_past_bg", "#1B3D2F"), colors.get("schedule_past_fg", "#A5D6A7")
-#         if cell_date == today_str and start_t <= curr_t <= end_t:
-#             return colors["accent"], "white"
-#         if cell_date == today_str:
-#             return colors.get("schedule_today_bg", "#1A237E"), colors.get("schedule_today_fg", "#E8EAF6")
-#         if today_str < cell_date <= end_of_current_week:
-#             return colors.get("schedule_future_bg", "#3D3A1B"), colors.get("schedule_future_fg", "#FFF59D")
-#     except Exception as e:
-#         print(e)
-#         pass
-#     return colors["card_bg"], colors["fg"]
-
 def get_dynamic_colors(cell_id, raw_data, colors):
     if not raw_data.get('group_name'):
         return colors["card_bg"], colors["fg"]
@@ -75,6 +51,9 @@ class ScheduleView:
         self.table_container = None
         self.canvas = None
         self.cal_select = None
+
+        self.cell_widgets = {}  # Urmărim widget-urile create
+        self._last_grid_info = ""
 
         # --- LOGICĂ ZILE SELECTATE (PERSISTENTĂ) ---
         uid = self.master.user.get_id_entity()
@@ -193,127 +172,127 @@ class ScheduleView:
         self.draw_grid()
         self.render_stats_panel(colors)
 
+        self.schedule_auto_refresh()
+
     def update_days_persistence(self):
         uid = self.master.user.get_id_entity()
         active_indices = [i for i, var in enumerate(self.selected_days) if var.get()]
         self.master.settings_service.save_active_days(uid, active_indices)
         self.draw_grid()
 
-    # def draw_grid(self):
-    #     """Desenarea grid-ului cu CELULE MARI și format dată RO."""
-    #     for widget in self.table_container.winfo_children():
-    #         widget.destroy()
-    #
-    #     for i in range(10):
-    #         self.table_container.grid_columnconfigure(i, weight=0, minsize=0)
-    #
-    #     colors = self.master.colors
-    #     now = datetime.now()
-    #     start_of_week = self.master.current_date - timedelta(days=self.master.current_date.weekday())
-    #     num_rows = 5
-    #     if self.master.rows_var:
-    #         num_rows = self.master.rows_var.get()
-    #
-    #     active_days_indices = [i for i, var in enumerate(self.selected_days) if var.get()]
-    #     if not active_days_indices:
-    #         return
-    #
-    #     dynamic_minsize = 160 if len(active_days_indices) > 5 else 220
-    #
-    #     for col_idx, day_idx in enumerate(active_days_indices):
-    #         self.table_container.grid_columnconfigure(col_idx, weight=1, minsize=dynamic_minsize)
-    #         data_zi = start_of_week + timedelta(days=day_idx)
-    #         data_str = data_zi.strftime('%Y-%m-%d')
-    #
-    #         is_today = (data_str == now.strftime('%Y-%m-%d'))
-    #         header_bg = colors["accent"] if not is_today else "#CD5C5C"
-    #
-    #         h_frame = tk.Frame(self.table_container, bg=header_bg, pady=15)
-    #         h_frame.grid(row=0, column=col_idx, sticky="nsew", padx=1, pady=1)
-    #
-    #         tk.Label(h_frame, text=self.days_map[day_idx].upper(), font=("Segoe UI", 8, "bold"),
-    #                  bg=header_bg, fg="white").pack()
-    #         tk.Label(h_frame, text=data_zi.strftime('%d.%m.%Y'), font=("Segoe UI", 12, "bold"),
-    #                  bg=header_bg, fg="white").pack(pady=3)
-    #         tk.Label(h_frame, text=f"{self.calculate_daily_total(data_str)} RON", font=("Segoe UI", 9, "italic"),
-    #                  bg=header_bg, fg="white").pack()
-    #
-    #     for row in range(1, num_rows + 1):
-    #         self.table_container.grid_rowconfigure(row, weight=0, minsize=145)
-    #         for col_idx, day_idx in enumerate(active_days_indices):
-    #             data_zi = start_of_week + timedelta(days=day_idx)
-    #             cell_id = f"{data_zi.strftime('%Y-%m-%d')}_R{row}"
-    #             self.render_cell(row, col_idx, cell_id)
     def draw_grid(self):
-        """Desenarea grid-ului cu diferențiere vizuală pentru săptămânile trecute."""
-        for widget in self.table_container.winfo_children():
-            widget.destroy()
-
-        for i in range(10):
-            self.table_container.grid_columnconfigure(i, weight=0, minsize=0)
-
+        """Desenează grid-ul și asigură alinierea corectă a coloanelor."""
         colors = self.master.colors
         now = datetime.now()
-
-        # 1. Calculăm începutul săptămânii AFIȘATE în grid
         start_of_displayed_week = self.master.current_date - timedelta(days=self.master.current_date.weekday())
-
         start_of_current_real_week = (now - timedelta(days=now.weekday())).replace(hour=0, minute=0, second=0,
                                                                                    microsecond=0)
 
-        num_rows = 5
-        if self.master.rows_var:
-            num_rows = self.master.rows_var.get()
-
+        num_rows = self.master.rows_var.get() if self.master.rows_var else 5
         active_days_indices = [i for i, var in enumerate(self.selected_days) if var.get()]
+
         if not active_days_indices:
             return
 
+        # --- FIX VIZUAL: Curățăm dicționarul de widget-uri și containerele vechi ---
+        self.cell_widgets = {}
+        for widget in self.table_container.winfo_children():
+            widget.destroy()
+
+        # --- FIX COLOANE: Configurăm lățimea coloanelor (Să fie late ca în a doua imagine) ---
         dynamic_minsize = 160 if len(active_days_indices) > 5 else 220
-
-        for col_idx, day_idx in enumerate(active_days_indices):
+        for col_idx in range(len(active_days_indices)):
             self.table_container.grid_columnconfigure(col_idx, weight=1, minsize=dynamic_minsize)
-            data_zi = start_of_displayed_week + timedelta(days=day_idx)
 
-            # Conversie pentru compararea săptămânilor
+        # 1. Randare Headere
+        for col_idx, day_idx in enumerate(active_days_indices):
+            data_zi = start_of_displayed_week + timedelta(days=day_idx)
             data_zi_dt = datetime.combine(data_zi, datetime.min.time())
             data_str = data_zi.strftime('%Y-%m-%d')
-            today_str = now.strftime('%Y-%m-%d')
 
-            # --- LOGICĂ COLORARE HEADER ---
-            # Verificăm dacă săptămâna afișată este înaintea săptămânii curente
+            # Logică culori Header
             is_past_week = data_zi_dt < start_of_current_real_week
-
             if is_past_week:
-                # Săptămână veche: Culori neutre (gri/stins)
-                header_bg = colors.get("grid_line", "#333333")
-                header_fg = colors.get("sub", "#888888")
-            elif data_str == today_str:
-                # Azi: Culoare de accent (roșu/roz)
-                header_bg = "#CD5C5C"
-                header_fg = "white"
+                header_bg, header_fg = colors.get("grid_line", "#333333"), colors.get("sub", "#888888")
+            elif data_str == now.strftime('%Y-%m-%d'):
+                header_bg, header_fg = "#CD5C5C", "white"  # Azi
             else:
-                # Săptămâna curentă sau viitoare: Culori vii (verde/albastru)
-                header_bg = colors["accent"]
-                header_fg = "white"
+                header_bg, header_fg = colors["accent"], "white"
 
             h_frame = tk.Frame(self.table_container, bg=header_bg, pady=15)
             h_frame.grid(row=0, column=col_idx, sticky="nsew", padx=1, pady=1)
-
-            tk.Label(h_frame, text=self.days_map[day_idx].upper(), font=("Segoe UI", 8, "bold"),
-                     bg=header_bg, fg=header_fg).pack()
-            tk.Label(h_frame, text=data_zi.strftime('%d.%m.%Y'), font=("Segoe UI", 12, "bold"),
-                     bg=header_bg, fg=header_fg).pack(pady=3)
+            tk.Label(h_frame, text=self.days_map[day_idx].upper(), font=("Segoe UI", 8, "bold"), bg=header_bg,
+                     fg=header_fg).pack()
+            tk.Label(h_frame, text=data_zi.strftime('%d.%m.%Y'), font=("Segoe UI", 12, "bold"), bg=header_bg,
+                     fg=header_fg).pack(pady=3)
             tk.Label(h_frame, text=f"{self.calculate_daily_total(data_str)} RON", font=("Segoe UI", 9, "italic"),
                      bg=header_bg, fg=header_fg).pack()
 
-        # --- RANDARE CELULE ---
+        # 2. Randare Celule
         for row in range(1, num_rows + 1):
             self.table_container.grid_rowconfigure(row, weight=0, minsize=145)
             for col_idx, day_idx in enumerate(active_days_indices):
                 data_zi = start_of_displayed_week + timedelta(days=day_idx)
                 cell_id = f"{data_zi.strftime('%Y-%m-%d')}_R{row}"
                 self.render_cell(row, col_idx, cell_id)
+
+    def schedule_auto_refresh(self):
+        """
+        Refresh inteligent care monitorizează starea ședințelor și oprește
+        execuția dacă utilizatorul navighează către altă pagină.
+        """
+        # 1. SIGURANȚĂ: Verificăm dacă containerul orarului mai există în UI.
+        # Dacă a fost distrus (ex: ai trecut la Profile Settings), oprim bucla.
+        if self.table_container is None or not self.table_container.winfo_exists():
+            return
+
+            # 2. SIGURANȚĂ: Verificăm dacă părintele (frame-ul principal) este activ.
+        if not self.parent.winfo_exists():
+            return
+
+        uid = self.master.user.get_id_entity()
+        colors = self.master.colors
+        needs_refresh = False
+
+        # Preluăm datele actuale din ScheduleService (In-Memory Cache)
+        schedule_data = self.master.schedule_service.get_schedule_data()
+
+        # 3. LOGICĂ DE DETECȚIE SCHIMBĂRI:
+        # Parcurgem celulele randate pentru a vedea dacă s-a schimbat starea lor (ex: din viitor în activ)
+        for cid, widgets in list(self.cell_widgets.items()):
+            try:
+                # Verificăm dacă frame-ul celulei încă există fizic pe ecran
+                if widgets['frame'].winfo_exists():
+                    raw_data = schedule_data.get(f"{uid}_{cid}_raw", {})
+
+                    # Verificăm doar celulele care au o grupă alocată
+                    if raw_data.get('group_name'):
+                        expected_bg, _ = get_dynamic_colors(cid, raw_data, colors)
+                        current_bg = widgets['frame'].cget('bg')
+
+                        # Dacă culoarea calculată acum diferă de cea afișată, e nevoie de refresh
+                        if expected_bg.lower() != current_bg.lower():
+                            needs_refresh = True
+                            break
+                else:
+                    # Curățăm referințele către widget-uri care nu mai există
+                    self.cell_widgets.pop(cid, None)
+            except (tk.TclError, KeyError):
+                # Ignorăm erorile cauzate de widget-uri distruse în timpul iterației
+                continue
+
+        # 4. EXECUTARE REFRESH:
+        # Redesenăm grid-ul doar dacă s-a schimbat starea unei ședințe (eficient pentru CPU)
+        if needs_refresh:
+            self.draw_grid()
+
+        # 5. ACTUALIZARE FINANCIARĂ:
+        # Actualizăm panoul de sume (Collected RON) la fiecare 3 secunde
+        self.render_stats_panel(colors)
+
+        # 6. REPETARE:
+        # Programăm următoarea verificare peste 3 secunde (3000ms)
+        self.parent.after(3000, self.schedule_auto_refresh)
 
     def render_cell(self, row, col, cell_id):
         """Randare celulă cu spațiere mare și suport absenți."""
@@ -324,6 +303,8 @@ class ScheduleView:
 
         cell_frame = tk.Frame(self.table_container, bg=bg_color)
         cell_frame.grid(row=row, column=col, sticky="nsew", padx=1, pady=1)
+
+        self.cell_widgets[cell_id] = {'frame': cell_frame}
 
         inner_content = tk.Frame(cell_frame, bg=bg_color, cursor="hand2")
         inner_content.pack(fill="both", expand=True, padx=12, pady=12)

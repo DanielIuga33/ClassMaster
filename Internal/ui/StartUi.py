@@ -1,6 +1,7 @@
 import tkinter as tk
 from Internal.service.SettingsService import SettingsService
 from Internal.service.LanguageService import LanguageService
+import pywinstyles
 
 
 class StartUi:
@@ -24,6 +25,12 @@ class StartUi:
             }
         }
         self.current_theme_name = self.settings_service.get_theme("global")
+        try:
+            # Aplicăm stilul de bază imediat, înainte de orice widget
+            pywinstyles.apply_style(self.root, self.current_theme_name)
+        except Exception as e:
+            print(e)
+            pass
         self.theme_button = tk.Button(self.root, command=self.toggle_theme,
                                       font=("Segoe UI", 12), relief="flat", cursor="hand2")
         self.theme_button.place(x=350, y=10)
@@ -46,6 +53,7 @@ class StartUi:
 
         self.setup_window(400, 500)
         self.update_ui_content()
+        self.root.after(200, self.apply_system_theme)
 
     def setup_window(self, w, h):
         ws = self.root.winfo_screenwidth()
@@ -59,6 +67,7 @@ class StartUi:
         self.current_theme_name = new_theme
         self.settings_service.save_for_global("tema", new_theme)
         self.update_ui_content()
+        self.apply_system_theme()
 
     def toggle_language(self):
         """Schimbă limba și salvează în profilul global."""
@@ -86,3 +95,36 @@ class StartUi:
         self.lbl_subtitle.configure(bg=theme["bg"], fg=theme["sub"])
         self.btn_login.configure(bg=theme["btn_log"])
         self.btn_reg.configure(bg=theme["btn_reg"])
+
+    def apply_system_theme(self):
+        """Sincronizează bara nativă folosind un 'Silent Refresh' prin transparență."""
+        try:
+            self.root.attributes("-alpha", 0.0)
+
+            # 2. APLICĂM STILURILE
+            pywinstyles.apply_style(self.root, self.current_theme_name)
+
+            # Folosim o nuanță de gri cărbune pentru dark mode (mai bine acceptată de Windows)
+            header_color = "#1F1F1F" if self.current_theme_name == "dark" else "#F0F2F5"
+            pywinstyles.change_header_color(self.root, color=header_color)
+
+            title_fg = "#FFFFFF" if self.current_theme_name == "dark" else "#000000"
+            pywinstyles.change_title_color(self.root, color=title_fg)
+
+            # 3. REFRESH-UL DE SISTEM (Singurul care pare să funcționeze la tine)
+            # Acesta forțează Windows să re-mapeze fereastra în Task Manager și DWM
+            self.root.withdraw()
+            self.root.deiconify()
+
+            # 4. REVENIM LA OPACITATE MAXIMĂ
+            # Adăugăm un delay minuscul pentru a lăsa Windows să termine 'vopsirea' bării
+            self.root.after(10, lambda: self.root.attributes("-alpha", 1.0))
+
+            # Refresh titlu (Double check)
+            t = self.root.title()
+            self.root.title(t + " ")
+            self.root.title(t.strip())
+
+        except Exception as e:
+            print(f"Eroare DWM: {e}")
+            self.root.attributes("-alpha", 1.0)

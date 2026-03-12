@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog
+from tkcalendar import DateEntry
 from Internal.entity.User import User
 from Internal.service.UserService import UserService
 from Internal.service.LanguageService import LanguageService
@@ -47,7 +48,28 @@ class RegisterUi:
         self.add_field(self.lang_service.get_text("global", "reg_address"), "entry_street", 4, 0, columnspan=2)
         self.add_field(self.lang_service.get_text("global", "reg_city"), "entry_city", 5, 0)
         self.add_field(self.lang_service.get_text("global", "reg_state"), "entry_state", 5, 1)
-        self.add_field(self.lang_service.get_text("global", "reg_birthday"), "entry_birth", 6, 0, columnspan=2)
+        # self.add_field(self.lang_service.get_text("global", "reg_birthday"), "entry_birth", 6, 0, columnspan=2)
+        row_birth = 6 * 2
+        tk.Label(self.container, text=self.lang_service.get_text("global", "reg_birthday"), **self.lbl_style).grid(
+            row=row_birth, column=0, columnspan=2, sticky="w", pady=(10, 2))
+
+        self.entry_birth = DateEntry(self.container,
+                                     **self.ent_style,
+                                     state='readonly',
+                                     background=self.colors["accent"],
+                                     foreground='white',
+                                     headersbackground=self.colors["bg"],
+                                     headersforeground=self.colors["accent"],
+                                     selectbackground=self.colors["accent"],
+                                     selectforeground='white',
+                                     normalbackground=self.colors["input_bg"],
+                                     normalforeground=self.txt_color,
+                                     weekendbackground=self.colors["bg"],
+                                     weekendforeground='#E74C3C',
+                                     borderwidth=0,
+                                     showweeknumbers=False,  # Ascunde numărul săptămânii pentru simplitate
+                                     date_pattern='dd.mm.yyyy')
+        self.entry_birth.grid(row=row_birth + 1, column=0, columnspan=2, sticky="ew", ipady=5)
 
         # Locație stocare tradusă
         tk.Label(self.container, text=self.lang_service.get_text("global", "data_location"),
@@ -95,6 +117,7 @@ class RegisterUi:
         self.root.after(3000, toast.destroy)
 
     def handle_register(self):
+        birthday_str = self.entry_birth.get()
         """Procesează datele și înregistrează utilizatorul folosind mesaje traduse."""
         username = self.entry_uname.get().strip()
         password = self.entry_pass.get()
@@ -123,7 +146,7 @@ class RegisterUi:
             new_user = User(username=username, first_name=self.entry_fn.get(), last_name=self.entry_ln.get(),
                             email=self.entry_email.get(), password=password, data_path=data_path,
                             street_address=self.entry_street.get(), city=self.entry_city.get(),
-                            state=self.entry_state.get(), birthday=self.entry_birth.get())
+                            state=self.entry_state.get(), birthday=birthday_str)
 
             result = self.user_service.add_user(new_user)
 

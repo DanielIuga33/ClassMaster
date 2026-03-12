@@ -54,6 +54,7 @@ class UserUi:
         self.settings_component = SettingsView(self.main_content, self)
         self.setup_sidebar_content(user)
         self.show_dashboard()
+        self.root.after(100, self.apply_user_system_theme)
 
     def setup_window(self, w, h):
         self.root.state('zoomed')
@@ -173,7 +174,8 @@ class UserUi:
                       command=lambda po=p: [
                           self.preset_service.delete_preset(po),
                           manager.destroy(),
-                          self.show_toast(f"🗑️ {self.language_service.get_text(uid, 'msg_preset_deleted')}", "#34495E"),
+                          self.show_toast(
+                              f"🗑️ {self.language_service.get_text(uid, 'msg_preset_deleted')}", "#34495E"),
                           self.open_presets_manager()
                       ]).pack(side="right", padx=5)
 
@@ -224,8 +226,8 @@ class UserUi:
         if self.student_service.size_for_user(self.user.get_id_entity()) > 0:
             self.groups_component.render()
         else:
-            self.show_toast(f"❌ {self.language_service.get_text(self.user.get_id_entity(),
-                                                                'no_students')}","#E74C3C")
+            self.show_toast(f"❌ {self.language_service.get_text(self.user.get_id_entity(), 'no_students')}"
+                            , "#E74C3C")
 
     def go_to_today(self):
         self.current_date = datetime.now()
@@ -235,8 +237,7 @@ class UserUi:
 
     def open_group_assignment_modal(self, cell_id):
         if self.group_service.size_for_user(self.user.get_id_entity()) == 0:
-            self.show_toast(f"❌ {self.language_service.get_text(self.user.get_id_entity(),
-                                                                'no_groups')}", "#E74C3C")
+            self.show_toast(f"❌ {self.language_service.get_text(self.user.get_id_entity(), 'no_groups')}", "#E74C3C")
             return
         uid = self.user.get_id_entity()
         unique_key = f"{uid}_{cell_id}"
@@ -399,3 +400,51 @@ class UserUi:
                 self.root.after(30, lambda: self.fade_out(window))
             else:
                 window.destroy()
+
+    def apply_user_system_theme(self):
+        """Sincronizează bara nativă de Windows folosind detectarea inteligentă a temei."""
+        try:
+            uid = self.user.get_id_entity()
+            selected_theme = self.settings_service.get_theme(uid).lower()
+            bg_hex = self.colors["bg"].upper()
+
+            dark_keywords = [
+                "dark", "night", "deep", "dracula", "moon", "erebus", "coffee",
+                "cyberpunk", "stream", "material_ocean", "monokai_pro", "sunset",
+                "oxocarbon", "retro_terminal", "synthwave", "purple", "catppuccin",
+                "oled", "gray", "black", "midnight"
+            ]
+
+            # Verificăm dacă numele temei conține vreun cuvânt din listă
+            # SAU dacă fundalul este unul dintre cele negre/gri închise standard
+            is_dark = (any(word in selected_theme for word in dark_keywords) or
+                       bg_hex in ["#18191A", "#1F1F1F", "#000000", "#121212"])
+
+            # Culori pentru bară (folosim nuanța specială de gri pentru a evita blocajul Windows)
+            header_color = "#1F1F1F" if is_dark else "#F0F2F5"
+            title_fg = "#FFFFFF" if is_dark else "#000000"
+            theme_mode = "dark" if is_dark else "light"
+
+            # 1. MASCARE VIZUALĂ (Evităm flick-ul alb)
+            self.root.attributes("-alpha", 0.0)
+
+            # 2. APLICARE STILURI
+            import pywinstyles
+            pywinstyles.apply_style(self.root, theme_mode)
+            pywinstyles.change_header_color(self.root, color=header_color)
+            pywinstyles.change_title_color(self.root, color=title_fg)
+
+            # 3. REFRESH DE SISTEM (Forțăm redesenarea bării)
+            current_state = self.root.state()
+
+            self.root.withdraw()
+            self.root.deiconify()
+            self.root.state(current_state)
+
+            # 4. REVENIRE VIZUALĂ
+            # Delay mic pentru a permite DWM să proceseze culorile noi
+            self.root.after(10, lambda: self.root.attributes("-alpha", 1.0))
+
+        except Exception as e:
+            self.root.attributes("-alpha", 1.0)
+            print(f"Eroare sincronizare bară UserUi: {e}")

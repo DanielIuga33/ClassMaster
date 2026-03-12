@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import hashlib
 from Internal.utils.utils import get_colors_by_name
+import pywinstyles
 
 
 class SettingsView:
@@ -157,6 +158,16 @@ class SettingsView:
         selected_lang = "ro" if self.lang_combo.get() == "Română" else "en"
         self.master.settings_service.save_user_setting(uid, "language", selected_lang)
 
+        is_dark = ("dark" in selected_theme.lower() or "night" in selected_theme.lower() or "deep"
+                   in selected_theme.lower() or "dracula" in selected_theme.lower() or "moon" in selected_theme.lower()
+                   or "erebus" in selected_theme.lower() or "cofee" in selected_theme.lower() or
+                   "cyberpunk" in selected_theme.lower() or "stream" in selected_theme.lower() or "material_ocean" in
+                   selected_theme.lower() or "monokai_pro" in selected_theme.lower() or
+                   "sunset" in selected_theme.lower() or "oxocarbon" in selected_theme.lower() or
+                   "retro_terminal" in selected_theme.lower() or "synthwave" in selected_theme.lower() or
+                   "purple" in selected_theme.lower() or "catppuccin" in selected_theme.lower())
+        self.apply_system_bar_style(is_dark)
+
         # 2. Refresh UI complet (forțează re-randarea sidebar-ului și a titlului)
         self.master.toggle_theme_ui()
 
@@ -214,3 +225,46 @@ class SettingsView:
         self.preview_canvas.create_oval(5, 5, 25, 25, fill=c["bg"], outline=c["fg"])
         self.preview_canvas.create_oval(35, 5, 55, 25, fill=c["accent"], outline=c["fg"])
         self.preview_canvas.create_oval(65, 5, 85, 25, fill=c.get("success", "#2ECC71"), outline=c["fg"])
+
+    def apply_system_bar_style(self, is_dark):
+        """Aplică stilul bării și păstrează starea de maximizare/fullscreen."""
+        try:
+            # 1. SALVĂM STAREA ACTUALĂ
+            # Verificăm dacă fereastra este maximizată sau fullscreen
+            is_maximized = self.master.root.state() == 'zoomed'
+            # Dacă folosești fullscreen-ul nativ (fără margini deloc):
+            is_fullscreen = self.master.root.attributes("-fullscreen")
+
+            # 2. MASCAREA VIZUALĂ
+            self.master.root.attributes("-alpha", 0.0)
+
+            # 3. SETĂRI CULORI
+            bg_color = "#1F1F1F" if is_dark else "#F0F2F5"
+            fg_color = "#FFFFFF" if is_dark else "#000000"
+            theme_mode = "dark" if is_dark else "light"
+
+            pywinstyles.apply_style(self.master.root, theme_mode)
+            pywinstyles.change_header_color(self.master.root, color=bg_color)
+            pywinstyles.change_title_color(self.master.root, color=fg_color)
+
+            # 4. REFRESH-UL CRITIC
+            self.master.root.withdraw()
+            self.master.root.deiconify()
+
+            # 5. RESTABILIREA STĂRII
+            if is_fullscreen:
+                self.master.root.attributes("-fullscreen", True)
+            elif is_maximized:
+                self.master.root.state('zoomed')
+
+            # 6. REVENIREA LA VIZIBILITATE
+            self.master.root.after(10, lambda: self.master.root.attributes("-alpha", 1.0))
+
+            # Refresh titlu
+            t = self.master.root.title()
+            self.master.root.title(t + " ")
+            self.master.root.title(t.strip())
+
+        except Exception as e:
+            self.master.root.attributes("-alpha", 1.0)
+            print(f"Eroare stilizare: {e}")

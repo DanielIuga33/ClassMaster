@@ -15,19 +15,8 @@ from Internal.ui.LoginUi import LoginUi
 from Internal.ui.UserUi import UserUi
 from Internal.ui.StartUi import StartUi
 from Internal.ui.RegisterUi import RegisterUi
-import os
-import sys
-
-def resource_path(relative_path):
-    """ Obține calea absolută către resursă, funcționează pentru dev și PyInstaller """
-    try:
-        # PyInstaller creează un folder temporar și stochează calea în _MEIPASS
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
-
-    return os.path.join(base_path, relative_path)
-
+import traceback
+from tkinter import messagebox
 
 
 class MainController:
@@ -41,11 +30,13 @@ class MainController:
         self.group_service = GroupService(RepositoryGroup("", None))
         self.preset_service = PresetService(RepositoryPreset("", None))
         self.schedule_service = ScheduleService()
+        self.current_view = None
         self.show_start_screen()
 
     def clear_screen(self):
         for widget in self.root.winfo_children():
             widget.destroy()
+            self.current_view = None
 
     def show_start_screen(self):
         self.clear_screen()
@@ -78,8 +69,6 @@ class MainController:
 
     def login_success(self, user):
         self.clear_screen()
-        # Deschide interfața principală cu elevii
-        # UserUi(self.root, user)
         UserUi(
             self.root,
             user,
@@ -97,15 +86,11 @@ class MainController:
         self.root.mainloop()
 
 
-import traceback
-from tkinter import messagebox
-
 if __name__ == "__main__":
     try:
         # Aici pui logica ta existentă de pornire a aplicației
         app = MainController()
         app.run()
     except Exception as e:
-        # Această fereastră va rămâne pe ecran și îți va spune EXACT ce fișier lipsește
         error_msg = traceback.format_exc()
         messagebox.showerror("Eroare Critică", error_msg)

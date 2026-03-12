@@ -1,4 +1,4 @@
-import json
+from datetime import datetime
 import os
 from Internal.security.EncryptionManager import EncryptionManager
 
@@ -40,6 +40,12 @@ class ScheduleService:
         if not self.__filename:
             return
         EncryptionManager.encrypt_to_file(self.__filename, self.__schedule_data, self.__current_password)
+
+    def get_today_sessions(self, uid):
+        today = datetime.now().strftime("%Y-%m-%d")
+        all_data = self.get_schedule_data()
+        # Filtrează doar cheile care încep cu data de azi
+        return {k: v for k, v in all_data.items() if k.startswith(f"{uid}_{today}")}
 
     def delete_cascade(self, id_group):
         # Facem o listă cu cheile pe care trebuie să le ștergem
