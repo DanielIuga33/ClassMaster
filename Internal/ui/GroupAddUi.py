@@ -73,10 +73,62 @@ class GroupAddUi(tk.Toplevel):
         for s in self.all_students:
             self.student_listbox.insert(tk.END, f"  {s.get_last_name()} {s.get_first_name()} ({s.get_grade()})")
 
+
+        self.all_students = self.load_available_students()
+        # Salvăm copia originală pentru resetare
+        self.original_students = list(self.all_students)
+
+        # Inserăm elevii inițiali
+        self.refresh_listbox(self.all_students)
+
+        # Legăm evenimentul de selecție
+        self.student_listbox.bind("<<ListboxSelect>>", self.handle_filter_logic)
+
+
         # Buton Salvare tradus
         tk.Button(self, text=ls.get_text(uid, "btn_save_group"), command=self.handle_save,
                   bg="#9B59B6", fg="white", font=("Segoe UI", 11, "bold"),
                   relief="flat", pady=12, cursor="hand2").pack(fill="x", pady=(20, 0))
+
+    def handle_filter_logic(self, event):
+        selected_indices = self.student_listbox.curselection()
+
+        # Dacă nu mai e nimic selectat, resetăm lista la toți elevii disponibili
+        if not selected_indices:
+            self.all_students = list(self.original_students)
+            self.refresh_listbox(self.all_students)
+            return
+
+        # Dacă avem cel puțin un element selectat, filtrăm după clasa primului
+        # Luăm primul index selectat
+        first_selected_index = selected_indices[0]
+        selected_grade = self.all_students[first_selected_index].get_grade()
+
+        # Filtrăm: păstrăm elevii care au aceeași clasă SAU care sunt deja selectați
+        # (pentru a nu-i pierde din selecție în timpul procesării)
+        selected_ids = [self.all_students[i].get_id_entity() for i in selected_indices]
+
+        filtered_students = [
+            s for s in self.original_students
+            if s.get_grade() == selected_grade or s.get_id_entity() in selected_ids
+        ]
+
+        # Dacă lista filtrată e diferită de cea curentă, actualizăm
+        if len(filtered_students) != len(self.all_students):
+            self.all_students = filtered_students
+            self.refresh_listbox(self.all_students, selected_ids)
+
+    def refresh_listbox(self, students_to_show, ids_to_reselect=None):
+        """Reîmprospătează elementele din Listbox."""
+        self.student_listbox.delete(0, tk.END)
+        for s in students_to_show:
+            self.student_listbox.insert(tk.END, f"  {s.get_last_name()} {s.get_first_name()} ({s.get_grade()})")
+
+        # Re-selectăm elevii care erau deja bifați
+        if ids_to_reselect:
+            for i, s in enumerate(students_to_show):
+                if s.get_id_entity() in ids_to_reselect:
+                    self.student_listbox.selection_set(i)
 
     def handle_save(self):
         uid = self.user_id
@@ -84,6 +136,7 @@ class GroupAddUi(tk.Toplevel):
         name = self.entries['name'].get().strip()
         selected_indices = self.student_listbox.curselection()
         student_ids = [self.all_students[i].get_id_entity() for i in selected_indices]
+        grade = self.all_students[selected_indices[0]].get_grade()
 
         if not name:
             # Mesaj avertisment tradus
@@ -95,7 +148,7 @@ class GroupAddUi(tk.Toplevel):
             if not messagebox.askyesno(ls.get_text(uid, "confirmation"), ls.get_text(uid, "msg_empty_group_confirm")):
                 return
 
-        res = self.group_service.add_group(name, student_ids, self.user_id)
+        res = self.group_service.add_group(name, grade, student_ids, self.user_id)
 
         if res[0] == 201:
             self.on_success()

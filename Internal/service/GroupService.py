@@ -9,10 +9,10 @@ class GroupService:
     def set_repository_path(self, path, password):
         self.__repository.set_new_path(path, password)
 
-    def add_group(self, name, ids, teacher_id):
+    def add_group(self, name,grade,  ids, teacher_id):
         if not name:
             return 400, "Numele și materia sunt obligatorii!"
-        self.__repository.add_group(name, ids, teacher_id)
+        self.__repository.add_group(name,grade,  ids, teacher_id)
         return 201, "Grupă creată cu succes!"
 
     def modify_group(self, group_old, group_new):

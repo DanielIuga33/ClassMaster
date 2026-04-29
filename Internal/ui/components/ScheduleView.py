@@ -315,7 +315,7 @@ class ScheduleView:
         if raw_data.get('group_name'):
             tk.Label(inner_content, text=raw_data.get('time', ""), font=("Segoe UI", 9, "bold"),
                      bg=bg_color, fg=text_color).pack(anchor="nw")
-            tk.Label(inner_content, text=raw_data.get('group_name'), font=("Segoe UI", 11, "bold"),
+            tk.Label(inner_content, text=raw_data.get('grade')+" "+ raw_data.get('group_name'), font=("Segoe UI", 11, "bold"),
                      bg=bg_color, fg=text_color).pack(anchor="nw", pady=(3, 6))
 
             students = self.master.student_service.get_students_by_id_list(

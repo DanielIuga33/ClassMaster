@@ -46,6 +46,7 @@ class RepositoryGroup:
             data = {
                 "id_entity": g.get_id_entity(),
                 "group_name": g.get_group_name(),
+                "grade": g.get_grade(),
                 "student_ids": g.get_student_ids(),
                 "day": g.get_day(),
                 "time_interval": g.get_time_interval(),
@@ -61,9 +62,9 @@ class RepositoryGroup:
         self.__group_list[cell_id] = group_obj
         self.__save()
 
-    def add_group(self, name, ids, teacher_id):
-        self.__group_list.append(Group(group_name=name, student_ids=ids, day="", time_interval="",
-                                       teacher_id=teacher_id, ))
+    def add_group(self, name,group_grade, ids, teacher_id):
+        self.__group_list.append(Group(group_name=name,grade=group_grade, student_ids=ids, day="",
+                                       time_interval="", teacher_id=teacher_id, ))
         self.__save()
 
     def find_by_id(self, id_group):

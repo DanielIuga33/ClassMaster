@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 from tkinter import messagebox
 from Internal.service.SettingsService import SettingsService
 from Internal.service.StudentService import StudentService
@@ -48,16 +49,15 @@ class StudentAddUi(tk.Toplevel):
         tk.Label(self, text=ls.get_text(uid, "student_grade_label"), bg=self.colors["bg"],
                  fg=self.txt_color, font=("Segoe UI", 9, "bold")).pack(anchor="w")
 
-        grade_ent = tk.Entry(self, font=("Segoe UI", 11), relief="flat",
-                             bg=self.colors["input_bg"],
-                             fg=self.txt_color,
-                             insertbackground=self.txt_color,
-                             validate='key', validatecommand=self.vcmd_roman)
-        grade_ent.pack(fill="x", pady=(5, 15), ipady=5)
+        t_controls = tk.Frame(self, relief="flat",
+                             bg=self.colors["input_bg"])
+        t_controls.pack(fill="x", pady=(0, 15))
 
-        # Transformăm automat în majuscule
-        grade_ent.bind("<KeyRelease>", lambda e: to_uppercase(grade_ent))
-        self.entries["gr"] = grade_ent
+        self.grade_combo = ttk.Combobox(t_controls, values=[
+            "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII",
+        ], state="readonly", width=100, font=("Segoe UI", 11))
+        self.grade_combo.pack(side="left")#, padx=20)
+        self.grade_combo.bind("<<ComboboxSelected>>", self.update_grade_preview)
 
         # Câmpul Preț tradus
         self.create_field(ls.get_text(uid, "col_price_h"), "pr")
@@ -79,6 +79,13 @@ class StudentAddUi(tk.Toplevel):
         ent.pack(fill="x", pady=(5, 15), ipady=5)
         self.entries[key] = ent
 
+    def update_grade_preview(self, event=None):
+        c = self.grade_combo.get()
+        self.entries["gr"] = c
+        if not c:
+            return
+        print(c)
+
     def setup_modal(self, w, h):
         ws = self.winfo_screenwidth()
         hs = self.winfo_screenheight()
@@ -91,7 +98,7 @@ class StudentAddUi(tk.Toplevel):
         ls = self.lang_service
         fn = self.entries['fn'].get().strip()
         ln = self.entries['ln'].get().strip()
-        gr = self.entries['gr'].get().strip()
+        gr = self.entries['gr']
         pr = self.entries['pr'].get().strip()
 
         if not all([gr, pr]):

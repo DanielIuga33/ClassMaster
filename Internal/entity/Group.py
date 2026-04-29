@@ -2,11 +2,12 @@ from Internal.entity.Entity import Entity
 
 
 class Group(Entity):
-    def __init__(self, group_name, student_ids, day, time_interval, teacher_id, **kwargs):
+    def __init__(self, group_name, grade, student_ids, day, time_interval, teacher_id, **kwargs):
         super().__init__()
         if 'id_entity' in kwargs:
             self._Entity__id_entity = kwargs['id_entity']
         self.__group_name = group_name           # Numele grupei
+        self.__grade = grade
         self.__student_ids = student_ids     # Listă cu ID-urile studenților (din Students.json)
         self.__day = day                     # Luni, Marți etc.
         self.__time_interval = time_interval  # ex: 14:00 - 16:00
@@ -17,6 +18,12 @@ class Group(Entity):
 
     def set_group_name(self, group_name):
         self.__group_name = group_name
+
+    def get_grade(self):
+        return self.__grade
+
+    def set_grade(self, grade):
+        self.__grade = grade
 
     def get_student_ids(self):
         return self.__student_ids
@@ -46,11 +53,11 @@ class Group(Entity):
         """Transformă obiectul în dicționar pentru salvarea în JSON."""
         return {
             "id_entity": self._Entity__id_entity,
-            "group_id": self.group_id,
-            "student_ids": self.student_ids,
-            "day": self.day,
-            "time_interval": self.time_interval,
+            "group_grade": self.__grade,
+            "student_ids": self.__student_ids,
+            "day": self.__day,
+            "time_interval": self.__time_interval,
         }
 
     def get_display_name(self):
-        return f"{self.group_name} - {self.subject}"
+        return f"{self.__group_name} - {self.__grade}"
