@@ -65,12 +65,13 @@ class GroupsView:
         header_table.pack(fill="x")
 
         headers = [
+            ls.get_text(uid, 'col_group_grade'),
             ls.get_text(uid, "col_group_name"),
             ls.get_text(uid, "col_members_rates"),
             ls.get_text(uid, "col_total_session"),
             ls.get_text(uid, "col_actions")
         ]
-        widths = [25, 40, 15, 20]
+        widths = [5,25,30, 25, 20]
 
         for i, h in enumerate(headers):
             tk.Label(header_table, text=h.upper(), font=("Segoe UI", 10, "bold"),
@@ -79,16 +80,19 @@ class GroupsView:
 
         # 3. Populare rânduri
         groups = sorted(self.master.group_service.get_groups_for_teacher(uid),
-                        key=lambda group: group.get_group_name())
+                        key=lambda group: group.get_grade())
 
         for idx, g in enumerate(groups):
             bg_row = colors["card_bg"] if idx % 2 == 0 else colors["input_bg"]
             row_frame = tk.Frame(table_inner, bg=bg_row)
             row_frame.pack(fill="x")
 
+            tk.Label(row_frame, text=g.get_grade(), font=("Segoe UI", 11, "bold"),
+                     bg=bg_row, fg=txt_color, pady=20, width=widths[0]).pack(side="left", fill="x", expand=True)
+
             # Nume Grupă
             tk.Label(row_frame, text=g.get_group_name(), font=("Segoe UI", 11, "bold"),
-                     bg=bg_row, fg=txt_color, pady=20, width=widths[0]).pack(side="left", fill="x", expand=True)
+                     bg=bg_row, fg=txt_color, pady=20, width=widths[1]).pack(side="left", fill="x", expand=True)
 
             # Membri & Tarife
             members_info = ""
@@ -100,14 +104,14 @@ class GroupsView:
                     total_p += s.get_price()
 
             tk.Label(row_frame, text=members_info.strip(), font=("Segoe UI", 10),
-                     bg=bg_row, fg=txt_color, width=widths[1], justify="left").pack(side="left", fill="x", expand=True)
+                     bg=bg_row, fg=txt_color, width=widths[2], justify="left").pack(side="left", fill="x", expand=True)
 
             # Total / Ședință
             tk.Label(row_frame, text=f"{total_p} RON", font=("Segoe UI", 11, "bold"),
-                     bg=bg_row, fg="#27AE60", width=widths[2]).pack(side="left", fill="x", expand=True)
+                     bg=bg_row, fg="#27AE60", width=widths[3]).pack(side="left", fill="x", expand=True)
 
             # Acțiuni
-            act_f = tk.Frame(row_frame, bg=bg_row, width=widths[3])
+            act_f = tk.Frame(row_frame, bg=bg_row, width=widths[4])
             act_f.pack(side="left", fill="x", expand=True)
             btns = tk.Frame(act_f, bg=bg_row)
             btns.pack(expand=True)

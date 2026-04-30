@@ -98,17 +98,17 @@ class StudentsView:
             student_grade = s.get_grade()
 
             tk.Label(row_frame, text=f"  {s.get_last_name()} {s.get_first_name()}",
-                     font=("Segoe UI", 11), bg=bg_row, fg=txt_color,
-                     pady=15, width=40, anchor="w").pack(side="left", fill="x", expand=True)
+                     font=("Segoe UI", 11), bg=bg_row, fg=txt_color, justify="left",
+                     pady=15, width=10, anchor="w").pack(side="left", fill="x", expand=True)
 
             tk.Label(row_frame, text=student_grade, font=("Segoe UI", 11),
-                     bg=bg_row, fg=txt_color, width=15).pack(side="left", fill="x", expand=True)
+                     bg=bg_row, fg=txt_color, width=10).pack(side="left", fill="x", expand=True)
 
             tk.Label(row_frame, text=f"{s.get_price()} RON", font=("Segoe UI", 11, "bold"),
                      bg=bg_row, fg=colors.get("success", "#27AE60"),
-                     width=20).pack(side="left", fill="x", expand=True)
+                     width=10).pack(side="left", fill="x", expand=True)
 
-            act_f = tk.Frame(row_frame, bg=bg_row, width=20)
+            act_f = tk.Frame(row_frame, bg=bg_row, width=10)
             act_f.pack(side="left", fill="x", expand=True)
             btns = tk.Frame(act_f, bg=bg_row)
             btns.pack(expand=True)

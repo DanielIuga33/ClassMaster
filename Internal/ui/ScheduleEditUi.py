@@ -44,7 +44,7 @@ class ScheduleEditUi(tk.Toplevel):
         self.group_combo.pack(fill="x", pady=(5, 15), ipady=5)
 
         if current_data and "group_name" in current_data:
-            self.group_combo.set(current_data["group_name"])
+            self.group_combo.set(current_data["grade"] + "." + current_data["group_name"])
             self.grade = current_data["grade"]
 
         # --- INTERVAL ORAR ---
@@ -131,7 +131,7 @@ class ScheduleEditUi(tk.Toplevel):
     def handle_save(self):
         uid = self.user_id
         ls = self.lang_service
-        selected_group_name = self.group_combo.get()[4:]
+        selected_group_name = self.group_combo.get()[5:]
         grade = self.group_combo.get()[:4]
         sh, sm = self.start_hh.get().strip(), self.start_mm.get().strip()
         eh, em = self.end_hh.get().strip(), self.end_mm.get().strip()
@@ -143,7 +143,6 @@ class ScheduleEditUi(tk.Toplevel):
 
         time_formatted = f"{sh.zfill(2)}:{sm.zfill(2)}-{eh.zfill(2)}:{em.zfill(2)}"
         selected_group = next((g for g in self.available_groups if g.get_group_name() == selected_group_name), None)
-
         data = {
             "group_name": selected_group_name,
             "grade": grade,
